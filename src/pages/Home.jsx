@@ -7,7 +7,6 @@ import { PostDataProvider } from "../contexts/PostDataContext";
 import { MdSearch } from "react-icons/md";
 import { FaSadCry } from "react-icons/fa";
 import { DarkModeProvider } from "../contexts/DarkModeContext";
-import { uuidv4 } from "@firebase/util";
 
 const Home = () => {
   const {
@@ -32,7 +31,7 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 md:px-2">
+    <div className="flex flex-col gap-4 md:px-2 ">
       <Title data={"Latest Posts"}></Title>
       {latestPostData[0] ? (
         latestPostData.map((singlePost) => (
@@ -48,7 +47,9 @@ const Home = () => {
       <div className="flex justify-center items-center relative">
         <input
           type="text"
-          className="bg-slate-100 outline outline-3 w-full outline-slate-200 rounded-md py-2 pr-3 pl-10 font-medium"
+          className={`bg-slate-100 outline outline-3 w-full outline-slate-200 rounded-md py-2 pr-3 pl-10 font-medium ${
+            isDarkMode ? "outline-slate-200" : "outline-none"
+          }`}
           onKeyUp={triggerSearch}
         />
         <MdSearch className="absolute left-3 text-slate-400 text-2xl" />
@@ -68,7 +69,7 @@ const Home = () => {
       </div>
 
       {searchData.length ? (
-        <div className="flex flex-col gap-5 pt-2 relative">
+        <div className="flex flex-col gap-5 pt-10 relative">
           {searchData.length ? (
             searchData.map((singleData) => (
               <PostCard data={singleData} key={singleData.id} />

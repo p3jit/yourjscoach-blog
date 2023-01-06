@@ -2,11 +2,13 @@ import Markdown from "markdown-to-jsx";
 import { useEffect, useState } from "react";
 import { Code } from "../code/Code";
 import { Heading } from "../heading/Heading";
+import ImageTag from "../imageTag/ImageTag";
 import NormalText from "../normalText/NormalText";
 import { RoundedText } from "../roundedText/RoundedText";
 import SkeletonLoaderPost from "../skeletonLoaderPost/SkeletonLoaderPost";
 import Tag from "../tag/Tag";
 import Title from "../title/Title";
+import VideoTag from "../videoTag/VideoTag";
 
 export const Post = ({ data }) => {
   const [postContent, setPostContent] = useState("");
@@ -45,6 +47,8 @@ export const Post = ({ data }) => {
                 Heading: { component: Heading },
                 RoundedText: { component: RoundedText },
                 NormalText: { component: NormalText },
+                ImageTag: { component: ImageTag },
+                VideoTag: { component: VideoTag },
               },
             }}
           >

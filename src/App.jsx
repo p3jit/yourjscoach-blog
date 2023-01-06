@@ -4,10 +4,11 @@ import { Header } from "./components/header/header.jsx";
 import Modal from "./components/modal/Modal.jsx";
 import { DarkModeProvider } from "./contexts/DarkModeContext.jsx";
 import { ModalProvider } from "./contexts/ModalContext.jsx";
-import { exampleFetch } from "./data/postData.js";
 import Error from "./pages/Error.jsx";
 import Home from "./pages/Home.jsx";
 import SinglePost from "./pages/SinglePost.jsx";
+import { exampleFetch } from "./data/postData.js";
+import { Post } from "./components/post/Post.jsx";
 
 function App() {
   const { isModalOpen, setIsModalOpen } = useContext(ModalProvider);
@@ -24,10 +25,8 @@ function App() {
         <Route path="/404" element={<Error />}></Route>
         <Route path="/" element={<Home />}></Route>
         <Route path="/home" element={<Home />}></Route>
-        <Route
-          path="/:id"
-          element={<SinglePost data={exampleFetch[0]} />}
-        ></Route>
+        <Route path="/test" element={<Post data={exampleFetch[0]} />}></Route>
+        <Route path="/:id" element={<SinglePost />}></Route>
       </Routes>
       {isModalOpen ? <Modal setIsModalOpen={setIsModalOpen} /> : ""}
     </div>
