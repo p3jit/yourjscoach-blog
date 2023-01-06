@@ -1,0 +1,26 @@
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Post } from "../components/post/Post";
+import { PostDataProvider } from "../contexts/PostDataContext";
+
+const SinglePost = () => {
+  const { postData } = useContext(PostDataProvider);
+  const [currPost, setCurrPost] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const pathName = location.pathname.split("/")[1];
+    if (postData.length) {
+      const foundPostData = postData.find((elem) => elem.id === pathName);
+      if (foundPostData) {
+        setCurrPost(foundPostData);
+      } else {
+        navigate("/404");
+      }
+    }
+  }, [postData]);
+
+  return <>{currPost ? <Post data={currPost} /> : ""}</>;
+};
+
+export default SinglePost;
