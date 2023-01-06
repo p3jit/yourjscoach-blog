@@ -47,7 +47,7 @@ const Home = () => {
       <div className="flex justify-center items-center relative">
         <input
           type="text"
-          className={`bg-slate-100 outline outline-3 w-full outline-slate-200 rounded-md py-2 pr-3 pl-10 font-medium ${
+          className={`bg-slate-100 outline outline-3 w-full outline-slate-200 rounded-md py-3 pr-3 pl-10 font-medium ${
             isDarkMode ? "outline-slate-200" : "outline-none"
           }`}
           onKeyUp={triggerSearch}

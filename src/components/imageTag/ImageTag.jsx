@@ -2,7 +2,7 @@ import React from "react";
 
 const ImageTag = ({ children }) => {
   return (
-    <div className="w-auto my-5">
+    <div className="w-auto my-4">
       <img
         src={String(children[0].props.href)}
         alt="newImage"
