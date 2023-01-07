@@ -32,7 +32,7 @@ export const Post = ({ data }) => {
     <>
       {!isLoading ? (
         <article className="flex flex-col gap-5">
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col">
             <PostTitle data={data.title} />
             <div className="text-sm text-gray-400 flex gap-2 flex-wrap">
               {data.tags.map((tag) => {

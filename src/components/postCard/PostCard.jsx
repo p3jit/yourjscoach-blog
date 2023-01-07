@@ -12,10 +12,10 @@ const PostCard = ({ data }) => {
   return (
     <div
       className={`flex flex-col rounded p-4 outline outline-1 outline-slate-300 shadow-lg ${
-        isDarkMode ? "shadow-slate-300" : "shadow-slate-600"
+        isDarkMode ? "shadow-slate-200" : "shadow-slate-700"
       }`}
     >
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between">
         <div
           className={`font-bold text-xl md:text-2xl ${
             !isDarkMode ? "text-slate-200" : "text-black"
@@ -24,7 +24,7 @@ const PostCard = ({ data }) => {
           {data.title}
         </div>
         <h2
-          className={` text-sm font-medium md:text-base ${
+          className={` text-sm font-medium md:text-base mt-1 ${
             !isDarkMode ? "text-white" : "text-slate-400"
           }`}
         >
