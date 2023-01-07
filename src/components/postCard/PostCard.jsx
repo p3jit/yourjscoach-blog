@@ -10,9 +10,10 @@ const PostCard = ({ data }) => {
     navigate(`/${data.id}`);
   };
   return (
+    // outline outline-1 outline-slate-300
     <div
-      className={`flex flex-col rounded p-4 outline outline-1 outline-slate-300 shadow-lg ${
-        isDarkMode ? "shadow-slate-200" : "shadow-slate-700"
+      className={`flex flex-col rounded p-4 outline outline-1 outline-slate-300  ${
+        isDarkMode ? "" : ""
       }`}
     >
       <div className="flex justify-between">
