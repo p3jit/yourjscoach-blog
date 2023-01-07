@@ -16,8 +16,8 @@ function App() {
 
   return (
     <div
-      className={`font-roboto min-h-screen px-5 py-5 md:px-20 xl:px-60 2xl:px-[23em] flex flex-col gap-10 relative ${
-        isDarkMode ? "bg-white" : "bg-slate-800"
+      className={`font-roboto min-h-screen px-5 py-5 md:px-24 xl:px-40 2xl:px-[32em] flex flex-col gap-10 relative ${
+        isDarkMode ? "bg-white" : "bg-slate-900"
       }`}
     >
       <Header setIsModalOpen={setIsModalOpen} />
@@ -29,6 +29,9 @@ function App() {
         <Route path="/:id" element={<SinglePost />}></Route>
       </Routes>
       {isModalOpen ? <Modal setIsModalOpen={setIsModalOpen} /> : ""}
+      {/* <div className="flex justify-center  w-full">
+        <h1 className="text-slate-400 text-lg">Made with ❤️ in India</h1>
+      </div> */}
     </div>
   );
 }

@@ -24,10 +24,10 @@ const SearchTag = ({ data }) => {
       <span
         className={`rounded text-sm md:text-lg font-medium bg-slate-300 px-3 py-1 cursor-pointer ${
           isActive
-            ? `outline outline-3 outline-slate-500 ${
+            ? `outline outline-2 text-slate-500 ${
                 isDarkMode
-                  ? "outline-slate-500 text-slate-500"
-                  : "outline-black text-black"
+                  ? "outline-slate-500 "
+                  : "outline-offset-2 outline-white"
               }`
             : "text-slate-500"
         }`}

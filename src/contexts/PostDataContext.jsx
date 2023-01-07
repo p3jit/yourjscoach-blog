@@ -21,9 +21,8 @@ const PostDataContext = ({ children }) => {
     await setPostData(value);
     let sortedValue = new Array(...value);
     sortedValue.sort((a, b) => b.timeStamp - a.timeStamp).slice(0, 2);
-    sortedValue = [sortedValue[0], sortedValue[1]];
-    await setlatestPostData(sortedValue);
-    await setSearchData(value);
+    await setlatestPostData([sortedValue[0], sortedValue[1]]);
+    await setSearchData(sortedValue);
   };
 
   const fetchTagsData = async () => {
@@ -80,7 +79,7 @@ const PostDataContext = ({ children }) => {
       } else if (!ans.length && searchFilter.length) {
         setSearchData([]);
       } else {
-        setSearchData(postData);
+        setSearchData(postData.sort((a, b) => b.timeStamp - a.timeStamp));
       }
     }
     triggerSearch();

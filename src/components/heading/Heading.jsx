@@ -6,7 +6,7 @@ export const Heading = ({ children }) => {
   return (
     <>
       <div
-        className={`text-xl font-bold pb-1 ${
+        className={`text-2xl font-bold pb-1 underline underline-offset-4 ${
           isDarkMode ? "text-gray-800" : "text-white"
         }`}
       >

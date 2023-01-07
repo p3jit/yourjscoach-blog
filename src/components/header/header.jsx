@@ -5,9 +5,12 @@ import { MdFeedback } from "react-icons/md";
 import { useContext } from "react";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
 import { useNavigate } from "react-router-dom";
+import { PostDataProvider } from "../../contexts/PostDataContext";
 
 export const Header = ({ setIsModalOpen }) => {
   const { isDarkMode, setIsDarkMode } = useContext(DarkModeProvider);
+  const { postData, setSearchData } = useContext(PostDataProvider);
+
   const navigate = useNavigate();
 
   const handleModeToggle = () => {
@@ -16,6 +19,7 @@ export const Header = ({ setIsModalOpen }) => {
 
   const handleHomeRedirect = () => {
     navigate("/home");
+    setSearchData(postData.sort((a, b) => b.timeStamp - a.timeStamp));
   };
 
   const toggleModalOpen = () => {
@@ -33,7 +37,7 @@ export const Header = ({ setIsModalOpen }) => {
           />
           <h2
             onClick={handleHomeRedirect}
-            className={`cursor-pointer font-bold text-xl md:text-3xl lg:text-4xl ${
+            className={`cursor-pointer font-bold text-2xl md:text-3xl lg:text-4xl ${
               isDarkMode ? "text-gray-800" : "text-white"
             }`}
           >
@@ -41,7 +45,7 @@ export const Header = ({ setIsModalOpen }) => {
           </h2>
         </div>
         <div className="flex gap-4 md:gap-">
-          <button className="text-xl md:text-3xl" onClick={handleModeToggle}>
+          <button className="text-2xl md:text-3xl" onClick={handleModeToggle}>
             {isDarkMode ? (
               <MdDarkMode className="text-slate-800" />
             ) : (

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import PostCard from "../components/postCard/PostCard";
 import SearchTag from "../components/searchTag/SearchTag";
 import SkeletonLoaderLatestPost from "../components/skeletonLoaderLatestPost/SkeletonLoaderLatestPost";
@@ -20,18 +20,20 @@ const Home = () => {
   } = useContext(PostDataProvider);
 
   const { isDarkMode } = useContext(DarkModeProvider);
+  const { isSearchDataLoading, setIsSearchDataLoading } = useState(true);
 
   const triggerSearch = (e) => {
     const query = e.target.value;
     if (query.length) {
       debouncedSearch(query);
     } else {
-      if (!searchFilter.length) setSearchData(postData);
+      if (!searchFilter.length)
+        setSearchData(postData.sort((a, b) => b.timeStamp - a.timeStamp));
     }
   };
 
   return (
-    <div className="flex flex-col gap-4 md:px-2 ">
+    <div className="flex flex-col gap-4 md:px-2 min-h-[2000px]">
       <Title data={"Latest Posts"}></Title>
       {latestPostData[0] ? (
         latestPostData.map((singlePost) => (
@@ -43,6 +45,7 @@ const Home = () => {
           <SkeletonLoaderLatestPost />
         </div>
       )}
+      <br />
       <Title data={"Search"}></Title>
       <div className="flex justify-center items-center relative">
         <input
@@ -69,7 +72,7 @@ const Home = () => {
       </div>
 
       {searchData.length ? (
-        <div className="flex flex-col gap-5 pt-10 relative">
+        <div className="flex flex-col gap-7 pt-5 relative">
           {searchData.length ? (
             searchData.map((singleData) => (
               <PostCard data={singleData} key={singleData.id} />

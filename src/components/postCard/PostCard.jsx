@@ -11,8 +11,8 @@ const PostCard = ({ data }) => {
   };
   return (
     <div
-      className={`flex flex-col rounded p-4 outline outline-1 outline-slate-300 gap-1 shadow-lg ${
-        isDarkMode ? "shadow-slate-300" : ""
+      className={`flex flex-col rounded p-4 outline outline-1 outline-slate-300 shadow-lg ${
+        isDarkMode ? "shadow-slate-300" : "shadow-slate-600"
       }`}
     >
       <div className="flex justify-between items-center">
@@ -25,27 +25,32 @@ const PostCard = ({ data }) => {
         </div>
         <h2
           className={` text-sm font-medium md:text-base ${
-            !isDarkMode ? "text-white" : ""
+            !isDarkMode ? "text-white" : "text-slate-400"
           }`}
         >
           {new Date(data.timeStamp.seconds * 1000).toLocaleDateString()}
         </h2>
       </div>
 
-      <div className="flex flex-wrap gap-2">
-        {data.tags.map((singleTag) => {
-          return <Tag key={singleTag} data={singleTag} />;
-        })}
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center pt-1">
+        <div className="flex gap-2 flex-wrap">
+          {data.tags.map((singleTag) => {
+            return <Tag key={singleTag} data={singleTag} />;
+          })}
+        </div>
+        <h3 className="text-sm font-medium text-slate-400 pl-[1px] md:pl-0 pt-1 md:pt-0">
+          {data.minRead} min
+        </h3>
       </div>
       <p
-        className={`break-all font-medium text-black pt-2 text-sm md:text-base ${
+        className={`break-words font-medium text-black pt-2 text-sm md:text-base ${
           !isDarkMode ? "text-slate-300" : "text-black"
         }`}
       >
         {data.description.slice(0, 400) + "..." || data.description}
       </p>
       <button
-        className="rounded p-2 mt-2 bg-slate-300 hover:bg-slate-400 text-slate-600 font-medium"
+        className="rounded p-2 mt-3 bg-slate-300 hover:bg-slate-400 text-slate-600 font-medium"
         onClick={handleReadMore}
       >
         Read more
