@@ -41,7 +41,7 @@ const Modal = ({ setIsModalOpen }) => {
             Leave a message
           </h1>
           <form
-            className="flex flex-col w-full gap-5 lg:px-32"
+            className="flex flex-col w-full gap-5 lg:px-5"
             ref={formRef}
             onSubmit={handleSubmit}
           >

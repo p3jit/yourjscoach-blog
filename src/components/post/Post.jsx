@@ -2,11 +2,13 @@ import Markdown from "markdown-to-jsx";
 import { useEffect, useState } from "react";
 import { Code } from "../code/Code";
 import { Heading } from "../heading/Heading";
+import ImageTag from "../imageTag/ImageTag";
 import NormalText from "../normalText/NormalText";
+import PostTitle from "../PostTitle/PostTitle";
 import { RoundedText } from "../roundedText/RoundedText";
 import SkeletonLoaderPost from "../skeletonLoaderPost/SkeletonLoaderPost";
 import Tag from "../tag/Tag";
-import Title from "../title/Title";
+import VideoTag from "../videoTag/VideoTag";
 
 export const Post = ({ data }) => {
   const [postContent, setPostContent] = useState("");
@@ -30,9 +32,9 @@ export const Post = ({ data }) => {
     <>
       {!isLoading ? (
         <article className="flex flex-col gap-5">
-          <div className="flex flex-col gap-1">
-            <Title data={data.title} />
-            <div className="text-sm text-gray-400 flex gap-2 flex-wrap">
+          <div className="flex flex-col">
+            <PostTitle data={data.title} />
+            <div className="text-gray-400 flex gap-1 flex-wrap">
               {data.tags.map((tag) => {
                 return <Tag data={tag} key={tag} />;
               })}
@@ -45,6 +47,8 @@ export const Post = ({ data }) => {
                 Heading: { component: Heading },
                 RoundedText: { component: RoundedText },
                 NormalText: { component: NormalText },
+                ImageTag: { component: ImageTag },
+                VideoTag: { component: VideoTag },
               },
             }}
           >

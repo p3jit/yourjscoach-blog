@@ -11,6 +11,7 @@ const PostDataContext = ({ children }) => {
   const [searchFilter, setSearchFilter] = useState([]);
   const [searchData, setSearchData] = useState([]);
   const [fetchedTags, setFetchedTags] = useState([]);
+  const [isSearching, setIsSearching] = useState(true);
 
   const fetchPostData = async () => {
     const value = [];
@@ -21,9 +22,8 @@ const PostDataContext = ({ children }) => {
     await setPostData(value);
     let sortedValue = new Array(...value);
     sortedValue.sort((a, b) => b.timeStamp - a.timeStamp).slice(0, 2);
-    sortedValue = [sortedValue[0], sortedValue[1]];
-    await setlatestPostData(sortedValue);
-    await setSearchData(value);
+    await setlatestPostData([sortedValue[0], sortedValue[1]]);
+    await setSearchData(sortedValue);
   };
 
   const fetchTagsData = async () => {
@@ -33,12 +33,11 @@ const PostDataContext = ({ children }) => {
       value.push(doc.data());
     });
     await setFetchedTags(value[0].tags);
+    setIsSearching(false);
   };
 
   const normalSearch = (query) => {
-    if (!query.length) return;
     let result = postData.filter((singlePost) => {
-      console.log(singlePost.tags.join("-"));
       return (
         singlePost.title.toLowerCase().includes(query) ||
         singlePost.tags.includes(query)
@@ -48,13 +47,18 @@ const PostDataContext = ({ children }) => {
     if (searchFilter.length) {
     }
     setSearchData(result);
+    setIsSearching(false);
   };
 
   const debouncedSearch = useDebounce(normalSearch, 1000);
 
   useEffect(() => {
-    fetchPostData();
-    fetchTagsData();
+    try {
+      fetchPostData();
+      fetchTagsData();
+    } catch (err) {
+      console.log(err);
+    }
   }, []);
 
   const includeFilters = async () => {
@@ -80,7 +84,7 @@ const PostDataContext = ({ children }) => {
       } else if (!ans.length && searchFilter.length) {
         setSearchData([]);
       } else {
-        setSearchData(postData);
+        setSearchData(postData.sort((a, b) => b.timeStamp - a.timeStamp));
       }
     }
     triggerSearch();
@@ -97,6 +101,8 @@ const PostDataContext = ({ children }) => {
         searchData,
         setSearchData,
         fetchedTags,
+        isSearching,
+        setIsSearching,
       }}
     >
       {children}
