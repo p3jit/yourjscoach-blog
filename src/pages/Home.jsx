@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useRef, useState } from "react";
 import PostCard from "../components/postCard/PostCard";
 import SearchTag from "../components/searchTag/SearchTag";
 import SkeletonLoaderLatestPost from "../components/skeletonLoaderLatestPost/SkeletonLoaderLatestPost";
@@ -19,12 +19,26 @@ const Home = () => {
     setIsSearching,
   } = useContext(PostDataProvider);
 
+  const [showClear, setShowClear] = useState(false);
+  const searchRef = useRef();
+
   const { isDarkMode } = useContext(DarkModeProvider);
 
   const triggerSearch = (e) => {
     const query = e.target.value;
     setIsSearching(true);
     debouncedSearch(query);
+    if (query.length) {
+      setShowClear(true);
+    } else {
+      setShowClear(false);
+    }
+  };
+
+  const handleClear = () => {
+    searchRef.current.value = "";
+    debouncedSearch("");
+    setShowClear(false);
   };
 
   return (
@@ -45,13 +59,22 @@ const Home = () => {
       <div className="flex justify-center items-center relative">
         <input
           type="text"
+          ref={searchRef}
           spellCheck="false"
-          className={`bg-slate-100 outline outline-3 w-full outline-slate-200 rounded-md py-2 pr-3 pl-10 font-medium ${
+          className={`bg-slate-100 outline outline-3 w-full outline-slate-200 rounded-md py-2 pr-10 pl-10 font-medium ${
             isDarkMode ? "outline-slate-200" : "outline-none"
           }`}
           onChange={triggerSearch}
         />
         <MdSearch className="absolute left-3 text-slate-400 text-2xl" />
+        {showClear ? (
+          <MdClose
+            className="absolute right-3 text-2xl text-slate-400"
+            onClick={handleClear}
+          />
+        ) : (
+          ""
+        )}
       </div>
       <div className="flex gap-3 flex-wrap">
         {fetchedTags.length ? (
