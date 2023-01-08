@@ -7,7 +7,7 @@ const PostCard = ({ data }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
   const navigate = useNavigate();
   const handleReadMore = () => {
-    navigate(`/${data.id}`);
+    navigate(`/${data.displayId}`);
   };
   return (
     // outline outline-1 outline-slate-300

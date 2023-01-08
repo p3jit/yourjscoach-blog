@@ -8,7 +8,7 @@ const Error = () => {
   return (
     <div className="h-[86vh] w-full flex justify-center items-center flex-col">
       <TbError404
-        className={`text-8xl ${!isDarkMode ? "text-white" : "text-slate-800"}`}
+        className={`text-9xl ${!isDarkMode ? "text-white" : "text-slate-800"}`}
       />
       <p
         className={`font-medium text-2xl ${

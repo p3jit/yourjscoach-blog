@@ -11,7 +11,9 @@ const SinglePost = () => {
   useEffect(() => {
     const pathName = location.pathname.split("/")[1];
     if (postData.length) {
-      const foundPostData = postData.find((elem) => elem.id === pathName);
+      const foundPostData = postData.find(
+        (elem) => elem.displayId === pathName
+      );
       if (foundPostData) {
         setCurrPost(foundPostData);
       } else {

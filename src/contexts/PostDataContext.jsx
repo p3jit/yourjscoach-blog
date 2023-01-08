@@ -11,6 +11,7 @@ const PostDataContext = ({ children }) => {
   const [searchFilter, setSearchFilter] = useState([]);
   const [searchData, setSearchData] = useState([]);
   const [fetchedTags, setFetchedTags] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   const fetchPostData = async () => {
     const value = [];
@@ -35,9 +36,7 @@ const PostDataContext = ({ children }) => {
   };
 
   const normalSearch = (query) => {
-    if (!query.length) return;
     let result = postData.filter((singlePost) => {
-      console.log(singlePost.tags.join("-"));
       return (
         singlePost.title.toLowerCase().includes(query) ||
         singlePost.tags.includes(query)
@@ -47,6 +46,7 @@ const PostDataContext = ({ children }) => {
     if (searchFilter.length) {
     }
     setSearchData(result);
+    setIsSearching(false);
   };
 
   const debouncedSearch = useDebounce(normalSearch, 1000);
@@ -96,6 +96,8 @@ const PostDataContext = ({ children }) => {
         searchData,
         setSearchData,
         fetchedTags,
+        isSearching,
+        setIsSearching,
       }}
     >
       {children}

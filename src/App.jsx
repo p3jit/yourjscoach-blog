@@ -9,10 +9,15 @@ import Home from "./pages/Home.jsx";
 import SinglePost from "./pages/SinglePost.jsx";
 import { exampleFetch } from "./data/postData.js";
 import { Post } from "./components/post/Post.jsx";
+import { MdFeedback } from "react-icons/md";
 
 function App() {
   const { isModalOpen, setIsModalOpen } = useContext(ModalProvider);
   const { isDarkMode } = useContext(DarkModeProvider);
+
+  const toggleModalOpen = () => {
+    setIsModalOpen(true);
+  };
 
   return (
     <div
@@ -29,9 +34,16 @@ function App() {
         <Route path="/:id" element={<SinglePost />}></Route>
       </Routes>
       {isModalOpen ? <Modal setIsModalOpen={setIsModalOpen} /> : ""}
-      {/* <div className="flex justify-center  w-full">
-        <h1 className="text-slate-400 text-lg">Made with ❤️ in India</h1>
-      </div> */}
+      <div className="flex justify-between items-center w-full">
+        <h1 className="text-slate-400 text-sm">Made with ❤️ in India</h1>
+        <button
+          className="bg-slate-300 hover:bg-slate-400 md:px-3 p-2 md:py-2 text-sm font-medium rounded text-gray-900 flex items-center gap-2"
+          onClick={toggleModalOpen}
+        >
+          <MdFeedback className="text-sm font-medium mt-1 text-slate-700" />
+          Contact
+        </button>
+      </div>
     </div>
   );
 }

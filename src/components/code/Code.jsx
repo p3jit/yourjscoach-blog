@@ -13,7 +13,6 @@ export const Code = ({ children, language }) => {
 
   const isTrue = window.innerWidth <= 768;
 
-  console.log(isMobile);
   return (
     <>
       <div className="py-2">
@@ -26,6 +25,7 @@ export const Code = ({ children, language }) => {
             borderRadius: "6px",
             lineHeight: "1.7rem",
             padding: "1rem",
+            backgroundColor: `${!isDarkMode ? "#e2e8f0" : "#0f172a"}`,
           }}
         >
           {children}
