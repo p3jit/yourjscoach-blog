@@ -11,7 +11,7 @@ const PostDataContext = ({ children }) => {
   const [searchFilter, setSearchFilter] = useState([]);
   const [searchData, setSearchData] = useState([]);
   const [fetchedTags, setFetchedTags] = useState([]);
-  const [isSearching, setIsSearching] = useState(false);
+  const [isSearching, setIsSearching] = useState(true);
 
   const fetchPostData = async () => {
     const value = [];
@@ -33,6 +33,7 @@ const PostDataContext = ({ children }) => {
       value.push(doc.data());
     });
     await setFetchedTags(value[0].tags);
+    setIsSearching(false);
   };
 
   const normalSearch = (query) => {
@@ -52,8 +53,12 @@ const PostDataContext = ({ children }) => {
   const debouncedSearch = useDebounce(normalSearch, 1000);
 
   useEffect(() => {
-    fetchPostData();
-    fetchTagsData();
+    try {
+      fetchPostData();
+      fetchTagsData();
+    } catch (err) {
+      console.log(err);
+    }
   }, []);
 
   const includeFilters = async () => {
