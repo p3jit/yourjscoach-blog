@@ -7,7 +7,7 @@ const PostTitle = ({ data }) => {
     <div
       className={`font-black ${
         isDarkMode ? "text-gray-800" : "text-white"
-      } text-4xl md:text-6xl pb-3 break-words`}
+      } text-4xl md:text-6xl pb-3 break-words leading-9 md:leading-[3.2rem]`}
     >
       {data}
     </div>

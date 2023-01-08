@@ -39,6 +39,7 @@ const Home = () => {
     searchRef.current.value = "";
     debouncedSearch("");
     setShowClear(false);
+    setIsSearching(true);
   };
 
   return (

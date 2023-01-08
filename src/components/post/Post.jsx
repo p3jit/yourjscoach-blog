@@ -34,7 +34,7 @@ export const Post = ({ data }) => {
         <article className="flex flex-col gap-5">
           <div className="flex flex-col">
             <PostTitle data={data.title} />
-            <div className="text-sm text-gray-400 flex gap-2 flex-wrap">
+            <div className="text-gray-400 flex gap-1 flex-wrap">
               {data.tags.map((tag) => {
                 return <Tag data={tag} key={tag} />;
               })}

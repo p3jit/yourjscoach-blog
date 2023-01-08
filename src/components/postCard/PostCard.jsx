@@ -18,7 +18,7 @@ const PostCard = ({ data }) => {
     >
       <div className="flex justify-between">
         <div
-          className={`font-bold text-xl md:text-2xl ${
+          className={`font-bold leading-6 text-xl md:text-2xl ${
             !isDarkMode ? "text-slate-200" : "text-black"
           }`}
         >
@@ -34,7 +34,7 @@ const PostCard = ({ data }) => {
       </div>
 
       <div className="flex flex-col md:flex-row md:justify-between md:items-center pt-1">
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex gap-1 md:gap-2 flex-wrap">
           {data.tags.map((singleTag) => {
             return <Tag key={singleTag} data={singleTag} />;
           })}
