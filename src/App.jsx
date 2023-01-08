@@ -21,7 +21,7 @@ function App() {
 
   return (
     <div
-      className={`font-roboto min-h-screen px-5 py-5 md:px-24 xl:px-40 2xl:px-[32em] flex flex-col gap-10 relative ${
+      className={`font-roboto min-h-screen px-5 py-5 md:px-24 xl:px-40 2xl:px-[30em] flex flex-col gap-10 relative ${
         isDarkMode ? "bg-white" : "bg-slate-900"
       }`}
     >
