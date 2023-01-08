@@ -6,7 +6,7 @@ const NormalText = ({ children }) => {
   return (
     <p
       className={`leading-7 font-medium ${
-        isDarkMode ? "text-gray-600" : "text-gray-200"
+        isDarkMode ? "text-gray-600" : "text-gray-300"
       }`}
     >
       {children}
