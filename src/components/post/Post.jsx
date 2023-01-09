@@ -8,6 +8,7 @@ import PostTitle from "../PostTitle/PostTitle";
 import { RoundedText } from "../roundedText/RoundedText";
 import SkeletonLoaderPost from "../skeletonLoaderPost/SkeletonLoaderPost";
 import Tag from "../tag/Tag";
+import UrlTag from "../urlTag/UrlTag";
 import VideoTag from "../videoTag/VideoTag";
 
 export const Post = ({ data }) => {
@@ -49,6 +50,9 @@ export const Post = ({ data }) => {
                 NormalText: { component: NormalText },
                 ImageTag: { component: ImageTag },
                 VideoTag: { component: VideoTag },
+                UrlTag: {
+                  component: UrlTag,
+                },
               },
             }}
           >

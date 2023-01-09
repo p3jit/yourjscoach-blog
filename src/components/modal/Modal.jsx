@@ -3,11 +3,12 @@ import { MdClose } from "react-icons/md";
 import { BsLinkedin } from "react-icons/bs";
 import { MdEmail } from "react-icons/md";
 const Modal = ({ setIsModalOpen }) => {
-  const formRef = useRef();
+  // const formRef = useRef();
 
   const handleOutsideClick = (e) => {
+    console.log(e);
     if (e.target.id === "modal-outside") {
-      setIsModalOpen(false);
+      toggleModalOpen();
     }
   };
 
@@ -15,16 +16,16 @@ const Modal = ({ setIsModalOpen }) => {
     setIsModalOpen(false);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    e.target.reset();
-  };
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   e.target.reset();
+  // };
 
   return (
     <>
       <div
         className="fixed bg-gray-700 w-screen h-screen top-0 left-0 bg-opacity-90 flex flex-col backdrop-blur-sm z-1 overflow-hidden"
-        id="modal-outside relative"
+        id="modal-outside"
         onClick={handleOutsideClick}
       >
         {/* Close Button */}
@@ -53,9 +54,14 @@ const Modal = ({ setIsModalOpen }) => {
               gain knowledge and crack interviews in the long run.
             </p>
             <div className="flex gap-5 items-center self-start">
-              <p>Connect with me on:</p>
-              <MdEmail className="text-3xl cursor-pointer" />
-              <BsLinkedin className="text-2xl cursor-pointer" />
+              <p>Connect me on:</p>
+              <a href="mailto:prithi.das.007@gmail.com">
+                <MdEmail className="text-3xl cursor-pointer" />
+              </a>
+
+              <a href="https://www.linkedin.com/in/p3jit/" target={"_blank"}>
+                <BsLinkedin className="text-2xl cursor-pointer" />
+              </a>
             </div>
           </div>
           {/* <h1 className="text-xl md:text-3xl lg:text-4xl text-slate-200 self-center">
