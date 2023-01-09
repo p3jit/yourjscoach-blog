@@ -9,7 +9,7 @@ import Home from "./pages/Home.jsx";
 import SinglePost from "./pages/SinglePost.jsx";
 import { exampleFetch } from "./data/postData.js";
 import { Post } from "./components/post/Post.jsx";
-import { MdFeedback } from "react-icons/md";
+import { MdInfo } from "react-icons/md";
 
 function App() {
   const { isModalOpen, setIsModalOpen } = useContext(ModalProvider);
@@ -40,8 +40,8 @@ function App() {
           className="bg-slate-300 hover:bg-slate-400 md:px-3 p-2 md:py-2 text-sm font-medium rounded text-gray-900 flex items-center gap-2"
           onClick={toggleModalOpen}
         >
-          <MdFeedback className="text-sm font-medium mt-1 text-slate-700" />
-          Contact
+          <MdInfo className="text-sm font-medium  text-slate-700" />
+          About
         </button>
       </div>
     </div>
