@@ -4,7 +4,6 @@ import { BsLinkedin } from "react-icons/bs";
 import { MdEmail } from "react-icons/md";
 const Modal = ({ setIsModalOpen }) => {
   const handleOutsideClick = (e) => {
-    console.log(e);
     if (e.target.id === "modal-outside") {
       toggleModalOpen();
     }
