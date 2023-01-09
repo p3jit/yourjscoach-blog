@@ -3,8 +3,6 @@ import { MdClose } from "react-icons/md";
 import { BsLinkedin } from "react-icons/bs";
 import { MdEmail } from "react-icons/md";
 const Modal = ({ setIsModalOpen }) => {
-  // const formRef = useRef();
-
   const handleOutsideClick = (e) => {
     console.log(e);
     if (e.target.id === "modal-outside") {
@@ -15,11 +13,6 @@ const Modal = ({ setIsModalOpen }) => {
   const toggleModalOpen = () => {
     setIsModalOpen(false);
   };
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   e.target.reset();
-  // };
 
   return (
     <>
@@ -64,54 +57,6 @@ const Modal = ({ setIsModalOpen }) => {
               </a>
             </div>
           </div>
-          {/* <h1 className="text-xl md:text-3xl lg:text-4xl text-slate-200 self-center">
-            Feel free to leave a message
-          </h1>
-          <form
-            className="flex flex-col w-full gap-5 md:px-24"
-            ref={formRef}
-            onSubmit={handleSubmit}
-          >
-            <div className="">
-              <label htmlFor="name"></label>
-              <input
-                type="text"
-                placeholder="Name"
-                id="name"
-                className="w-full rounded-md bg-slate-300 p-3 outline-none"
-              />
-            </div>
-            <div>
-              <label htmlFor="email"></label>
-              <input
-                type="email"
-                placeholder="Email"
-                id="email"
-                className="w-full rounded-md bg-slate-300 p-3 outline-none"
-              />
-            </div>
-            <div>
-              <label htmlFor="subject"></label>
-              <input
-                type="text"
-                placeholder="Subject"
-                id="subject"
-                className="w-full rounded-md bg-slate-300 p-3 outline-none"
-              />
-            </div>
-            <textarea
-              name="message"
-              id="message"
-              className="w-full rounded-md bg-slate-300 p-3 min-h-[100px] max-h-[300px] outline-none"
-              placeholder="Message"
-            ></textarea>
-            <button
-              type="submit"
-              className="bg-slate-400 rounded-md p-2 text-slate-700 text-md md:text-lg font-medium"
-            >
-              Submit
-            </button>
-          </form> */}
         </div>
       </div>
     </>
