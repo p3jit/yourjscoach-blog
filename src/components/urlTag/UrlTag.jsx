@@ -1,9 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
+import { DarkModeProvider } from "../../contexts/DarkModeContext";
 
 const UrlTag = ({ children, data }) => {
+  const { isDarkMode } = useContext(DarkModeProvider);
   return (
     <a
-      className="underline italic font-medium text-lg"
+      className={`underline underline-offset-2 italic font-medium text-lg ${
+        !isDarkMode ? "text-white" : ""
+      }`}
       href={data}
       target="_blank"
     >
