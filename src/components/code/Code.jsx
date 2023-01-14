@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { LightAsync as SyntaxHighlighter } from "react-syntax-highlighter";
+import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
 import { hybrid } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
 import { useResponsive } from "../../hooks/useResponsive";
