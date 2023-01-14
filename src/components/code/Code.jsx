@@ -1,8 +1,9 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
-import { hybrid } from "react-syntax-highlighter/dist/cjs/styles/hljs";
+import { hybrid } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
 import { useResponsive } from "../../hooks/useResponsive";
+import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
 
 export const Code = ({ children, language }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
@@ -10,11 +11,15 @@ export const Code = ({ children, language }) => {
 
   const isTrue = window.innerWidth <= 768;
 
+  useEffect(() => {
+    SyntaxHighlighter.registerLanguage("json", json);
+  }, []);
+
   return (
     <>
       <div>
         <SyntaxHighlighter
-          language={language}
+          language="JSON"
           style={isDarkMode ? hybrid : hybrid}
           customStyle={{
             fontSize: `${isTrue || isMobile ? "0.9rem" : "1rem"}`,
