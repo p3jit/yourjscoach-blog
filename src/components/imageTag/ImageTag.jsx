@@ -5,7 +5,7 @@ const ImageTag = ({ children }) => {
   console.log(isLoading);
 
   return (
-    <div className="w-auto my-4">
+    <div className="w-auto">
       <img
         src={String(children[0].props.href)}
         alt="newImage"

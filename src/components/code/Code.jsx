@@ -1,9 +1,6 @@
 import { useContext } from "react";
 import { LightAsync as SyntaxHighlighter } from "react-syntax-highlighter";
-import {
-  anOldHope,
-  github,
-} from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { hybrid } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
 import { useResponsive } from "../../hooks/useResponsive";
 
@@ -15,20 +12,19 @@ export const Code = ({ children, language }) => {
 
   return (
     <>
-      <div className="py-2">
+      <div>
         <SyntaxHighlighter
           language={language}
-          style={isDarkMode ? anOldHope : github}
+          style={isDarkMode ? hybrid : hybrid}
           customStyle={{
             fontSize: `${isTrue || isMobile ? "0.9rem" : "1rem"}`,
             fontWeight: `${!isDarkMode ? "" : ""}`,
-            borderRadius: "6px",
-            lineHeight: "1.7rem",
-            padding: "1rem",
-            backgroundColor: `${!isDarkMode ? "#e2e8f0" : "#0f172a"}`,
+            borderRadius: "7px",
+            lineHeight: "1.54rem",
+            padding: "0px 16px",
           }}
         >
-          {children}
+          {`${children}`}
         </SyntaxHighlighter>
       </div>
     </>
