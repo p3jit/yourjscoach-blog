@@ -1,9 +1,8 @@
-import { useContext, useEffect } from "react";
-import { Light as SyntaxHighlighter } from "react-syntax-highlighter";
-import { hybrid } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { useContext } from "react";
+import { PrismAsync as SyntaxHighlighter } from "react-syntax-highlighter";
+import { coldarkDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
 import { useResponsive } from "../../hooks/useResponsive";
-import json from "react-syntax-highlighter/dist/esm/languages/hljs/json";
 
 export const Code = ({ children, language }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
@@ -11,19 +10,15 @@ export const Code = ({ children, language }) => {
 
   const isTrue = window.innerWidth <= 768;
 
-  useEffect(() => {
-    SyntaxHighlighter.registerLanguage("json", json);
-  }, []);
-
   return (
     <>
-      <div>
+      <div className={`rounded-lg ${isDarkMode ? "" : "ring ring-slate-400"}`}>
         <SyntaxHighlighter
-          language="JSON"
-          style={isDarkMode ? hybrid : hybrid}
+          language={language}
+          style={isDarkMode ? coldarkDark : coldarkDark}
           customStyle={{
             fontSize: `${isTrue || isMobile ? "0.9rem" : "1rem"}`,
-            fontWeight: `${!isDarkMode ? "" : ""}`,
+            fontWeight: "200",
             borderRadius: "7px",
             lineHeight: "1.54rem",
             padding: "0px 16px",
