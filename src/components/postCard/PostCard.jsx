@@ -10,7 +10,6 @@ const PostCard = ({ data }) => {
     navigate(`/${data.displayId}`);
   };
   return (
-    // outline outline-1 outline-slate-300
     <div
       className={`flex flex-col rounded p-4 outline outline-1 outline-slate-300  ${
         isDarkMode ? "" : ""
