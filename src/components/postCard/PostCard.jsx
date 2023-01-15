@@ -31,7 +31,7 @@ const PostCard = ({ data }) => {
           {data.title}
         </div>
         <h2
-          className={` text-sm font-medium w-3/12 md:text-base mt-1 text-right ${
+          className={` text-xs font-medium w-3/12 md:text-base mt-1 text-right ${
             !isDarkMode ? "text-white" : "text-slate-400"
           }`}
         >

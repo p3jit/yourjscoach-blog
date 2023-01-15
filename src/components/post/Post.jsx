@@ -1,4 +1,4 @@
-import loadable from "@loadable/component";
+import { lazy } from "@loadable/component";
 import Markdown from "markdown-to-jsx";
 import { useContext, useEffect, useState } from "react";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
@@ -6,13 +6,13 @@ import PostTitle from "../PostTitle/PostTitle";
 import SkeletonLoaderPost from "../skeletonLoaderPost/SkeletonLoaderPost";
 import Tag from "../tag/Tag";
 
-const LazyNewCode = loadable(() => import("../newCode/NewCode"));
-const LazyHeading = loadable(() => import("../heading/Heading"));
-const LazyRoundedText = loadable(() => import("../roundedText/RoundedText"));
-const LazyNormalText = loadable(() => import("../normalText/NormalText"));
-const LazyImageTag = loadable(() => import("../imageTag/ImageTag"));
-const LazyVideoTag = loadable(() => import("../videoTag/VideoTag"));
-const LazyUrlTag = loadable(() => import("../urlTag/UrlTag"));
+const LazyNewCode = lazy(() => import("../newCode/NewCode"));
+const LazyHeading = lazy(() => import("../heading/Heading"));
+const LazyRoundedText = lazy(() => import("../roundedText/RoundedText"));
+const LazyNormalText = lazy(() => import("../normalText/NormalText"));
+const LazyImageTag = lazy(() => import("../imageTag/ImageTag"));
+const LazyVideoTag = lazy(() => import("../videoTag/VideoTag"));
+const LazyUrlTag = lazy(() => import("../urlTag/UrlTag"));
 
 export const Post = ({ data }) => {
   const [postContent, setPostContent] = useState("");

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { TbError404 } from "react-icons/tb";
+import { IconError404 } from "@tabler/icons";
 import { Link } from "react-router-dom";
 import { DarkModeProvider } from "../contexts/DarkModeContext";
 
@@ -7,8 +7,9 @@ const Error = () => {
   const { isDarkMode } = useContext(DarkModeProvider);
   return (
     <div className="h-[86vh] w-full flex justify-center items-center flex-col">
-      <TbError404
-        className={`text-9xl ${!isDarkMode ? "text-white" : "text-slate-800"}`}
+      <IconError404
+        size={"7em"}
+        className={`${!isDarkMode ? "text-white" : "text-slate-800"}`}
       />
       <p
         className={`font-medium text-2xl ${

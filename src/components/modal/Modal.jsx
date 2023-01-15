@@ -1,6 +1,4 @@
-import { MdClose } from "react-icons/md";
-import { BsLinkedin } from "react-icons/bs";
-import { MdEmail } from "react-icons/md";
+import { IconX, IconMail, IconBrandLinkedin } from "@tabler/icons";
 const Modal = ({ setIsModalOpen }) => {
   const handleOutsideClick = (e) => {
     if (e.target.id === "modal-outside") {
@@ -24,7 +22,7 @@ const Modal = ({ setIsModalOpen }) => {
           className="text-white text-4xl pr-10 pt-5 self-end"
           onClick={toggleModalOpen}
         >
-          <MdClose />
+          <IconX />
         </button>
         {/* Contact Form */}
         <div
@@ -47,11 +45,19 @@ const Modal = ({ setIsModalOpen }) => {
             <div className="flex gap-5 items-center self-start">
               <p>Connect me on:</p>
               <a href="mailto:prithi.das.007@gmail.com">
-                <MdEmail className="text-3xl cursor-pointer" />
+                <IconMail
+                  size={"2em"}
+                  stroke={"1.7"}
+                  className="cursor-pointer"
+                />
               </a>
 
               <a href="https://www.linkedin.com/in/p3jit/" target={"_blank"}>
-                <BsLinkedin className="text-2xl cursor-pointer" />
+                <IconBrandLinkedin
+                  size={"2em"}
+                  stroke={"1.7"}
+                  className="cursor-pointer"
+                />
               </a>
             </div>
           </div>
