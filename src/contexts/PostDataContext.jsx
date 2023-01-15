@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useEffect, useState } from "react";
+import React, { createContext, useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebase";
 import useDebounce from "../hooks/useDebounce";
@@ -17,7 +17,9 @@ const PostDataContext = ({ children }) => {
     const value = [];
     const querySnapshot = await getDocs(collection(db, "post"));
     querySnapshot.forEach((doc) => {
-      value.push(doc.data());
+      let currData = doc.data();
+      currData.timeStamp = new Date(currData.timeStamp.seconds * 1000);
+      value.push(currData);
     });
     await setPostData(value);
     let sortedValue = new Array(...value);

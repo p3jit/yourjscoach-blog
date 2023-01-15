@@ -5,7 +5,7 @@ import Modal from "./components/modal/Modal.jsx";
 import { DarkModeProvider } from "./contexts/DarkModeContext.jsx";
 import { ModalProvider } from "./contexts/ModalContext.jsx";
 import { MdInfo } from "react-icons/md";
-import { BiLoaderAlt } from "react-icons/bi";
+import Loader from "./components/loader/Loader.jsx";
 
 const LazyError = lazy(() => import("./pages/Error"));
 const LazyHome = lazy(() => import("./pages/Home.jsx"));
@@ -25,14 +25,8 @@ function App() {
         isDarkMode ? "bg-white" : "bg-slate-900"
       }`}
     >
-      <Header setIsModalOpen={setIsModalOpen} />
-      <Suspense
-        fallback={
-          <div className="flex flex-col h-screen justify-center items-center">
-            <BiLoaderAlt className="animate-spin text-4xl" />
-          </div>
-        }
-      >
+      <Header />
+      <Suspense fallback={<Loader />}>
         <Routes>
           <Route path="/404" element={<LazyError />}></Route>
           <Route path="/" element={<LazyHome />}></Route>

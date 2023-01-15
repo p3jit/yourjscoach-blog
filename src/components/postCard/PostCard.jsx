@@ -9,26 +9,33 @@ const PostCard = ({ data }) => {
   const handleReadMore = () => {
     navigate(`/${data.displayId}`);
   };
+
+  const formatDate = (value) => {
+    let date = value;
+    const day = date.toLocaleString("default", { day: "2-digit" });
+    const month = date.toLocaleString("default", { month: "short" });
+    const year = date.toLocaleString("default", { year: "numeric" });
+    return `${day} ${month}, ${year}`;
+  };
+
   return (
     <div
-      className={`flex flex-col rounded p-4 outline outline-1 outline-slate-300  ${
-        isDarkMode ? "" : ""
-      }`}
+      className={`flex flex-col rounded p-4 outline outline-1 outline-slate-300`}
     >
-      <div className="flex justify-between">
+      <div className="flex justify-between itme">
         <div
-          className={`font-bold leading-6 text-xl md:text-2xl ${
+          className={`font-bold leading-6 text-xl w-8/12 md:w-auto md:text-2xl ${
             !isDarkMode ? "text-slate-200" : "text-black"
           }`}
         >
           {data.title}
         </div>
         <h2
-          className={` text-sm font-medium md:text-base mt-1 ${
+          className={` text-sm font-medium w-4/12 md:text-base mt-1 text-right ${
             !isDarkMode ? "text-white" : "text-slate-400"
           }`}
         >
-          {new Date(data.timeStamp.seconds * 1000).toLocaleDateString()}
+          {formatDate(data.timeStamp)}
         </h2>
       </div>
 
