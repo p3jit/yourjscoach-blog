@@ -18,7 +18,7 @@ function App() {
 
   return (
     <div
-      className={`font-roboto min-h-screen px-5 py-5 md:px-16 xl:px-40 2xl:px-[30em] flex flex-col gap-10 relative transition-all ${
+      className={`font-roboto min-h-screen px-5 py-5 md:px-16 xl:px-40 2xl:px-[25em] flex flex-col gap-10 relative transition-all ${
         isDarkMode ? "bg-white" : "bg-slate-900"
       }`}
     >
@@ -32,7 +32,13 @@ function App() {
         </Routes>
       </Suspense>
 
-      {isModalOpen ? <Modal setIsModalOpen={setIsModalOpen} /> : ""}
+      {isModalOpen ? (
+        <Suspense fallback={<Loader />}>
+          <Modal setIsModalOpen={setIsModalOpen} />
+        </Suspense>
+      ) : (
+        ""
+      )}
       <Footer setIsModalOpen={setIsModalOpen} />
     </div>
   );
