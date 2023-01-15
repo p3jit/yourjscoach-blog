@@ -1,16 +1,18 @@
+import loadable from "@loadable/component";
 import Markdown from "markdown-to-jsx";
 import { useContext, useEffect, useState } from "react";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
-import { Heading } from "../heading/Heading";
-import ImageTag from "../imageTag/ImageTag";
-import NewCode from "../newCode/NewCode";
-import NormalText from "../normalText/NormalText";
 import PostTitle from "../PostTitle/PostTitle";
-import { RoundedText } from "../roundedText/RoundedText";
 import SkeletonLoaderPost from "../skeletonLoaderPost/SkeletonLoaderPost";
 import Tag from "../tag/Tag";
-import UrlTag from "../urlTag/UrlTag";
-import VideoTag from "../videoTag/VideoTag";
+
+const LazyNewCode = loadable(() => import("../newCode/NewCode"));
+const LazyHeading = loadable(() => import("../heading/Heading"));
+const LazyRoundedText = loadable(() => import("../roundedText/RoundedText"));
+const LazyNormalText = loadable(() => import("../normalText/NormalText"));
+const LazyImageTag = loadable(() => import("../imageTag/ImageTag"));
+const LazyVideoTag = loadable(() => import("../videoTag/VideoTag"));
+const LazyUrlTag = loadable(() => import("../urlTag/UrlTag"));
 
 export const Post = ({ data }) => {
   const [postContent, setPostContent] = useState("");
@@ -70,14 +72,14 @@ export const Post = ({ data }) => {
           <Markdown
             options={{
               overrides: {
-                Syntax: { component: NewCode },
-                Heading: { component: Heading },
-                RoundedText: { component: RoundedText },
-                NormalText: { component: NormalText },
-                ImageTag: { component: ImageTag },
-                VideoTag: { component: VideoTag },
+                Syntax: { component: LazyNewCode },
+                Heading: { component: LazyHeading },
+                RoundedText: { component: LazyRoundedText },
+                NormalText: { component: LazyNormalText },
+                ImageTag: { component: LazyImageTag },
+                VideoTag: { component: LazyVideoTag },
                 UrlTag: {
-                  component: UrlTag,
+                  component: LazyUrlTag,
                 },
               },
             }}

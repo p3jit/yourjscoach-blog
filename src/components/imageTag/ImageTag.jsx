@@ -2,8 +2,6 @@ import React, { useState } from "react";
 
 const ImageTag = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
-  console.log(isLoading);
-
   return (
     <div className="w-auto">
       <img

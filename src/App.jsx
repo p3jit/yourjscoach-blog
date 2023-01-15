@@ -1,15 +1,16 @@
-import { useContext, lazy, Suspense } from "react";
+import { useContext, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Header } from "./components/header/header.jsx";
-import Modal from "./components/modal/Modal.jsx";
 import { DarkModeProvider } from "./contexts/DarkModeContext.jsx";
 import { ModalProvider } from "./contexts/ModalContext.jsx";
 import Loader from "./components/loader/Loader.jsx";
 import Footer from "./components/footer/Footer.jsx";
+import loadable from "@loadable/component";
 
-const LazyError = lazy(() => import("./pages/Error"));
-const LazyHome = lazy(() => import("./pages/Home.jsx"));
-const LazySinglePost = lazy(() => import("./pages/SinglePost.jsx"));
+const LazyError = loadable(() => import("./pages/Error"));
+const LazyHome = loadable(() => import("./pages/Home.jsx"));
+const LazySinglePost = loadable(() => import("./pages/SinglePost.jsx"));
+const LazyModal = loadable(() => import("./components/modal/Modal.jsx"));
 
 function App() {
   const { isModalOpen, setIsModalOpen } = useContext(ModalProvider);
@@ -17,7 +18,7 @@ function App() {
 
   return (
     <div
-      className={`font-roboto min-h-screen px-5 py-5 md:px-16 xl:px-40 2xl:px-[30em] flex flex-col gap-10 relative ${
+      className={`font-roboto min-h-screen px-5 py-5 md:px-16 xl:px-40 2xl:px-[30em] flex flex-col gap-10 relative transition-all ${
         isDarkMode ? "bg-white" : "bg-slate-900"
       }`}
     >
@@ -31,7 +32,7 @@ function App() {
         </Routes>
       </Suspense>
 
-      {isModalOpen ? <Modal setIsModalOpen={setIsModalOpen} /> : ""}
+      {isModalOpen ? <LazyModal setIsModalOpen={setIsModalOpen} /> : ""}
       <Footer setIsModalOpen={setIsModalOpen} />
     </div>
   );
