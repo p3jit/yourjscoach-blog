@@ -4,13 +4,11 @@ import { Header } from "./components/header/header.jsx";
 import Modal from "./components/modal/Modal.jsx";
 import { DarkModeProvider } from "./contexts/DarkModeContext.jsx";
 import { ModalProvider } from "./contexts/ModalContext.jsx";
-import { exampleFetch } from "./data/postData.js";
 import { MdInfo } from "react-icons/md";
 import { BiLoaderAlt } from "react-icons/bi";
 
 const LazyError = lazy(() => import("./pages/Error"));
 const LazyHome = lazy(() => import("./pages/Home.jsx"));
-const LazyPost = lazy(() => import("./components/post/Post.jsx"));
 const LazySinglePost = lazy(() => import("./pages/SinglePost.jsx"));
 
 function App() {
@@ -39,10 +37,6 @@ function App() {
           <Route path="/404" element={<LazyError />}></Route>
           <Route path="/" element={<LazyHome />}></Route>
           <Route path="/home" element={<LazyHome />}></Route>
-          <Route
-            path="/test"
-            element={<LazyPost data={exampleFetch[0]} />}
-          ></Route>
           <Route path="/:id" element={<LazySinglePost />}></Route>
         </Routes>
       </Suspense>
