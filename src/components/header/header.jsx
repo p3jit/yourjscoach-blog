@@ -1,10 +1,8 @@
-import { MdDarkMode } from "react-icons/md";
-import { MdLightMode } from "react-icons/md";
 import { useContext } from "react";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
 import { useNavigate } from "react-router-dom";
 import { PostDataProvider } from "../../contexts/PostDataContext";
-import { TbBrandJavascript } from "react-icons/tb";
+import { IconBrandJavascript, IconMoon, IconSun } from "@tabler/icons";
 
 export const Header = () => {
   const { isDarkMode, setIsDarkMode } = useContext(DarkModeProvider);
@@ -27,10 +25,10 @@ export const Header = () => {
     <>
       <nav className="flex justify-between text-xl items-center">
         <div className="flex items-center gap-2">
-          <TbBrandJavascript
-            className={`text-4xl md:text-5xl ${
-              isDarkMode ? "text-gray-800" : "text-white"
-            }`}
+          <IconBrandJavascript
+            size={"2em"}
+            stroke={"1.8"}
+            className={` ${isDarkMode ? "text-gray-800" : "text-white"}`}
           />
           <h2
             onClick={handleHomeRedirect}
@@ -44,9 +42,9 @@ export const Header = () => {
         <div className="flex gap-4 md:gap-8">
           <button className="text-2xl md:text-3xl" onClick={handleModeToggle}>
             {isDarkMode ? (
-              <MdDarkMode className="text-slate-800" />
+              <IconMoon className="text-slate-800" />
             ) : (
-              <MdLightMode className="text-white" />
+              <IconSun className="text-white" />
             )}
           </button>
         </div>

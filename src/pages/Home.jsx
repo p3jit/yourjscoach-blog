@@ -4,9 +4,7 @@ import SearchTag from "../components/searchTag/SearchTag";
 import SkeletonLoaderLatestPost from "../components/skeletonLoaderLatestPost/SkeletonLoaderLatestPost";
 import Title from "../components/title/Title";
 import { PostDataProvider } from "../contexts/PostDataContext";
-import { MdSearch } from "react-icons/md";
-import { FaSadCry } from "react-icons/fa";
-import { MdClose } from "react-icons/md";
+import { IconSearch, IconMoodCry, IconX } from "@tabler/icons";
 import { DarkModeProvider } from "../contexts/DarkModeContext";
 
 const Home = () => {
@@ -67,10 +65,10 @@ const Home = () => {
           }`}
           onChange={triggerSearch}
         />
-        <MdSearch className="absolute left-3 text-slate-400 text-2xl" />
+        <IconSearch className="absolute left-3 text-slate-400 text-2xl" />
         {showClear ? (
-          <MdClose
-            className="absolute right-3 text-2xl text-slate-400"
+          <IconX
+            className="absolute right-3 text-2xl text-slate-400 cursor-pointer"
             onClick={handleClear}
           />
         ) : (
@@ -106,7 +104,7 @@ const Home = () => {
         </div>
       ) : (
         <div className="flex flex-col gap-5 justify-center items-center pt-32">
-          <FaSadCry className="text-8xl text-slate-400" />
+          <IconMoodCry className="text-slate-400" size={"3em"} />
           <h3 className="font-medium text-2xl text-slate-400">Not found</h3>
         </div>
       )}
