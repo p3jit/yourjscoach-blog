@@ -24,14 +24,14 @@ const PostCard = ({ data }) => {
     >
       <div className="flex justify-between itme">
         <div
-          className={`font-bold leading-6 text-xl w-8/12 md:w-auto md:text-2xl ${
+          className={`font-bold leading-6 text-xl w-9/12 md:text-2xl ${
             !isDarkMode ? "text-slate-200" : "text-black"
           }`}
         >
           {data.title}
         </div>
         <h2
-          className={` text-sm font-medium w-4/12 md:text-base mt-1 text-right ${
+          className={` text-sm font-medium w-3/12 md:text-base mt-1 text-right ${
             !isDarkMode ? "text-white" : "text-slate-400"
           }`}
         >
