@@ -1,14 +1,12 @@
 import { MdDarkMode } from "react-icons/md";
 import { MdLightMode } from "react-icons/md";
-import { BsCodeSlash } from "react-icons/bs";
-import { MdFeedback } from "react-icons/md";
 import { useContext } from "react";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
 import { useNavigate } from "react-router-dom";
 import { PostDataProvider } from "../../contexts/PostDataContext";
 import { TbBrandJavascript } from "react-icons/tb";
 
-export const Header = ({ setIsModalOpen }) => {
+export const Header = () => {
   const { isDarkMode, setIsDarkMode } = useContext(DarkModeProvider);
   const { postData, setSearchData, setSearchFilter } =
     useContext(PostDataProvider);
@@ -23,10 +21,6 @@ export const Header = ({ setIsModalOpen }) => {
     navigate("/home");
     setSearchData(postData.sort((a, b) => b.timeStamp - a.timeStamp));
     setSearchFilter([]);
-  };
-
-  const toggleModalOpen = () => {
-    setIsModalOpen(true);
   };
 
   return (
@@ -55,13 +49,6 @@ export const Header = ({ setIsModalOpen }) => {
               <MdLightMode className="text-white" />
             )}
           </button>
-          {/* <button
-            className="bg-slate-300 hover:bg-slate-400 md:px-3 p-2 md:py-2 text-sm md:text-lg font-medium rounded text-gray-900 flex items-center gap-2"
-            onClick={toggleModalOpen}
-          >
-            <MdFeedback className="text-xl font-medium mt-1 text-slate-700" />
-            Contact
-          </button> */}
         </div>
       </nav>
     </>
