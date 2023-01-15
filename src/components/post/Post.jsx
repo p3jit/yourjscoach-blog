@@ -50,6 +50,8 @@ export const Post = ({ data }) => {
               <img
                 src={"./dp.jpeg"}
                 alt="author"
+                width={"120px"}
+                height={"120px"}
                 className="w-10 rounded-full"
                 loading="lazy"
               />
