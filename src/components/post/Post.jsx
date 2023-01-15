@@ -1,8 +1,8 @@
 import Markdown from "markdown-to-jsx";
 import { useEffect, useState } from "react";
-import { Code } from "../code/Code";
 import { Heading } from "../heading/Heading";
 import ImageTag from "../imageTag/ImageTag";
+import NewCode from "../newCode/NewCode";
 import NormalText from "../normalText/NormalText";
 import PostTitle from "../PostTitle/PostTitle";
 import { RoundedText } from "../roundedText/RoundedText";
@@ -44,7 +44,7 @@ export const Post = ({ data }) => {
           <Markdown
             options={{
               overrides: {
-                Syntax: { component: Code },
+                Syntax: { component: NewCode },
                 Heading: { component: Heading },
                 RoundedText: { component: RoundedText },
                 NormalText: { component: NormalText },

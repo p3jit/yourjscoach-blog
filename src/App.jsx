@@ -1,15 +1,15 @@
-import { useContext } from "react";
+import { useContext, lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Header } from "./components/header/header.jsx";
 import Modal from "./components/modal/Modal.jsx";
 import { DarkModeProvider } from "./contexts/DarkModeContext.jsx";
 import { ModalProvider } from "./contexts/ModalContext.jsx";
-import Error from "./pages/Error.jsx";
-import Home from "./pages/Home.jsx";
-import SinglePost from "./pages/SinglePost.jsx";
-import { exampleFetch } from "./data/postData.js";
-import { Post } from "./components/post/Post.jsx";
 import { MdInfo } from "react-icons/md";
+import { BiLoaderAlt } from "react-icons/bi";
+
+const LazyError = lazy(() => import("./pages/Error"));
+const LazyHome = lazy(() => import("./pages/Home.jsx"));
+const LazySinglePost = lazy(() => import("./pages/SinglePost.jsx"));
 
 function App() {
   const { isModalOpen, setIsModalOpen } = useContext(ModalProvider);
@@ -26,13 +26,21 @@ function App() {
       }`}
     >
       <Header setIsModalOpen={setIsModalOpen} />
-      <Routes>
-        <Route path="/404" element={<Error />}></Route>
-        <Route path="/" element={<Home />}></Route>
-        <Route path="/home" element={<Home />}></Route>
-        <Route path="/test" element={<Post data={exampleFetch[0]} />}></Route>
-        <Route path="/:id" element={<SinglePost />}></Route>
-      </Routes>
+      <Suspense
+        fallback={
+          <div className="flex flex-col h-screen justify-center items-center">
+            <BiLoaderAlt className="animate-spin text-4xl" />
+          </div>
+        }
+      >
+        <Routes>
+          <Route path="/404" element={<LazyError />}></Route>
+          <Route path="/" element={<LazyHome />}></Route>
+          <Route path="/home" element={<LazyHome />}></Route>
+          <Route path="/:id" element={<LazySinglePost />}></Route>
+        </Routes>
+      </Suspense>
+
       {isModalOpen ? <Modal setIsModalOpen={setIsModalOpen} /> : ""}
       <div className="flex justify-between items-center w-full">
         <h1 className="text-slate-400 text-sm">Made with ❤️ in India</h1>
