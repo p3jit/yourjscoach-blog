@@ -1,27 +1,24 @@
-import { useContext, lazy, Suspense } from "react";
+import { useContext, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Header } from "./components/header/header.jsx";
-import Modal from "./components/modal/Modal.jsx";
 import { DarkModeProvider } from "./contexts/DarkModeContext.jsx";
 import { ModalProvider } from "./contexts/ModalContext.jsx";
-import { MdInfo } from "react-icons/md";
 import Loader from "./components/loader/Loader.jsx";
+import Footer from "./components/footer/Footer.jsx";
+import loadable from "@loadable/component";
 
-const LazyError = lazy(() => import("./pages/Error"));
-const LazyHome = lazy(() => import("./pages/Home.jsx"));
-const LazySinglePost = lazy(() => import("./pages/SinglePost.jsx"));
+const LazyError = loadable(() => import("./pages/Error"));
+const LazyHome = loadable(() => import("./pages/Home.jsx"));
+const LazySinglePost = loadable(() => import("./pages/SinglePost.jsx"));
+const LazyModal = loadable(() => import("./components/modal/Modal.jsx"));
 
 function App() {
   const { isModalOpen, setIsModalOpen } = useContext(ModalProvider);
   const { isDarkMode } = useContext(DarkModeProvider);
 
-  const toggleModalOpen = () => {
-    setIsModalOpen(true);
-  };
-
   return (
     <div
-      className={`font-roboto min-h-screen px-5 py-5 md:px-24 xl:px-40 2xl:px-[30em] flex flex-col gap-10 relative ${
+      className={`font-roboto min-h-screen px-5 py-5 md:px-16 xl:px-40 2xl:px-[30em] flex flex-col gap-10 relative transition-all ${
         isDarkMode ? "bg-white" : "bg-slate-900"
       }`}
     >
@@ -35,17 +32,8 @@ function App() {
         </Routes>
       </Suspense>
 
-      {isModalOpen ? <Modal setIsModalOpen={setIsModalOpen} /> : ""}
-      <div className="flex justify-between items-center w-full">
-        <h1 className="text-slate-400 text-sm">Made with ❤️ in India</h1>
-        <button
-          className="bg-slate-300 hover:bg-slate-400 md:px-3 p-2 md:py-2 text-sm font-medium rounded text-gray-900 flex items-center gap-2"
-          onClick={toggleModalOpen}
-        >
-          <MdInfo className="text-sm font-medium  text-slate-700" />
-          About
-        </button>
-      </div>
+      {isModalOpen ? <LazyModal setIsModalOpen={setIsModalOpen} /> : ""}
+      <Footer setIsModalOpen={setIsModalOpen} />
     </div>
   );
 }

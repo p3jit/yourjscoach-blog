@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
 
-export const Heading = ({ children }) => {
+const Heading = ({ children }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
   return (
     <>
@@ -15,3 +15,5 @@ export const Heading = ({ children }) => {
     </>
   );
 };
+
+export default Heading;

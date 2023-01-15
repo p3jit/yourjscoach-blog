@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
 
-export const RoundedText = ({ children }) => {
+const RoundedText = ({ children }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
   return (
     <>
@@ -15,3 +15,5 @@ export const RoundedText = ({ children }) => {
     </>
   );
 };
+
+export default RoundedText;
