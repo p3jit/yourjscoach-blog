@@ -1,6 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Loader from "../components/loader/Loader";
 import { Post } from "../components/post/Post";
+import SkeletonLoaderPost from "../components/skeletonLoaderPost/SkeletonLoaderPost";
 import { PostDataProvider } from "../contexts/PostDataContext";
 
 const SinglePost = () => {
@@ -22,7 +24,7 @@ const SinglePost = () => {
     }
   }, [postData]);
 
-  return <>{currPost ? <Post data={currPost} /> : ""}</>;
+  return <>{currPost ? <Post data={currPost} /> : <Loader />}</>;
 };
 
 export default SinglePost;

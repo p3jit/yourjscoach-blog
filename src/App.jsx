@@ -5,12 +5,12 @@ import { DarkModeProvider } from "./contexts/DarkModeContext.jsx";
 import { ModalProvider } from "./contexts/ModalContext.jsx";
 import Loader from "./components/loader/Loader.jsx";
 import Footer from "./components/footer/Footer.jsx";
-import loadable from "@loadable/component";
+import { lazy } from "@loadable/component";
 
-const LazyError = loadable(() => import("./pages/Error"));
-const LazyHome = loadable(() => import("./pages/Home.jsx"));
-const LazySinglePost = loadable(() => import("./pages/SinglePost.jsx"));
-const LazyModal = loadable(() => import("./components/modal/Modal.jsx"));
+const LazyError = lazy(() => import("./pages/Error"));
+const LazyHome = lazy(() => import("./pages/Home.jsx"));
+const LazySinglePost = lazy(() => import("./pages/SinglePost.jsx"));
+const LazyModal = lazy(() => import("./components/modal/Modal.jsx"));
 
 function App() {
   const { isModalOpen, setIsModalOpen } = useContext(ModalProvider);
