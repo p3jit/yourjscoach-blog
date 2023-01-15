@@ -5,7 +5,7 @@ const NormalText = ({ children }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
   return (
     <p
-      className={`leading-8 font-medium text-lg ${
+      className={`leading-8 font-medium text-base md:text-lg ${
         isDarkMode ? "text-gray-600" : "text-gray-300"
       }`}
     >
