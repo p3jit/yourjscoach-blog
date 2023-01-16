@@ -1,6 +1,4 @@
 import React, { createContext, useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebase";
 import useDebounce from "../hooks/useDebounce";
 
 export const PostDataProvider = createContext();
@@ -15,6 +13,16 @@ const PostDataContext = ({ children }) => {
 
   const fetchPostData = async () => {
     const value = [];
+
+    //dynamic imports
+    const { collection, getDocs, getFirestore } = await import(
+      "firebase/firestore"
+    );
+    const { initializeApp } = await import("firebase/app");
+    const { firebaseConfig } = await import("../firebase");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     const querySnapshot = await getDocs(collection(db, "post"));
     querySnapshot.forEach((doc) => {
       let currData = doc.data();
@@ -30,6 +38,16 @@ const PostDataContext = ({ children }) => {
 
   const fetchTagsData = async () => {
     const value = [];
+
+    //dynamic imports
+    const { collection, getDocs, getFirestore } = await import(
+      "firebase/firestore"
+    );
+    const { initializeApp } = await import("firebase/app");
+    const { firebaseConfig } = await import("../firebase");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
     const querySnapshot = await getDocs(collection(db, "tags"));
     querySnapshot.forEach((doc) => {
       value.push(doc.data());

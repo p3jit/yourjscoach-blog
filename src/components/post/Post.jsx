@@ -1,18 +1,16 @@
-import { lazy } from "@loadable/component";
 import Markdown from "markdown-to-jsx";
 import { useContext, useEffect, useState } from "react";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
+import Heading from "../heading/Heading";
+import ImageTag from "../imageTag/ImageTag";
+import NewCode from "../newCode/NewCode";
+import NormalText from "../normalText/NormalText";
 import PostTitle from "../PostTitle/PostTitle";
+import RoundedText from "../roundedText/RoundedText";
 import SkeletonLoaderPost from "../skeletonLoaderPost/SkeletonLoaderPost";
 import Tag from "../tag/Tag";
-
-const LazyNewCode = lazy(() => import("../newCode/NewCode"));
-const LazyHeading = lazy(() => import("../heading/Heading"));
-const LazyRoundedText = lazy(() => import("../roundedText/RoundedText"));
-const LazyNormalText = lazy(() => import("../normalText/NormalText"));
-const LazyImageTag = lazy(() => import("../imageTag/ImageTag"));
-const LazyVideoTag = lazy(() => import("../videoTag/VideoTag"));
-const LazyUrlTag = lazy(() => import("../urlTag/UrlTag"));
+import UrlTag from "../urlTag/UrlTag";
+import VideoTag from "../videoTag/VideoTag";
 
 export const Post = ({ data }) => {
   const [postContent, setPostContent] = useState("");
@@ -50,6 +48,8 @@ export const Post = ({ data }) => {
               <img
                 src={"./dp.jpeg"}
                 alt="author"
+                width={"120px"}
+                height={"120px"}
                 className="w-10 rounded-full"
                 loading="lazy"
               />
@@ -72,14 +72,14 @@ export const Post = ({ data }) => {
           <Markdown
             options={{
               overrides: {
-                Syntax: { component: LazyNewCode },
-                Heading: { component: LazyHeading },
-                RoundedText: { component: LazyRoundedText },
-                NormalText: { component: LazyNormalText },
-                ImageTag: { component: LazyImageTag },
-                VideoTag: { component: LazyVideoTag },
+                Syntax: { component: NewCode },
+                Heading: { component: Heading },
+                RoundedText: { component: RoundedText },
+                NormalText: { component: NormalText },
+                ImageTag: { component: ImageTag },
+                VideoTag: { component: VideoTag },
                 UrlTag: {
-                  component: LazyUrlTag,
+                  component: UrlTag,
                 },
               },
             }}
