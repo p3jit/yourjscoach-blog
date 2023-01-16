@@ -9,7 +9,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@loadable/component": "^5.15.2",
     "@tabler/icons": "^1.119.0",
     "firebase": "^9.15.0",
     "markdown-to-jsx": "^7.1.8",

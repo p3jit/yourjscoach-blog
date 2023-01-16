@@ -6,7 +6,7 @@ const RoundedText = ({ children }) => {
   return (
     <>
       <span
-        className={`rounded w-fit px-3 mx-1 ${
+        className={`w-fit px-2 py-1 mx-1 ${
           isDarkMode ? "bg-slate-200" : "bg-slate-600 text-white"
         }`}
       >

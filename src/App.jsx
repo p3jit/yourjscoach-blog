@@ -1,11 +1,10 @@
-import { useContext, Suspense } from "react";
+import { useContext, Suspense, lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import { Header } from "./components/header/header.jsx";
 import { DarkModeProvider } from "./contexts/DarkModeContext.jsx";
 import { ModalProvider } from "./contexts/ModalContext.jsx";
 import Loader from "./components/loader/Loader.jsx";
 import Footer from "./components/footer/Footer.jsx";
-import { lazy } from "@loadable/component";
 import Modal from "./components/modal/Modal.jsx";
 
 const LazyError = lazy(() => import("./pages/Error"));
