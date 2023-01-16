@@ -45,15 +45,15 @@ export const Post = ({ data }) => {
         <article className="flex flex-col gap-5">
           <div className="flex flex-col">
             <div className="flex gap-3 md:gap-4 items-center pb-7">
-              <picture pathset="./assets/">
+              <picture pathset="/assets/">
                 <img
                   sizes="(max-width: 100px) 100vw, 800px"
-                  srcset="
+                  srcSet="
                   dp_bbot2g_c_scale,w_200.jpg 200w,
                   dp_bbot2g_c_scale,w_200.jpg 487w,
                   dp_bbot2g_c_scale,w_200.jpg 611w,
                   dp_bbot2g_c_scale,w_200.jpg 773w,
-                  dp_bbot2g_c_scale,w_200.jpg 00w"
+                  dp_bbot2g_c_scale,w_200.jpg 800w"
                   src="dp_bbot2g_c_scale,w_200.jpg"
                   alt="author"
                   className="w-16 md:w-20 rounded-full"
