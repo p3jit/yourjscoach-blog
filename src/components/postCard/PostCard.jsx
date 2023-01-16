@@ -35,7 +35,7 @@ const PostCard = ({ data }) => {
             !isDarkMode ? "text-white" : "text-slate-400"
           }`}
         >
-          {formatDate(data.timeStamp)}
+          {formatDate(new Date(data.timeStamp))}
         </h2>
       </div>
 

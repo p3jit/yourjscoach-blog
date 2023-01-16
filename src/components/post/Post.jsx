@@ -26,7 +26,7 @@ export const Post = ({ data }) => {
   };
 
   useEffect(() => {
-    fetch(data.mdURL)
+    fetch(data.mdFile.url)
       .then((response) => {
         return response.text();
       })
@@ -45,21 +45,29 @@ export const Post = ({ data }) => {
         <article className="flex flex-col gap-5">
           <div className="flex flex-col">
             <div className="flex gap-3 md:gap-4 items-center pb-7">
-              <img
-                src={"./dp.jpeg"}
-                alt="author"
-                width={"120px"}
-                height={"120px"}
-                className="w-10 rounded-full"
-                loading="lazy"
-              />
+              <picture pathset="/assets/">
+                <img
+                  sizes="(max-width: 100px) 100vw, 800px"
+                  srcSet="
+                  dp_bbot2g_c_scale,w_200.jpg 200w,
+                  dp_bbot2g_c_scale,w_200.jpg 487w,
+                  dp_bbot2g_c_scale,w_200.jpg 611w,
+                  dp_bbot2g_c_scale,w_200.jpg 773w,
+                  dp_bbot2g_c_scale,w_200.jpg 800w"
+                  src="dp_bbot2g_c_scale,w_200.jpg"
+                  alt="author"
+                  className="w-16 md:w-20 rounded-full"
+                  width={"100px"}
+                  height={"100px"}
+                />
+              </picture>
               <div
                 className={`text-sm md:text-base ${
                   isDarkMode ? "text-slate-500" : "text-white opacity-80"
                 }`}
               >
                 <h3>Prithijit Das</h3>
-                <h3>Posted on: {formatDate(data.timeStamp)}</h3>
+                <h3>Posted on: {formatDate(new Date(data.timeStamp))}</h3>
               </div>
             </div>
             <PostTitle data={data.title} />
