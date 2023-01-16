@@ -26,7 +26,7 @@ export const Post = ({ data }) => {
   };
 
   useEffect(() => {
-    fetch(data.mdURL)
+    fetch(data.mdFile.url)
       .then((response) => {
         return response.text();
       })
@@ -67,7 +67,7 @@ export const Post = ({ data }) => {
                 }`}
               >
                 <h3>Prithijit Das</h3>
-                <h3>Posted on: {formatDate(data.timeStamp)}</h3>
+                <h3>Posted on: {formatDate(new Date(data.timeStamp))}</h3>
               </div>
             </div>
             <PostTitle data={data.title} />

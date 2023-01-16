@@ -11,51 +11,6 @@ const PostDataContext = ({ children }) => {
   const [fetchedTags, setFetchedTags] = useState([]);
   const [isSearching, setIsSearching] = useState(true);
 
-  const fetchPostData = async () => {
-    const value = [];
-
-    //dynamic imports
-    const { collection, getDocs, getFirestore } = await import(
-      "firebase/firestore"
-    );
-    const { initializeApp } = await import("firebase/app");
-    const { firebaseConfig } = await import("../firebase");
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const querySnapshot = await getDocs(collection(db, "post"));
-    querySnapshot.forEach((doc) => {
-      let currData = doc.data();
-      currData.timeStamp = new Date(currData.timeStamp.seconds * 1000);
-      value.push(currData);
-    });
-    await setPostData(value);
-    let sortedValue = new Array(...value);
-    sortedValue.sort((a, b) => b.timeStamp - a.timeStamp).slice(0, 2);
-    await setlatestPostData([sortedValue[0], sortedValue[1]]);
-    await setSearchData(sortedValue);
-  };
-
-  const fetchTagsData = async () => {
-    const value = [];
-
-    //dynamic imports
-    const { collection, getDocs, getFirestore } = await import(
-      "firebase/firestore"
-    );
-    const { initializeApp } = await import("firebase/app");
-    const { firebaseConfig } = await import("../firebase");
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const querySnapshot = await getDocs(collection(db, "tags"));
-    querySnapshot.forEach((doc) => {
-      value.push(doc.data());
-    });
-    await setFetchedTags(value[0].tags);
-    setIsSearching(false);
-  };
-
   const normalSearch = (query) => {
     let result = postData.filter((singlePost) => {
       return (
@@ -72,10 +27,51 @@ const PostDataContext = ({ children }) => {
 
   const debouncedSearch = useDebounce(normalSearch, 1000);
 
+  const newFetchPostsandTags = async () => {
+    // dynamic import
+    const { gql, request } = await import("graphql-request");
+    const query = gql`
+      query PluralPost {
+        pluralTags {
+          tags
+        }
+        pluralPost {
+          description
+          displayId
+          id
+          minRead
+          tags
+          title
+          mdFile {
+            url
+          }
+          timeStamp
+        }
+      }
+    `;
+    let { pluralPost, pluralTags } = await request(
+      "https://ap-south-1.cdn.hygraph.com/content/clcz3t3t93rpg01t7a3v40onf/master",
+      query
+    );
+    await setPostData(pluralPost);
+    let sortedValue = new Array(...pluralPost);
+    sortedValue
+      .sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp))
+      .slice(0, 2);
+    if (sortedValue.length == 1) {
+      await setlatestPostData([sortedValue[0]]);
+    } else {
+      await setlatestPostData([sortedValue[0], sortedValue[1]]);
+    }
+    await setSearchData(sortedValue);
+
+    await setFetchedTags(pluralTags[0].tags);
+    setIsSearching(false);
+  };
+
   useEffect(() => {
     try {
-      fetchPostData();
-      fetchTagsData();
+      newFetchPostsandTags();
     } catch (err) {
       console.log(err);
     }
