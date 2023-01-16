@@ -30,11 +30,22 @@ const Modal = ({ setIsModalOpen }) => {
           id="modal-inside"
         >
           <div className="flex flex-col w-full items-center text-white gap-10">
-            <img
-              src={"./dp.jpeg"}
-              alt=""
-              className="object-contain rounded-full w-28 md:w-40"
-            />
+            <picture pathset="./assets/">
+              <img
+                sizes="(max-width: 100px) 100vw, 800px"
+                srcset="
+                  dp_bbot2g_c_scale,w_200.jpg 200w,
+                  dp_bbot2g_c_scale,w_200.jpg 487w,
+                  dp_bbot2g_c_scale,w_200.jpg 611w,
+                  dp_bbot2g_c_scale,w_200.jpg 773w,
+                  dp_bbot2g_c_scale,w_200.jpg 00w"
+                src="dp_bbot2g_c_scale,w_200.jpg"
+                alt="author"
+                className="w-16 md:w-20 rounded-full"
+                width={"100px"}
+                height={"100px"}
+              />
+            </picture>
             <p className="self-start flex flex-col gap-1 text-slate-200">
               <span className="text-5xl">Hi,</span> I am Prithijit Das.
               Currently working at Accenture, India as a Software Engineer.
