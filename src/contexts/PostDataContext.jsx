@@ -1,4 +1,5 @@
 import React, { createContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useDebounce from "../hooks/useDebounce";
 
 export const PostDataProvider = createContext();
@@ -10,6 +11,7 @@ const PostDataContext = ({ children }) => {
   const [searchData, setSearchData] = useState([]);
   const [fetchedTags, setFetchedTags] = useState([]);
   const [isSearching, setIsSearching] = useState(true);
+  const navigate = useNavigate();
 
   const normalSearch = (query) => {
     let result = postData.filter((singlePost) => {
@@ -28,13 +30,10 @@ const PostDataContext = ({ children }) => {
   const debouncedSearch = useDebounce(normalSearch, 1000);
 
   const newFetchPostsandTags = async () => {
-    // dynamic import
+    // dynamic import gql and request
     const { gql, request } = await import("graphql-request");
     const query = gql`
       query PluralPost {
-        pluralTags {
-          tags
-        }
         pluralPost {
           description
           displayId
@@ -49,10 +48,12 @@ const PostDataContext = ({ children }) => {
         }
       }
     `;
-    let { pluralPost, pluralTags } = await request(
+    let { pluralPost } = await request(
       "https://ap-south-1.cdn.hygraph.com/content/clcz3t3t93rpg01t7a3v40onf/master",
       query
     );
+
+    //Filling the posts
     await setPostData(pluralPost);
     let sortedValue = new Array(...pluralPost);
     sortedValue
@@ -65,7 +66,14 @@ const PostDataContext = ({ children }) => {
     }
     await setSearchData(sortedValue);
 
-    await setFetchedTags(pluralTags[0].tags);
+    // Filling the tags
+    let tagSet = new Set();
+    pluralPost.forEach((singlePost) => {
+      singlePost.tags.forEach((singleTag) => {
+        tagSet.add(singleTag);
+      });
+    });
+    await setFetchedTags(new Array(...tagSet));
     setIsSearching(false);
   };
 
@@ -73,7 +81,7 @@ const PostDataContext = ({ children }) => {
     try {
       newFetchPostsandTags();
     } catch (err) {
-      console.log(err);
+      navigate("/404");
     }
   }, []);
 
