@@ -1,21 +1,24 @@
 import Markdown from "markdown-to-jsx";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, lazy, Suspense } from "react";
+import { useNavigate } from "react-router-dom";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
 import Heading from "../heading/Heading";
-import ImageTag from "../imageTag/ImageTag";
-import NewCode from "../newCode/NewCode";
 import NormalText from "../normalText/NormalText";
 import PostTitle from "../PostTitle/PostTitle";
 import RoundedText from "../roundedText/RoundedText";
 import SkeletonLoaderPost from "../skeletonLoaderPost/SkeletonLoaderPost";
 import Tag from "../tag/Tag";
 import UrlTag from "../urlTag/UrlTag";
-import VideoTag from "../videoTag/VideoTag";
+
+const LazyCode = lazy(() => import("../newCode/NewCode"));
+const LazyVideoTag = lazy(() => import("../videoTag/VideoTag"));
+const LazyImageTag = lazy(() => import("../imageTag/ImageTag"));
 
 export const Post = ({ data }) => {
   const [postContent, setPostContent] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const { isDarkMode } = useContext(DarkModeProvider);
+  const navigate = useNavigate();
 
   const formatDate = (value) => {
     let date = value;
@@ -35,7 +38,7 @@ export const Post = ({ data }) => {
         setIsLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        navigate("/404");
       });
   }, []);
 
@@ -77,23 +80,25 @@ export const Post = ({ data }) => {
               })}
             </div>
           </div>
-          <Markdown
-            options={{
-              overrides: {
-                Syntax: { component: NewCode },
-                Heading: { component: Heading },
-                RoundedText: { component: RoundedText },
-                NormalText: { component: NormalText },
-                ImageTag: { component: ImageTag },
-                VideoTag: { component: VideoTag },
-                UrlTag: {
-                  component: UrlTag,
+          <Suspense>
+            <Markdown
+              options={{
+                overrides: {
+                  Syntax: { component: LazyCode },
+                  Heading: { component: Heading },
+                  RoundedText: { component: RoundedText },
+                  NormalText: { component: NormalText },
+                  ImageTag: { component: LazyImageTag },
+                  VideoTag: { component: LazyVideoTag },
+                  UrlTag: {
+                    component: UrlTag,
+                  },
                 },
-              },
-            }}
-          >
-            {postContent}
-          </Markdown>
+              }}
+            >
+              {postContent}
+            </Markdown>
+          </Suspense>
         </article>
       ) : (
         <SkeletonLoaderPost />
