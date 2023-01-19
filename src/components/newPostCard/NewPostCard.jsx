@@ -25,36 +25,33 @@ const NewPostCard = ({ data }) => {
         isDarkMode ? "shadow-slate-300" : "shadow-slate-700"
       }`}
     >
-      <div className="m-[3px]">
+      <div className="m-[0.04rem]">
         {data.bannerImage ? (
           <ProgressiveImage
             src={data.bannerImage.highQuality.url}
-            placeholder={data.bannerImage.lowQuality.url}
+            placeholder={data.bannerImage.highQuality.url}
+            delay={1500}
           >
-            {(src, loading) => (
-              <img
-                className={`${
-                  loading ? "blur-sm" : "blur-none"
-                } transition-all delay-1000 rounded-t-md w-full h-[14rem] object-cover`}
-                src={src}
-                alt="an image"
-                width={"100px"}
-                height={"100px"}
-              />
-            )}
+            {(src, loading) => {
+              return loading ? (
+                <div className="bg-slate-300 w-full h-[17rem] animate-pulse"></div>
+              ) : (
+                <img
+                  src={src}
+                  rel="prefetch"
+                  alt="an image"
+                  className={`w-full h-[17rem] object-cover rounded-t-md transition-all delay-500 ${
+                    loading ? "blur-sm" : "blur-none"
+                  }`}
+                />
+              );
+            }}
           </ProgressiveImage>
         ) : (
           ""
         )}
       </div>
-      <div className="flex flex-col px-5 py-4">
-        <h3
-          className={`text-sm mb-2 font-medium ${
-            !isDarkMode ? "text-slate-200" : "text-slate-700"
-          }`}
-        >
-          {formatDate(new Date(data.timeStamp))}
-        </h3>
+      <div className="flex flex-col px-5 py-3">
         <h3
           className={`text-2xl font-semibold text-slate-800 mb-1 ${
             !isDarkMode ? "text-slate-200" : "text-black"
@@ -76,24 +73,12 @@ const NewPostCard = ({ data }) => {
         </p>
         <div className="flex justify-between mt-5 items-center">
           <div className="flex gap-3 items-center">
-            <picture pathset="/assets/">
-              <img
-                sizes="(max-width: 100px) 100vw, 800px"
-                srcSet="
-                  dp_bbot2g_c_scale,w_200.jpg 200w,
-                  dp_bbot2g_c_scale,w_200.jpg 487w,
-                  dp_bbot2g_c_scale,w_200.jpg 611w,
-                  dp_bbot2g_c_scale,w_200.jpg 773w,
-                  dp_bbot2g_c_scale,w_200.jpg 800w"
-                src="dp_bbot2g_c_scale,w_200.jpg"
-                alt="author"
-                className="w-8 rounded-full"
-                width={"100px"}
-                height={"100px"}
-              />
-            </picture>
-            <h3 className="text-xs text-slate-400 font-medium">
-              Prithijit Das
+            <h3
+              className={`text-sm mb-2 font-medium ${
+                !isDarkMode ? "text-slate-200" : "text-slate-400"
+              }`}
+            >
+              {formatDate(new Date(data.timeStamp))}
             </h3>
           </div>
 

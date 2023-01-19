@@ -23,6 +23,10 @@ const SinglePost = () => {
     }
   }, [postData]);
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return <>{currPost ? <Post data={currPost} /> : <SkeletonLoaderPost />}</>;
 };
 
