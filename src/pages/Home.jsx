@@ -7,6 +7,7 @@ import { PostDataProvider } from "../contexts/PostDataContext";
 import { IconSearch, IconMoodCry, IconX } from "@tabler/icons";
 import { DarkModeProvider } from "../contexts/DarkModeContext";
 import NewPostCard from "../components/newPostCard/NewPostCard";
+import SkeletonNewLatestPostCard from "../components/skeletonNewLatestPostCard/SkeletonNewLatestPostCard";
 
 const Home = () => {
   const {
@@ -56,8 +57,8 @@ const Home = () => {
           ))
         ) : (
           <div className="flex flex-col gap-5">
-            <SkeletonLoaderLatestPost />
-            <SkeletonLoaderLatestPost />
+            <SkeletonNewLatestPostCard />
+            <SkeletonNewLatestPostCard />
           </div>
         )}
       </div>

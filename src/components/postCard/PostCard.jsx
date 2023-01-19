@@ -50,7 +50,7 @@ const PostCard = ({ data }) => {
       </div>
       <p
         className={`break-words font-medium text-black pt-2 text-sm md:text-base ${
-          !isDarkMode ? "text-slate-300" : "text-black"
+          !isDarkMode ? "text-slate-300" : "text-slate-500"
         }`}
       >
         {data.description.slice(0, 400) + "..." || data.description}

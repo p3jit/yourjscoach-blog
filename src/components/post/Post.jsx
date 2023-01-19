@@ -45,34 +45,13 @@ export const Post = ({ data }) => {
   return (
     <>
       {!isLoading ? (
-        <article className="flex flex-col gap-5">
+        <article className="flex flex-col gap-5 pt-[3vh] md:pt-[2vh]">
           <div className="flex flex-col">
-            <div className="flex gap-3 md:gap-4 items-center pb-7">
-              <picture pathset="/assets/">
-                <img
-                  sizes="(max-width: 100px) 100vw, 800px"
-                  srcSet="
-                  dp_bbot2g_c_scale,w_200.jpg 200w,
-                  dp_bbot2g_c_scale,w_200.jpg 487w,
-                  dp_bbot2g_c_scale,w_200.jpg 611w,
-                  dp_bbot2g_c_scale,w_200.jpg 773w,
-                  dp_bbot2g_c_scale,w_200.jpg 800w"
-                  src="dp_bbot2g_c_scale,w_200.jpg"
-                  alt="author"
-                  className="w-16 rounded-full"
-                  width={"100px"}
-                  height={"100px"}
-                />
-              </picture>
-              <div
-                className={`text-sm ${
-                  isDarkMode ? "text-slate-500" : "text-white opacity-80"
-                }`}
-              >
-                <h3>Prithijit Das</h3>
-                <h3>Posted on: {formatDate(new Date(data.timeStamp))}</h3>
-              </div>
-            </div>
+            <PostTitle data={data.title} />
+            <h3 className="text-center text-sm md:text-lg  text-slate-400 pt-2 pb-5 uppercase">
+              {formatDate(new Date(data.timeStamp)) +
+                " || WRITTEN BY -  PRITHIJIT DAS"}
+            </h3>
             <div className="">
               {data.bannerImage ? (
                 <ProgressiveImage
@@ -81,8 +60,9 @@ export const Post = ({ data }) => {
                 >
                   {(src, loading) => (
                     <img
+                      rel="prefetch"
                       className={`${
-                        loading ? "blur-sm" : "blur-none"
+                        loading ? "blur-[4px]" : "blur-none"
                       } transition-all delay-1000 mb-7 mt-1 rounded-xl w-full h-[20rem] md:h-[25rem] lg:h-[30rem] object-cover`}
                       src={src}
                       alt="an image"
@@ -95,7 +75,6 @@ export const Post = ({ data }) => {
                 ""
               )}
             </div>
-            <PostTitle data={data.title} />
             <div className="text-gray-400 flex gap-2 flex-wrap">
               {data.tags.map((tag) => {
                 return <Tag data={tag} key={tag} />;
