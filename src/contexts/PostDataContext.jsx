@@ -34,7 +34,7 @@ const PostDataContext = ({ children }) => {
     const { gql, request } = await import("graphql-request");
     const query = gql`
       query {
-        pluralPost(stage: DRAFT) {
+        pluralPost(stage: PUBLISHED) {
           description
           displayId
           id
