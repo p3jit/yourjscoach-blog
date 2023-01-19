@@ -6,6 +6,7 @@ import Title from "../components/title/Title";
 import { PostDataProvider } from "../contexts/PostDataContext";
 import { IconSearch, IconMoodCry, IconX } from "@tabler/icons";
 import { DarkModeProvider } from "../contexts/DarkModeContext";
+import NewPostCard from "../components/newPostCard/NewPostCard";
 
 const Home = () => {
   const {
@@ -43,16 +44,23 @@ const Home = () => {
   return (
     <div className="flex flex-col gap-4 md:px-2 min-h-[2000px]">
       <Title data={"Latest Posts"}></Title>
-      {latestPostData[0] ? (
-        latestPostData.map((singlePost) => (
-          <PostCard data={singlePost} key={singlePost.id} />
-        ))
-      ) : (
-        <div className="flex flex-col gap-5">
-          <SkeletonLoaderLatestPost />
-          <SkeletonLoaderLatestPost />
-        </div>
-      )}
+      <div
+        className={`grid grid-rows-1 gap-10 mt-2 ${
+          latestPostData.length > 1 ? "md:grid-cols-2" : "md:grid-cols-1"
+        }`}
+      >
+        {latestPostData[0] ? (
+          latestPostData.map((singlePost) => (
+            // <PostCard data={singlePost} key={singlePost.id} />
+            <NewPostCard data={singlePost} key={singlePost.id} />
+          ))
+        ) : (
+          <div className="flex flex-col gap-5">
+            <SkeletonLoaderLatestPost />
+            <SkeletonLoaderLatestPost />
+          </div>
+        )}
+      </div>
       <br />
       <Title data={"Search"}></Title>
       <div className="flex justify-center items-center relative">

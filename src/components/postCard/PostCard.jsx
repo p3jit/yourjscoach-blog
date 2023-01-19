@@ -38,7 +38,6 @@ const PostCard = ({ data }) => {
           {formatDate(new Date(data.timeStamp))}
         </h2>
       </div>
-
       <div className="flex flex-col md:flex-row md:justify-between md:items-center pt-1">
         <div className="flex gap-1 md:gap-2 flex-wrap">
           {data.tags.map((singleTag) => {

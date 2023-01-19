@@ -41,7 +41,7 @@ const Modal = ({ setIsModalOpen }) => {
                   dp_bbot2g_c_scale,w_200.jpg 00w"
                 src="dp_bbot2g_c_scale,w_200.jpg"
                 alt="author"
-                className="w-16 md:w-20 rounded-full"
+                className="w-32 rounded-full"
                 width={"100px"}
                 height={"100px"}
               />

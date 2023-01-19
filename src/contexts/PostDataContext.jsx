@@ -33,8 +33,8 @@ const PostDataContext = ({ children }) => {
     // dynamic import gql and request
     const { gql, request } = await import("graphql-request");
     const query = gql`
-      query PluralPost {
-        pluralPost {
+      query {
+        pluralPost(stage: PUBLISHED) {
           description
           displayId
           id
@@ -44,7 +44,18 @@ const PostDataContext = ({ children }) => {
           mdFile {
             url
           }
+          imageList {
+            id
+          }
           timeStamp
+          bannerImage {
+            highQuality {
+              url
+            }
+            lowQuality {
+              url
+            }
+          }
         }
       }
     `;
