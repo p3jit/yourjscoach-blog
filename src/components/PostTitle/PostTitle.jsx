@@ -5,9 +5,9 @@ const PostTitle = ({ data }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
   return (
     <div
-      className={`font-black uppercase ${
+      className={`font-black capitalize ${
         isDarkMode ? "text-gray-800" : "text-white"
-      } text-3xl md:text-7xl pb-2 md:pb-1 text-center`}
+      } text-4xl md:text-7xl pb-2 md:pb-1 text-center`}
     >
       {data}
     </div>
