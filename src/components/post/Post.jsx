@@ -48,11 +48,11 @@ export const Post = ({ data }) => {
         <article className="flex flex-col gap-5 pt-[3vh] md:pt-[2vh]">
           <div className="flex flex-col">
             <PostTitle data={data.title} />
-            <h3 className="text-center text-sm md:text-lg  text-slate-400 pt-2 pb-5 uppercase">
+            <h3 className="text-center text-sm md:text-lg  text-slate-400 pt-2 pb-5 capitalize">
               {formatDate(new Date(data.timeStamp)) +
-                " || WRITTEN BY -  PRITHIJIT DAS"}
+                " || Written By -  Prithijit Das"}
             </h3>
-            <div className="">
+            <div>
               {data.bannerImage ? (
                 <ProgressiveImage
                   src={data.bannerImage.highQuality.url}
