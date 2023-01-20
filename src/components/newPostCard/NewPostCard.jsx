@@ -32,7 +32,7 @@ const NewPostCard = ({ data }) => {
                 rel="prefetch"
                 className={`${
                   loading ? "blur-[4px]" : "blur-none"
-                } transition-all delay-200 mb-4 rounded-t-md w-full h-[15rem] object-cover`}
+                } delay-200 mb-4 rounded-t-md w-full h-[15rem] object-cover`}
                 src={src}
                 alt="an image"
                 width={"100px"}

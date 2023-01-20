@@ -51,7 +51,7 @@ export const Post = ({ data }) => {
             <h3 className="text-center text-sm md:text-lg  text-slate-400 pt-2">
               {formatDate(new Date(data.timeStamp))}
             </h3>
-            <div className="pt-5">
+            <div className=" mt-5">
               {data.bannerImage ? (
                 <ProgressiveImage
                   src={data.bannerImage.highQuality.url}
@@ -62,7 +62,7 @@ export const Post = ({ data }) => {
                       rel="prefetch"
                       className={`${
                         loading ? "blur-[4px]" : "blur-none"
-                      } transition-all delay-200 mb-2 mt-1 rounded-xl w-full h-[20rem] md:h-[25rem] lg:h-[30rem] object-cover`}
+                      } delay-200 mb-2 mt-1 rounded-xl w-full h-[20rem] md:h-[25rem] lg:h-[30rem] object-cover`}
                       src={src}
                       alt="an image"
                       width={"100px"}
@@ -83,8 +83,14 @@ export const Post = ({ data }) => {
                   Heading: { component: Heading },
                   RoundedText: { component: RoundedText },
                   NormalText: { component: NormalText },
-                  ImageTag: { component: LazyImageTag },
-                  VideoTag: { component: LazyVideoTag },
+                  ImageTag: {
+                    component: LazyImageTag,
+                    props: { imageList: data.imageList },
+                  },
+                  VideoTag: {
+                    component: LazyVideoTag,
+                    props: { imageList: data.videoList },
+                  },
                   UrlTag: {
                     component: UrlTag,
                   },
@@ -95,8 +101,8 @@ export const Post = ({ data }) => {
             </Markdown>
           </Suspense>
           <hr />
-          <div className="flex flex-col justify-between pt-3">
-            <div className="text-gray-400 flex gap-2 flex-wrap">
+          <div className="flex flex-col justify-between pt-1">
+            <div className="text-gray-600 flex gap-2 flex-wrap">
               {data.tags.map((tag) => {
                 return (
                   <span
