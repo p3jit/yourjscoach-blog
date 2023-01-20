@@ -20,7 +20,7 @@ const NewPostCard = ({ data }) => {
   };
 
   return (
-    <div className={`outline outline-1  outline-slate-300 rounded-md`}>
+    <div className={`outline outline-1  outline-slate-300 rounded-md h-fit`}>
       <div className="m-[0.04rem]">
         {data.bannerImage ? (
           <ProgressiveImage
@@ -32,7 +32,7 @@ const NewPostCard = ({ data }) => {
                 rel="prefetch"
                 className={`${
                   loading ? "blur-[4px]" : "blur-none"
-                } transition-all delay-200 mb-4 rounded-t-md w-full h-[20rem] object-cover`}
+                } transition-all delay-200 mb-4 rounded-t-md w-full h-[15rem] object-cover`}
                 src={src}
                 alt="an image"
                 width={"100px"}
@@ -62,9 +62,9 @@ const NewPostCard = ({ data }) => {
             !isDarkMode ? "text-slate-300" : "text-black"
           }`}
         >
-          {data.description.slice(0, 400) + "..." || data.description}
+          {data.description.slice(0, 300) + "..." || data.description}
         </p>
-        <div className="flex justify-between mt-5 mb-3 items-center">
+        <div className="flex justify-between mt-5 mb-3 items-end">
           <div className="flex gap-3 items-center">
             <h3
               className={`text-sm mb-2 font-medium ${
@@ -74,7 +74,6 @@ const NewPostCard = ({ data }) => {
               {formatDate(new Date(data.timeStamp))}
             </h3>
           </div>
-
           <button
             className={`underline underline-offset-4 decoration-slate-400 text-base flex gap-2 font-medium text-slate-500 ${
               !isDarkMode ? "text-slate-300" : "text-black"
