@@ -48,7 +48,7 @@ export const Post = ({ data }) => {
         <article className="flex flex-col gap-5 pt-[3vh] md:pt-[2vh]">
           <div className="flex flex-col">
             <PostTitle data={data.title} />
-            <h3 className="text-center text-sm md:text-lg  text-slate-400 pt-2 pb-5 capitalize">
+            <h3 className="text-center text-sm md:text-lg  text-slate-400 pt-2 pb-10">
               {formatDate(new Date(data.timeStamp)) +
                 " || Written By -  Prithijit Das"}
             </h3>
@@ -63,7 +63,7 @@ export const Post = ({ data }) => {
                       rel="prefetch"
                       className={`${
                         loading ? "blur-[4px]" : "blur-none"
-                      } transition-all delay-1000 mb-7 mt-1 rounded-xl w-full h-[20rem] md:h-[25rem] lg:h-[30rem] object-cover`}
+                      } transition-all delay-200 mb-7 mt-1 rounded-xl w-full h-[20rem] md:h-[25rem] lg:h-[30rem] object-cover`}
                       src={src}
                       alt="an image"
                       width={"100px"}
