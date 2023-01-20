@@ -20,38 +20,31 @@ const NewPostCard = ({ data }) => {
   };
 
   return (
-    <div
-      className={`outline outline-1  outline-slate-300 rounded-md shadow-lg ${
-        isDarkMode ? "shadow-slate-300" : "shadow-slate-700"
-      }`}
-    >
+    <div className={`outline outline-1  outline-slate-300 rounded-md h-fit`}>
       <div className="m-[0.04rem]">
         {data.bannerImage ? (
           <ProgressiveImage
             src={data.bannerImage.highQuality.url}
-            placeholder={data.bannerImage.highQuality.url}
-            delay={1500}
+            placeholder={data.bannerImage.lowQuality.url}
           >
-            {(src, loading) => {
-              return loading ? (
-                <div className="bg-slate-300 w-full h-[17rem] animate-pulse"></div>
-              ) : (
-                <img
-                  src={src}
-                  rel="prefetch"
-                  alt="an image"
-                  className={`w-full h-[17rem] object-cover rounded-t-md transition-all delay-500 ${
-                    loading ? "blur-sm" : "blur-none"
-                  }`}
-                />
-              );
-            }}
+            {(src, loading) => (
+              <img
+                rel="prefetch"
+                className={`${
+                  loading ? "blur-[4px]" : "blur-none"
+                } transition-all delay-200 mb-4 rounded-t-md w-full h-[15rem] object-cover`}
+                src={src}
+                alt="an image"
+                width={"100px"}
+                height={"100px"}
+              />
+            )}
           </ProgressiveImage>
         ) : (
           ""
         )}
       </div>
-      <div className="flex flex-col px-5 py-3">
+      <div className="flex flex-col px-5 py-1">
         <h3
           className={`text-2xl font-semibold text-slate-800 mb-1 ${
             !isDarkMode ? "text-slate-200" : "text-black"
@@ -69,9 +62,9 @@ const NewPostCard = ({ data }) => {
             !isDarkMode ? "text-slate-300" : "text-black"
           }`}
         >
-          {data.description.slice(0, 400) + "..." || data.description}
+          {data.description.slice(0, 300) + "..." || data.description}
         </p>
-        <div className="flex justify-between mt-5 items-center">
+        <div className="flex justify-between mt-5 mb-3 items-end">
           <div className="flex gap-3 items-center">
             <h3
               className={`text-sm mb-2 font-medium ${
@@ -81,9 +74,8 @@ const NewPostCard = ({ data }) => {
               {formatDate(new Date(data.timeStamp))}
             </h3>
           </div>
-
           <button
-            className={`underline underline-offset-4 text-base flex gap-2 font-medium text-slate-500 ${
+            className={`underline underline-offset-4 decoration-slate-400 text-base flex gap-2 font-medium text-slate-500 ${
               !isDarkMode ? "text-slate-300" : "text-black"
             }`}
             onClick={handleReadMore}

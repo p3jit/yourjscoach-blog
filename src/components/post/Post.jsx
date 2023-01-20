@@ -48,11 +48,10 @@ export const Post = ({ data }) => {
         <article className="flex flex-col gap-5 pt-[3vh] md:pt-[2vh]">
           <div className="flex flex-col">
             <PostTitle data={data.title} />
-            <h3 className="text-center text-sm md:text-lg  text-slate-400 pt-2 pb-5 capitalize">
-              {formatDate(new Date(data.timeStamp)) +
-                " || Written By -  Prithijit Das"}
+            <h3 className="text-center text-sm md:text-lg  text-slate-400 pt-2">
+              {formatDate(new Date(data.timeStamp))}
             </h3>
-            <div>
+            <div className="pt-5">
               {data.bannerImage ? (
                 <ProgressiveImage
                   src={data.bannerImage.highQuality.url}
@@ -63,7 +62,7 @@ export const Post = ({ data }) => {
                       rel="prefetch"
                       className={`${
                         loading ? "blur-[4px]" : "blur-none"
-                      } transition-all delay-1000 mb-7 mt-1 rounded-xl w-full h-[20rem] md:h-[25rem] lg:h-[30rem] object-cover`}
+                      } transition-all delay-200 mb-2 mt-1 rounded-xl w-full h-[20rem] md:h-[25rem] lg:h-[30rem] object-cover`}
                       src={src}
                       alt="an image"
                       width={"100px"}
@@ -74,11 +73,6 @@ export const Post = ({ data }) => {
               ) : (
                 ""
               )}
-            </div>
-            <div className="text-gray-400 flex gap-2 flex-wrap">
-              {data.tags.map((tag) => {
-                return <Tag data={tag} key={tag} />;
-              })}
             </div>
           </div>
           <Suspense>
@@ -100,6 +94,22 @@ export const Post = ({ data }) => {
               {postContent}
             </Markdown>
           </Suspense>
+          <hr />
+          <div className="flex flex-col justify-between pt-3">
+            <div className="text-gray-400 flex gap-2 flex-wrap">
+              {data.tags.map((tag) => {
+                return (
+                  <span
+                    className={`w-fit px-3 py-1 rounded-xl ${
+                      isDarkMode ? "bg-slate-200" : "bg-slate-600 text-white"
+                    }`}
+                  >
+                    {tag}
+                  </span>
+                );
+              })}
+            </div>
+          </div>
         </article>
       ) : (
         <SkeletonLoaderPost />
