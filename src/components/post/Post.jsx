@@ -62,7 +62,7 @@ export const Post = ({ data }) => {
                       rel="prefetch"
                       className={`${
                         loading ? "blur-[4px]" : "blur-none"
-                      } delay-200 mb-2 mt-1 rounded-xl w-full h-[20rem] md:h-[25rem] lg:h-[30rem] object-cover`}
+                      } delay-200 mb-2 mt-1 rounded-xl w-full h-[20rem] md:h-[25rem] lg:h-[30rem] object-scale-down`}
                       src={src}
                       alt="an image"
                       width={"100px"}
