@@ -12,7 +12,8 @@ module.exports = {
       }
     },
     fontFamily: {
-      roboto: ['Roboto' , 'sans-serif']
+      roboto: ['Roboto' , 'sans-serif'],
+      sofia: ['Sofia Sans' , 'sans-serif']
     }
   },
   plugins: [],
