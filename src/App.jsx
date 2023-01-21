@@ -17,28 +17,34 @@ function App() {
 
   return (
     <div
-      className={`font-roboto min-h-screen px-5 py-5 md:px-16 lg:px-[8rem] xl:px-40 2xl:px-[26em] flex flex-col gap-10 relative ${
+      className={`w-full flex flex-col justify-center 2xl:items-center ${
         isDarkMode ? "bg-white" : "bg-slate-900"
       }`}
     >
-      <Header />
-      <Suspense fallback={<Loader />}>
-        <Routes>
-          <Route path="/404" element={<LazyError />}></Route>
-          <Route path="/" element={<LazyHome />}></Route>
-          <Route path="/home" element={<LazyHome />}></Route>
-          <Route path="/:id" element={<LazySinglePost />}></Route>
-        </Routes>
-      </Suspense>
-
-      {isModalOpen ? (
+      <div
+        className={`font-sofia min-h-screen flex flex-col gap-10 relative tracking-tight py-[2vh] px-[6vw] 2xl:max-w-[65vw] ${
+          isDarkMode ? "bg-white" : "bg-slate-900"
+        }`}
+      >
+        <Header />
         <Suspense fallback={<Loader />}>
-          <Modal setIsModalOpen={setIsModalOpen} />
+          <Routes>
+            <Route path="/404" element={<LazyError />}></Route>
+            <Route path="/" element={<LazyHome />}></Route>
+            <Route path="/home" element={<LazyHome />}></Route>
+            <Route path="/:id" element={<LazySinglePost />}></Route>
+          </Routes>
         </Suspense>
-      ) : (
-        ""
-      )}
-      <Footer setIsModalOpen={setIsModalOpen} />
+
+        {isModalOpen ? (
+          <Suspense fallback={<Loader />}>
+            <Modal setIsModalOpen={setIsModalOpen} />
+          </Suspense>
+        ) : (
+          ""
+        )}
+        <Footer setIsModalOpen={setIsModalOpen} />
+      </div>
     </div>
   );
 }

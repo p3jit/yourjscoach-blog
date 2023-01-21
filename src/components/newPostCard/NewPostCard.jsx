@@ -46,7 +46,7 @@ const NewPostCard = ({ data }) => {
       </div>
       <div className="flex flex-col px-5 py-1">
         <h3
-          className={`text-2xl font-semibold text-slate-800 mb-1 ${
+          className={`text-2xl font-bold leading-7 text-slate-800 mb-1 tracking-tighter ${
             !isDarkMode ? "text-slate-200" : "text-black"
           }`}
         >
@@ -58,7 +58,7 @@ const NewPostCard = ({ data }) => {
           })}
         </div>
         <p
-          className={`font-medium text-slate-500 mt-2 text-sm md:text-base ${
+          className={`font-medium text-slate-500 mt-2 text-lg md:text-xl ${
             !isDarkMode ? "text-slate-300" : "text-black"
           }`}
         >

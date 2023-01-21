@@ -27,12 +27,12 @@ export const Header = () => {
         <div className="flex items-center gap-2">
           <IconBrandJavascript
             size={"2em"}
-            stroke={"1.8"}
+            stroke={"2"}
             className={` ${isDarkMode ? "text-gray-800" : "text-white"}`}
           />
           <h2
             onClick={handleHomeRedirect}
-            className={`cursor-pointer font-bold text-3xl md:text-3xl lg:text-4xl ${
+            className={`cursor-pointer font-extrabold text-3xl md:text-3xl lg:text-4xl ${
               isDarkMode ? "text-gray-800" : "text-white"
             }`}
           >

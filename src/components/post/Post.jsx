@@ -100,7 +100,7 @@ export const Post = ({ data }) => {
               {postContent}
             </Markdown>
           </Suspense>
-          <hr />
+          <hr className="bg-slate-400" />
           <div className="flex flex-col justify-between pt-1">
             <div className="text-gray-600 flex gap-2 flex-wrap">
               {data.tags.map((tag) => {

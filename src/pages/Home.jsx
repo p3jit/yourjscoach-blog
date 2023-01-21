@@ -52,11 +52,10 @@ const Home = () => {
       >
         {latestPostData[0] ? (
           latestPostData.map((singlePost) => (
-            // <PostCard data={singlePost} key={singlePost.id} />
             <NewPostCard data={singlePost} key={singlePost.id} />
           ))
         ) : (
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-5 md:flex-row justify-center 2xl:w-[50vw]">
             <SkeletonNewLatestPostCard />
             <SkeletonNewLatestPostCard />
           </div>
