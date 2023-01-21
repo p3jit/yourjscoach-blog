@@ -35,14 +35,14 @@ const ImageTag = ({ children, index, ...props }) => {
           >
             {(src, loading) => (
               <img
-                rel="prefetch"
+                rel="preload"
                 className={`${
                   loading ? "blur-[4px]" : "blur-none"
-                } delay-300 mb-2 mt-1 rounded-xl w-full min-h-[20rem] md:min-h-[25rem] lg:min-h-[30rem] object-scale-down`}
+                } delay-300 mb-2 mt-1 rounded-xl w-full min-h-[20rem] md:min-h-[25rem] lg:min-h-[30rem] respImage object-contain`}
                 src={src}
                 alt="an image"
-                width={"100px"}
-                height={"100px"}
+                width={"600"}
+                height={"300px"}
               />
             )}
           </ProgressiveImage>
