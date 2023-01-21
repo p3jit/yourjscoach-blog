@@ -3,3 +3,8 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.respImage {
+  max-inline-size: 100%;
+  block-size: auto;
+}
