@@ -22,7 +22,7 @@ function App() {
       }`}
     >
       <div
-        className={`font-sofia min-h-screen flex flex-col gap-10 relative tracking-tight py-[2vh] px-[6vw] 2xl:max-w-[65vw] ${
+        className={`font-sofia min-h-screen flex flex-col gap-10 relative tracking-tight py-[2vh] px-[6vw] 2xl:max-w-[65vw] min-w-[60vw] ${
           isDarkMode ? "bg-white" : "bg-slate-900"
         }`}
       >
