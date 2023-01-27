@@ -5,7 +5,7 @@ const Tag = ({ data }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
   return (
     <span
-      className={`rounded text-sm md:text-base font-medium  ${
+      className={`rounded text-lg md:text-xl font-medium  ${
         !isDarkMode ? "text-slate-500" : "text-slate-400"
       }`}
     >
