@@ -19,7 +19,7 @@ const Error = () => {
         Oops! You are in the worng place.
       </p>
       <Link
-        to={"/home"}
+        to={"/"}
         className={`underline underline-offset-8 pt-5 text-lg font-medium ${
           !isDarkMode ? "text-white" : "text-slate-900"
         }`}

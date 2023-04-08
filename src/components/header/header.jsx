@@ -16,7 +16,7 @@ export const Header = () => {
   };
 
   const handleHomeRedirect = () => {
-    navigate("/home");
+    navigate("/");
     setSearchData(postData.sort((a, b) => b.timeStamp - a.timeStamp));
     setSearchFilter([]);
   };

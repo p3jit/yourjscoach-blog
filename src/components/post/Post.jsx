@@ -39,6 +39,7 @@ export const Post = ({ data }) => {
       })
       .catch((err) => {
         navigate("/404");
+        console.log(err);
       });
   }, []);
 
