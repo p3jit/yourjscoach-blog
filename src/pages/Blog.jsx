@@ -8,6 +8,7 @@ import { IconSearch, IconMoodCry, IconX } from "@tabler/icons";
 import { DarkModeProvider } from "../contexts/DarkModeContext";
 import NewPostCard from "../components/newPostCard/NewPostCard";
 import SkeletonNewLatestPostCard from "../components/skeletonNewLatestPostCard/SkeletonNewLatestPostCard";
+import { ReactSVG } from "react-svg";
 
 const Home = () => {
   const {
@@ -44,6 +45,7 @@ const Home = () => {
 
   return (
     <div className="flex flex-col gap-4 md:px-2 min-h-[2000px]">
+      <ReactSVG src="/creative-writing-animate.svg" className="w-96 mx-auto" />
       <Title data={"Latest Posts"}></Title>
       <div
         className={`grid grid-rows-1 gap-10 mt-2 ${
