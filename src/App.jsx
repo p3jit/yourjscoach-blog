@@ -1,5 +1,5 @@
 import { useContext, Suspense, lazy } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import { Header } from "./components/header/header.jsx";
 import { DarkModeProvider } from "./contexts/DarkModeContext.jsx";
 import { ModalProvider } from "./contexts/ModalContext.jsx";
@@ -8,12 +8,15 @@ import Footer from "./components/footer/Footer.jsx";
 import Modal from "./components/modal/Modal.jsx";
 
 const LazyError = lazy(() => import("./pages/Error"));
-const LazyHome = lazy(() => import("./pages/Home.jsx"));
+const LazyBLog = lazy(() => import("./pages/Blog.jsx"));
 const LazySinglePost = lazy(() => import("./pages/SinglePost.jsx"));
+const LazyDSASheet = lazy(() => import("./pages/DSASheet"));
+const LazyHome = lazy(() => import("./pages/Home"));
 
 function App() {
   const { isModalOpen, setIsModalOpen } = useContext(ModalProvider);
   const { isDarkMode } = useContext(DarkModeProvider);
+  const location = useLocation();
 
   return (
     <div
@@ -22,17 +25,18 @@ function App() {
       }`}
     >
       <div
-        className={`font-sofia min-h-screen flex flex-col gap-10 relative tracking-tight py-[2vh] px-[6vw] 2xl:max-w-[65vw] min-w-[60vw] ${
+        className={`font-sofia min-h-screen flex flex-col gap-10 relative tracking-tight py-[2vh] px-[6vw] 2xl:w-[65vw] min-w-[60vw] ${
           isDarkMode ? "bg-white" : "bg-slate-900"
         }`}
       >
-        <Header />
+        {location.pathname !== "/" ? <Header /> : ""}
         <Suspense fallback={<Loader />}>
           <Routes>
             <Route path="/404" element={<LazyError />}></Route>
             <Route path="/" element={<LazyHome />}></Route>
-            <Route path="/home" element={<LazyHome />}></Route>
+            <Route path="/blog" element={<LazyBLog />}></Route>
             <Route path="/:id" element={<LazySinglePost />}></Route>
+            <Route path="/dsa" element={<LazyDSASheet />}></Route>
           </Routes>
         </Suspense>
 
@@ -43,7 +47,11 @@ function App() {
         ) : (
           ""
         )}
-        <Footer setIsModalOpen={setIsModalOpen} />
+        {location.pathname !== "/" ? (
+          <Footer setIsModalOpen={setIsModalOpen} />
+        ) : (
+          ""
+        )}
       </div>
     </div>
   );
