@@ -19,7 +19,7 @@ const DSASheet = () => {
           interview
         </h1>
         <div className="w-full">
-          <ReactSVG src="src/assets/code-typing-animate.svg" className="" />
+          <ReactSVG src="/code-typing-animate.svg" className="" />
         </div>
       </div>
       {TableData?.map((singleTableData) => (

@@ -45,10 +45,7 @@ const Home = () => {
           </Link>
         </div>
       </div>
-      <ReactSVG
-        src="src/assets/website-creator-animate.svg"
-        className="w-full"
-      />
+      <ReactSVG src="/website-creator-animate.svg" className="w-full" />
     </div>
   );
 };
