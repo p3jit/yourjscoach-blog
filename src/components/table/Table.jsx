@@ -5,12 +5,22 @@ const Table = ({ data }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
 
   const returnColor = (difficulty) => {
-    if (difficulty.toLowerCase() === "easy") {
+    if (difficulty === 0) {
       return "text-green-600";
-    } else if (difficulty.toLowerCase() === "medium") {
+    } else if (difficulty === 1) {
       return "text-yellow-600";
     } else {
       return "text-red-600";
+    }
+  };
+
+  const returnDifficultyText = (difficulty) => {
+    if (difficulty === 0) {
+      return "Easy";
+    } else if (difficulty === 1) {
+      return "Medium";
+    } else {
+      return "Hard";
     }
   };
 
@@ -49,7 +59,13 @@ const Table = ({ data }) => {
                 >
                   Asked in
                 </th>
-                <th className="px-4 py-2"></th>
+                <th
+                  className={`whitespace-nowrap px-4 py-2 text-left font-bold text-xl ${
+                    isDarkMode ? "text-gray-900" : "text-white"
+                  }`}
+                >
+                  Problem Link
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -67,10 +83,10 @@ const Table = ({ data }) => {
                       singleQuestion.difficulty
                     )} ${isDarkMode ? "text-gray-900" : "text-white"}`}
                   >
-                    {singleQuestion.difficulty}
+                    {returnDifficultyText(singleQuestion.difficulty)}
                   </td>
                   <td className="whitespace-nowrap px-4 py-2 font-semibold text-gray-700 max-w-3xl">
-                    <div className="flex gap-2 flex-wrap max-w-[22rem]">
+                    <div className="flex gap-2 flex-wrap max-w-[14rem]">
                       {singleQuestion.askedIn?.map((singleAskedIn) => (
                         <span
                           key={Math.random()}
@@ -85,12 +101,12 @@ const Table = ({ data }) => {
                       ))}
                     </div>
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2 flex flex-row gap-4">
+                  <td className="whitespace-nowrap px-4 py-2 flex flex-col gap-4">
                     {singleQuestion.problemLink1 ? (
                       <a
                         href={`${singleQuestion.problemLink1}`}
                         target="_blank"
-                        className="inline-block rounded bg-slate-300 hover:bg-slate-400 text-gray-900 px-4 py-2 text-sm font-medium"
+                        className="inline-block rounded bg-slate-300 text-center hover:bg-slate-400 text-gray-900 px-4 py-2 text-sm font-medium"
                       >
                         Problem Link - 1
                       </a>
@@ -101,7 +117,7 @@ const Table = ({ data }) => {
                       <a
                         href={`${singleQuestion.problemLink2}`}
                         target="_blank"
-                        className="inline-block rounded bg-slate-300 hover:bg-slate-400 text-gray-900 px-4 py-2 text-sm font-medium"
+                        className="inline-block rounded bg-slate-300 text-center hover:bg-slate-400 text-gray-900 px-4 py-2 text-sm font-medium"
                       >
                         Problem Link - 2
                       </a>
@@ -112,7 +128,7 @@ const Table = ({ data }) => {
                       <a
                         href={`${singleQuestion.solutionLink}`}
                         target="_blank"
-                        className="inline-block rounded bg-slate-300 hover:bg-slate-400 text-gray-900 px-4 py-2 text-sm font-medium"
+                        className="inline-block rounded text-center bg-slate-300 hover:bg-slate-400 text-gray-900 px-4 py-2 text-sm font-medium"
                       >
                         Solution Link
                       </a>

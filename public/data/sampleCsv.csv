@@ -1,0 +1,5 @@
+questionName,difficulty,askedIn,problemLink1,problemLink2,solutionLink,topic
+Contains Duplicate,0,"Google,Adobe,Microsoft,Amazon",https://leetcode.com/problems/contains-duplicate/,https://practice.geeksforgeeks.org/problems/find-duplicates-in-an-array/1,,Array
+Concatenation of Array,0,"Ola,Oracle,Airbnb",https://leetcode.com/problems/concatenation-of-array/,,,Array
+Second Largest Element In the Array,0,"Amazon,Uber,Meta",https://practice.geeksforgeeks.org/problems/second-largest3735/1?utm_source=youtube&utm_medium=collab_striver_ytdescription&utm_campaign=second-largest,,,Array
+Remove Duplicates From An Sorted Array,0,"Amazon,Adobe,Microsoft,Apple",https://leetcode.com/problems/remove-duplicates-from-sorted-array/,https://practice.geeksforgeeks.org/problems/remove-duplicate-elements-from-sorted-array/1?utm_source=gfg&utm_medium=article&utm_campaign=bottom_sticky_on_article,,Array

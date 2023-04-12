@@ -33,13 +33,13 @@ const Home = () => {
         <div className="flex md:flex-col gap-2">
           <Link
             to={`/blog`}
-            className="inline-block rounded bg-slate-300 hover:bg-slate-400 text-gray-900 px-4 py-2 text-sm font-semibold w-fit"
+            className="inline-block rounded bg-slate-300 hover:bg-slate-400 text-gray-900 px-4 py-2 text-sm font-bold w-fit"
           >
             Blog
           </Link>
           <Link
             to={`/dsa`}
-            className="inline-block rounded bg-slate-300 hover:bg-slate-400 text-gray-900 px-4 py-2 text-sm font-semibold w-fit"
+            className="inline-block rounded bg-slate-300 hover:bg-slate-400 text-gray-900 px-4 py-2 text-sm font-bold w-fit"
           >
             Dsa Questions
           </Link>
