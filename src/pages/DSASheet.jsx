@@ -1,11 +1,34 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { ReactSVG } from "react-svg";
 import { DarkModeProvider } from "../contexts/DarkModeContext";
 import Table from "../components/table/Table";
-import { TableData } from "../../public/SheetData";
+import { usePapaParse } from "react-papaparse";
+import { generateTableDataFromCsv } from "../utils/utils";
 
 const DSASheet = () => {
   const { isDarkMode } = useContext(DarkModeProvider);
+  const [tableData, setTableData] = useState([]);
+  const { readString } = usePapaParse();
+
+  useEffect(() => {
+    fetch("/data/sampleCsv.csv")
+      .then((response) => {
+        return response.text();
+      })
+      .then((txt) => {
+        readString(txt, {
+          worker: true,
+          complete: (results) => {
+            const parsedData = generateTableDataFromCsv(results.data);
+            setTableData(parsedData);
+          },
+        });
+      })
+      .catch((err) => {
+        navigate("/404");
+        console.log(err);
+      });
+  }, []);
 
   return (
     <div className="py-10 flex flex-col items-center gap-14 min-h-[85vh]">
@@ -22,7 +45,7 @@ const DSASheet = () => {
           <ReactSVG src="/code-typing-animate.svg" className="" />
         </div>
       </div>
-      {TableData?.map((singleTableData) => (
+      {tableData?.map((singleTableData) => (
         <Table data={singleTableData} key={Math.random()} />
       ))}
     </div>
