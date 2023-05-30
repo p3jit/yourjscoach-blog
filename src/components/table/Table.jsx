@@ -28,52 +28,63 @@ const Table = ({ data }) => {
     <section className="flex flex-col gap-3 w-full px-3">
       <h2
         className={`text-3xl font-medium pl-4 pb-2 ${
-          isDarkMode ? "text-gray-700" : "text-white"
+          isDarkMode ? "text-slate-700" : "text-white"
         }`}
       >
         {data.name}
       </h2>
       <div className="overflow-x-auto border border-slate-300 w-full">
         {data.questions ? (
-          <table className="min-w-full divide-y-2 divide-gray-200">
-            <thead>
+          <table className="min-w-full divide-slate-200">
+            <thead
+              className={`${
+                isDarkMode ? "bg-slate-200" : "bg-slate-600 text-white"
+              }`}
+            >
               <tr>
                 <th
                   className={`whitespace-nowrap px-4 py-2 text-left font-bold text-xl ${
-                    isDarkMode ? "text-gray-900" : "text-white"
+                    isDarkMode ? "text-slate-900" : "text-white"
                   }`}
                 >
                   Question
                 </th>
                 <th
                   className={`whitespace-nowrap px-4 py-2 text-left font-bold text-xl ${
-                    isDarkMode ? "text-gray-900" : "text-white"
+                    isDarkMode ? "text-slate-900" : "text-white"
                   }`}
                 >
                   Difficulty
                 </th>
                 <th
                   className={`whitespace-nowrap px-4 py-2 text-left font-bold text-xl ${
-                    isDarkMode ? "text-gray-900" : "text-white"
+                    isDarkMode ? "text-slate-900" : "text-white"
                   }`}
                 >
                   Asked in
                 </th>
                 <th
                   className={`whitespace-nowrap px-4 py-2 text-left font-bold text-xl ${
-                    isDarkMode ? "text-gray-900" : "text-white"
+                    isDarkMode ? "text-slate-900" : "text-white"
                   }`}
                 >
                   Problem Link
                 </th>
+                <th
+                  className={`whitespace-nowrap px-4 py-2 text-left font-bold text-xl ${
+                    isDarkMode ? "text-slate-900" : "text-white"
+                  }`}
+                >
+                  Solution Link
+                </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-slate-200">
               {data.questions?.map((singleQuestion) => (
                 <tr key={Math.random()}>
                   <td
                     className={`whitespace-nowrap px-4 py-2 font-semibold ${
-                      isDarkMode ? "text-gray-900" : "text-white"
+                      isDarkMode ? "text-slate-900" : "text-white"
                     }`}
                   >
                     {singleQuestion.questionName}
@@ -81,11 +92,11 @@ const Table = ({ data }) => {
                   <td
                     className={`whitespace-nowrap px-4 py-2 font-bold ${returnColor(
                       singleQuestion.difficulty
-                    )} ${isDarkMode ? "text-gray-900" : "text-white"}`}
+                    )} ${isDarkMode ? "text-slate-900" : "text-white"}`}
                   >
                     {returnDifficultyText(singleQuestion.difficulty)}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2 font-semibold text-gray-700 max-w-3xl">
+                  <td className="whitespace-nowrap px-4 py-2 font-semibold text-slate-700 max-w-3xl">
                     <div className="flex gap-2 flex-wrap max-w-[14rem]">
                       {singleQuestion.askedIn?.map((singleAskedIn) => (
                         <span
@@ -101,40 +112,46 @@ const Table = ({ data }) => {
                       ))}
                     </div>
                   </td>
-                  <td className="whitespace-nowrap px-4 py-2 flex flex-col gap-4">
-                    {singleQuestion.problemLink1 ? (
-                      <a
-                        href={`${singleQuestion.problemLink1}`}
-                        target="_blank"
-                        className="inline-block rounded bg-slate-300 text-center hover:bg-slate-400 text-gray-900 px-4 py-2 text-sm font-medium"
-                      >
-                        Problem Link - 1
-                      </a>
-                    ) : (
-                      ""
-                    )}
-                    {singleQuestion.problemLink2 ? (
-                      <a
-                        href={`${singleQuestion.problemLink2}`}
-                        target="_blank"
-                        className="inline-block rounded bg-slate-300 text-center hover:bg-slate-400 text-gray-900 px-4 py-2 text-sm font-medium"
-                      >
-                        Problem Link - 2
-                      </a>
-                    ) : (
-                      ""
-                    )}
-                    {singleQuestion.solutionLink ? (
-                      <a
-                        href={`${singleQuestion.solutionLink}`}
-                        target="_blank"
-                        className="inline-block rounded text-center bg-slate-300 hover:bg-slate-400 text-gray-900 px-4 py-2 text-sm font-medium"
-                      >
-                        Solution Link
-                      </a>
-                    ) : (
-                      ""
-                    )}
+                  <td className="whitespace-nowrap px-4 py-2">
+                    <div className="flex flex-col gap-4">
+                      {singleQuestion.problemLink1 ? (
+                        <a
+                          href={`${singleQuestion.problemLink1}`}
+                          target="_blank"
+                          className="inline-block rounded bg-slate-300 text-center hover:bg-slate-400 text-slate-900 px-4 py-2 text-sm font-medium"
+                        >
+                          Problem Link - 1
+                        </a>
+                      ) : (
+                        ""
+                      )}
+                      {singleQuestion.problemLink2 ? (
+                        <a
+                          href={`${singleQuestion.problemLink2}`}
+                          target="_blank"
+                          className="inline-block rounded bg-slate-300 text-center hover:bg-slate-400 text-slate-900 px-4 py-2 text-sm font-medium"
+                        >
+                          Problem Link - 2
+                        </a>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                  </td>
+                  <td className="whitespace-nowrap px-4 py-2">
+                    <div className="flex flex-col gap-4">
+                      {singleQuestion.solutionLink ? (
+                        <a
+                          href={`${singleQuestion.solutionLink}`}
+                          target="_blank"
+                          className="inline-block rounded bg-slate-300 text-center hover:bg-slate-400 text-slate-900 px-4 py-2 text-sm font-medium"
+                        >
+                          Solution
+                        </a>
+                      ) : (
+                        ""
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

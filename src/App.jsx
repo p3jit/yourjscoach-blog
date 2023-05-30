@@ -36,7 +36,7 @@ function App() {
             <Route path="/" element={<LazyHome />}></Route>
             <Route path="/blog" element={<LazyBLog />}></Route>
             <Route path="/:id" element={<LazySinglePost />}></Route>
-            <Route path="/dsa" element={<LazyDSASheet />}></Route>
+            <Route path="/dsa-questions" element={<LazyDSASheet />}></Route>
           </Routes>
         </Suspense>
 
@@ -47,11 +47,7 @@ function App() {
         ) : (
           ""
         )}
-        {location.pathname !== "/" ? (
-          <Footer setIsModalOpen={setIsModalOpen} />
-        ) : (
-          ""
-        )}
+        <Footer setIsModalOpen={setIsModalOpen} />
       </div>
     </div>
   );

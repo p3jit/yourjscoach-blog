@@ -20,7 +20,7 @@ const NewPostCard = ({ data }) => {
   };
 
   return (
-    <div className={`outline outline-1  outline-slate-300 rounded-md h-fit`}>
+    <div className={`outline outline-2  outline-slate-200 rounded-md h-fit`}>
       <div className="m-[0.04rem]">
         {data.bannerImage ? (
           <ProgressiveImage
@@ -58,8 +58,8 @@ const NewPostCard = ({ data }) => {
           })}
         </div>
         <p
-          className={`font-medium text-slate-500 mt-2 text-lg md:text-xl ${
-            !isDarkMode ? "text-slate-300" : "text-black"
+          className={`font-medium mt-2 text-lg md:text-xl ${
+            !isDarkMode ? "text-slate-300" : "text-slate-500"
           }`}
         >
           {data.description.slice(0, 300) + "..." || data.description}
@@ -67,16 +67,16 @@ const NewPostCard = ({ data }) => {
         <div className="flex justify-between mt-5 mb-3 items-end">
           <div className="flex gap-3 items-center">
             <h3
-              className={`text-sm mb-2 font-medium ${
-                !isDarkMode ? "text-slate-200" : "text-slate-400"
+              className={`text-lg mb-2 font-medium ${
+                !isDarkMode ? "text-slate-200" : "text-slate-500"
               }`}
             >
               {formatDate(new Date(data.timeStamp))}
             </h3>
           </div>
           <button
-            className={`underline underline-offset-4 decoration-slate-400 text-base flex gap-2 font-medium text-slate-500 ${
-              !isDarkMode ? "text-slate-300" : "text-black"
+            className={`underline underline-offset-4 decoration-slate-400 text-base flex gap-2 font-extrabold text-slate-500 ${
+              !isDarkMode ? "text-slate-200" : "text-slate-600"
             }`}
             onClick={handleReadMore}
           >

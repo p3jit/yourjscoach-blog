@@ -48,7 +48,7 @@ const Modal = ({ setIsModalOpen }) => {
             </picture>
             <p className="self-start flex flex-col gap-1 text-slate-200">
               <span className="text-5xl">Hi,</span> I am Prithijit Das.
-              Currently working at Accenture, India as a Software Engineer.
+              Currently working at ServiceNow, India as a Software Engineer.
               Thank you for vising this website where I aim to share resources
               for Javascript and its related frameworks.I hope it will help you
               gain knowledge and crack interviews in the long run.

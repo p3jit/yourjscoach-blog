@@ -22,9 +22,9 @@ const SearchTag = ({ data }) => {
   return (
     <div className="flex" onClick={handleActive}>
       <span
-        className={`rounded text-sm md:text-lg font-medium bg-slate-300 px-3 py-1 cursor-pointer ${
+        className={`rounded text-sm md:text-lg font-semibold bg-slate-200 px-3 py-1 cursor-pointer ${
           isActive
-            ? `outline outline-2 text-slate-500 ${
+            ? `outline outline-2 text-slate-700 ${
                 isDarkMode
                   ? "outline-slate-500 "
                   : "outline-offset-2 outline-white"
@@ -32,7 +32,7 @@ const SearchTag = ({ data }) => {
             : "text-slate-500"
         }`}
       >
-        #{data}
+        {data}
       </span>
     </div>
   );

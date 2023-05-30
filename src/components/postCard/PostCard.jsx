@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
-import Tag from "../tag/Tag";
 
 const PostCard = ({ data }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
@@ -20,7 +19,7 @@ const PostCard = ({ data }) => {
 
   return (
     <div
-      className={`flex flex-col rounded p-4 outline outline-1 outline-slate-300`}
+      className={`flex flex-col rounded p-4 outline outline-2 outline-slate-200`}
     >
       <div className="flex justify-between itme">
         <div
@@ -39,24 +38,24 @@ const PostCard = ({ data }) => {
         </h2>
       </div>
       <div className="flex flex-col pt-1 md:flex-row md:justify-between md:items-center">
-        <div className="flex flex-wrap gap-1 md:gap-2">
+        {/* <div className="flex flex-wrap gap-1 md:gap-2">
           {data.tags.map((singleTag) => {
             return <Tag key={singleTag} data={singleTag} />;
           })}
-        </div>
-        <h3 className="text-sm font-medium text-slate-400 pl-[1px] md:pl-0 pt-1 md:pt-0">
+        </div> */}
+        <h3 className="text-base font-medium text-slate-400 pl-[1px] md:pl-0 pt-1 md:pt-0">
           {data.minRead} min
         </h3>
       </div>
       <p
-        className={`break-words font-medium text-black pt-2 text-lg md:text-xl ${
+        className={`break-words font-medium pt-2 text-lg md:text-xl ${
           !isDarkMode ? "text-slate-300" : "text-slate-500"
         }`}
       >
         {data.description.slice(0, 280) + "..." || data.description}
       </p>
       <button
-        className="p-2 mt-4 font-medium rounded bg-slate-300 hover:bg-slate-400 text-slate-600"
+        className="p-2 mt-4 font-bold rounded bg-slate-300 hover:bg-slate-400 text-slate-600 hover:text-white"
         onClick={handleReadMore}
       >
         Read more
