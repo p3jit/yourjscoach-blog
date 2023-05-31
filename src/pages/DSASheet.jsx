@@ -11,7 +11,7 @@ const DSASheet = () => {
   const { readString } = usePapaParse();
 
   useEffect(() => {
-    fetch("/data/sampleCsv.csv")
+    fetch("/data/dsa.csv")
       .then((response) => {
         return response.text();
       })
@@ -35,7 +35,11 @@ const DSASheet = () => {
       <div className="w-96 md:w-[32em] mx-auto">
         <ReactSVG src="/code-typing-animate.svg" className="" />
       </div>
-      <h1 className="text-4xl font-bold text-slate-900 text-center pb-14">
+      <h1
+        className={`text-4xl font-bold text-center pb-10 ${
+          isDarkMode ? "text-slate-900" : "text-white"
+        }`}
+      >
         Dsa questions
       </h1>
       {tableData?.map((singleTableData) => (
