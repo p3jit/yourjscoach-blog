@@ -25,15 +25,15 @@ const Table = ({ data }) => {
   };
 
   return (
-    <section className="flex flex-col gap-3 w-full px-3">
+    <section className="flex flex-col gap-2 w-full px-3">
       <h2
-        className={`text-3xl font-medium pl-4 pb-2 ${
+        className={`text-2xl font-medium pl-4 pb-2 ${
           isDarkMode ? "text-slate-700" : "text-white"
         }`}
       >
         {data.name}
       </h2>
-      <div className="overflow-x-auto border border-slate-300 w-full">
+      <div className="overflow-x-auto border border-slate-300 w-full rounded-md">
         {data.questions ? (
           <table className="min-w-full divide-slate-200">
             <thead
@@ -43,35 +43,35 @@ const Table = ({ data }) => {
             >
               <tr>
                 <th
-                  className={`whitespace-nowrap px-4 py-2 text-left font-bold text-xl ${
+                  className={`whitespace-nowrap px-4 py-2 text-left font-bold text-lg ${
                     isDarkMode ? "text-slate-900" : "text-white"
                   }`}
                 >
                   Question
                 </th>
                 <th
-                  className={`whitespace-nowrap px-4 py-2 text-left font-bold text-xl ${
+                  className={`whitespace-nowrap px-4 py-2 text-left font-bold text-lg ${
                     isDarkMode ? "text-slate-900" : "text-white"
                   }`}
                 >
                   Difficulty
                 </th>
                 <th
-                  className={`whitespace-nowrap px-4 py-2 text-left font-bold text-xl ${
+                  className={`whitespace-nowrap px-4 py-2 text-left font-bold text-lg ${
                     isDarkMode ? "text-slate-900" : "text-white"
                   }`}
                 >
                   Asked in
                 </th>
                 <th
-                  className={`whitespace-nowrap px-4 py-2 text-left font-bold text-xl ${
+                  className={`whitespace-nowrap px-4 py-2 text-left font-bold text-lg ${
                     isDarkMode ? "text-slate-900" : "text-white"
                   }`}
                 >
                   Problem Link
                 </th>
                 <th
-                  className={`whitespace-nowrap px-4 py-2 text-left font-bold text-xl ${
+                  className={`whitespace-nowrap px-4 py-2 text-left font-bold text-lg ${
                     isDarkMode ? "text-slate-900" : "text-white"
                   }`}
                 >
