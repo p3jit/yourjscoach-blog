@@ -78,7 +78,7 @@ const PostDataContext = ({ children }) => {
     if (sortedValue.length == 1) {
       await setlatestPostData([sortedValue[0]]);
     } else {
-      await setlatestPostData([sortedValue[0], sortedValue[1]]);
+      await setlatestPostData([sortedValue[0]]);
     }
     await setSearchData(sortedValue);
 

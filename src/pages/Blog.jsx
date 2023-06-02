@@ -7,6 +7,7 @@ import { DarkModeProvider } from "../contexts/DarkModeContext";
 import NewPostCard from "../components/newPostCard/NewPostCard";
 import SkeletonNewLatestPostCard from "../components/skeletonNewLatestPostCard/SkeletonNewLatestPostCard";
 import { ReactSVG } from "react-svg";
+import LatestPostCard from "../components/latestPostCard/LatestPostCard";
 
 const Home = () => {
   const {
@@ -43,27 +44,12 @@ const Home = () => {
 
   return (
     <div className="flex flex-col gap-4 md:px-2 min-h-[2000px]">
-      <ReactSVG
+      {/* <ReactSVG
         src="/creative-writing-animate.svg"
         className="w-80 md:w-96 mx-auto"
-      />
-      <Title data={"Latest Posts"}></Title>
-      <div
-        className={`grid grid-rows-1 gap-10 mt-2 ${
-          latestPostData.length > 1 ? "md:grid-cols-2" : "md:grid-cols-1"
-        }`}
-      >
-        {latestPostData[0] ? (
-          latestPostData.map((singlePost) => (
-            <NewPostCard data={singlePost} key={singlePost.id} />
-          ))
-        ) : (
-          <div className="flex flex-col gap-5 md:flex-row justify-center 2xl:w-[50vw]">
-            <SkeletonNewLatestPostCard />
-            <SkeletonNewLatestPostCard />
-          </div>
-        )}
-      </div>
+      /> */}
+      <Title data={"Latest"}></Title>
+      {latestPostData[0] ? <LatestPostCard data={latestPostData[0]} /> : ""}
       <br />
       <Title data={"Search"}></Title>
       <div className="flex justify-center items-center relative">
@@ -101,7 +87,7 @@ const Home = () => {
       </div>
 
       {searchData.length && !isSearching ? (
-        <div className="flex gap-7 pt-5 relative">
+        <div className="flex flex-col md:flex-row gap-7 pt-5 relative">
           {searchData.length
             ? searchData.map((singleData) => (
                 <NewPostCard data={singleData} key={singleData.id} />
