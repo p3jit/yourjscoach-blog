@@ -1,7 +1,5 @@
 import React, { useContext, useRef, useState } from "react";
-import PostCard from "../components/postCard/PostCard";
 import SearchTag from "../components/searchTag/SearchTag";
-import SkeletonLoaderLatestPost from "../components/skeletonLoaderLatestPost/SkeletonLoaderLatestPost";
 import Title from "../components/title/Title";
 import { PostDataProvider } from "../contexts/PostDataContext";
 import { IconSearch, IconMoodCry, IconX } from "@tabler/icons";
@@ -103,17 +101,17 @@ const Home = () => {
       </div>
 
       {searchData.length && !isSearching ? (
-        <div className="flex flex-col gap-7 pt-5 relative">
+        <div className="flex gap-7 pt-5 relative">
           {searchData.length
             ? searchData.map((singleData) => (
-                <PostCard data={singleData} key={singleData.id} />
+                <NewPostCard data={singleData} key={singleData.id} />
               ))
             : ""}
         </div>
       ) : isSearching ? (
         <div className="flex flex-col gap-5">
-          <SkeletonLoaderLatestPost />
-          <SkeletonLoaderLatestPost />
+          <SkeletonNewLatestPostCard />
+          <SkeletonNewLatestPostCard />
         </div>
       ) : (
         <div className="flex flex-col gap-5 justify-center items-center pt-32">

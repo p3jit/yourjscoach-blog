@@ -34,7 +34,7 @@ const Home = () => {
           that will help your clear your next interviews
         </h2>
         <h2
-          className={`text-lg font-bold text-slate-500 pt-3 ${
+          className={`text-lg font-bold pt-3 ${
             !isDarkMode ? "text-slate-300 " : "text-slate-500"
           }`}
         >
