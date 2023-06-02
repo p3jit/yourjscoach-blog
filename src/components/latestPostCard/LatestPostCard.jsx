@@ -2,9 +2,11 @@ import React, { useContext } from "react";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
 import Tag from "../tag/Tag";
 import ProgressiveImage from "react-progressive-graceful-image";
+import { useNavigate } from "react-router-dom";
 
 const LatestPostCard = ({ data }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
+  const navigate = useNavigate();
 
   const formatDate = (value) => {
     let date = value;
@@ -13,9 +15,14 @@ const LatestPostCard = ({ data }) => {
     return `${month} ${day}`;
   };
 
-  console.log(data);
+  const handleClick = () => {
+    navigate(`/${data.displayId}`);
+  };
   return (
-    <div className="flex flex-col-reverse md:flex-row rounded-md cursor-pointer border-2 border-slate-200 p-6 gap-5">
+    <div
+      className="flex flex-col-reverse md:flex-row rounded-md cursor-pointer border-2 border-slate-200 p-6 gap-5"
+      onClick={handleClick}
+    >
       <div className="w-full md:w-6/12 flex flex-col gap-2">
         <h1
           className={`text-3xl font-bold leading-8 text-slate-800 mb-1 ${
