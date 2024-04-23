@@ -8,7 +8,6 @@ import NormalText from "../normalText/NormalText";
 import PostTitle from "../PostTitle/PostTitle";
 import RoundedText from "../roundedText/RoundedText";
 import SkeletonLoaderPost from "../skeletonLoaderPost/SkeletonLoaderPost";
-import Tag from "../tag/Tag";
 import UrlTag from "../urlTag/UrlTag";
 
 const LazyCode = lazy(() => import("../newCode/NewCode"));
@@ -49,7 +48,7 @@ export const Post = ({ data }) => {
         <article className="flex flex-col gap-5 pt-[3vh] md:pt-[2vh]">
           <div className="flex flex-col">
             <PostTitle data={data.title} />
-            <h3 className="text-center text-sm md:text-lg  text-slate-400 pt-2">
+            <h3 className="text-center text-sm md:text-lg  text-zinc-400 pt-2">
               {formatDate(new Date(data.timeStamp))}
             </h3>
             <div className=" mt-5">
@@ -101,14 +100,14 @@ export const Post = ({ data }) => {
               {postContent}
             </Markdown>
           </Suspense>
-          <hr className="bg-slate-400" />
+          <hr className="bg-zinc-400" />
           <div className="flex flex-col justify-between pt-1">
-            <div className="text-gray-600 flex gap-2 flex-wrap">
+            <div className="text-zinc-600 flex gap-2 flex-wrap">
               {data.tags.map((tag) => {
                 return (
                   <span
                     className={`w-fit px-3 py-1 rounded-xl ${
-                      isDarkMode ? "bg-slate-200" : "bg-slate-600 text-white"
+                      isDarkMode ? "bg-zinc-200" : "bg-zinc-600 text-white"
                     }`}
                   >
                     {tag}

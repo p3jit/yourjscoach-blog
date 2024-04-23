@@ -28,12 +28,12 @@ export const Header = () => {
           <IconBrandJavascript
             size={"2em"}
             stroke={"2"}
-            className={` ${isDarkMode ? "text-gray-800" : "text-white"}`}
+            className={` ${isDarkMode ? "text-zinc-700" : "text-white"}`}
           />
           <h2
             onClick={handleHomeRedirect}
             className={`cursor-pointer font-extrabold text-3xl md:text-3xl lg:text-4xl ${
-              isDarkMode ? "text-gray-800" : "text-white"
+              isDarkMode ? "text-zinc-800" : "text-white"
             }`}
           >
             YourJsCoach
@@ -42,7 +42,7 @@ export const Header = () => {
         <div className="flex gap-4 md:gap-8">
           <button className="text-2xl md:text-3xl" onClick={handleModeToggle}>
             {isDarkMode ? (
-              <IconMoon className="text-slate-800" />
+              <IconMoon className="text-zinc-700" />
             ) : (
               <IconSun className="text-white" />
             )}

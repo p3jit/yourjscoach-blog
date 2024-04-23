@@ -20,7 +20,12 @@ const NewPostCard = ({ data }) => {
   };
 
   return (
-    <div className={`outline outline-1  outline-slate-300 rounded-md h-fit`}>
+    <div
+      className={`outline outline-2 rounded-md h-fit cursor-pointer ${
+        !isDarkMode ? "outline-zinc-700" : "outline-zinc-200"
+      }`}
+      onClick={handleReadMore}
+    >
       <div className="m-[0.04rem]">
         {data.bannerImage ? (
           <ProgressiveImage
@@ -46,20 +51,20 @@ const NewPostCard = ({ data }) => {
       </div>
       <div className="flex flex-col px-5 py-1">
         <h3
-          className={`text-2xl font-bold leading-7 text-slate-800 mb-1 tracking-tighter ${
-            !isDarkMode ? "text-slate-200" : "text-black"
+          className={`text-2xl font-bold leading-7 mb-1 tracking-tighter ${
+            !isDarkMode ? "text-zinc-200" : "text-black"
           }`}
         >
           {data.title}
         </h3>
-        <div className="flex gap-1 md:gap-2 flex-wrap">
+        <div className="flex gap-1 md:gap-2 flex-wrap py-1">
           {data.tags.map((singleTag) => {
-            return <Tag key={singleTag} data={singleTag} />;
+            return <Tag data={singleTag} key={singleTag} />;
           })}
         </div>
         <p
-          className={`font-medium text-slate-500 mt-2 text-lg md:text-xl ${
-            !isDarkMode ? "text-slate-300" : "text-black"
+          className={`font-medium mt-2 text-lg md:text-xl ${
+            !isDarkMode ? "text-zinc-400" : "text-zinc-700"
           }`}
         >
           {data.description.slice(0, 300) + "..." || data.description}
@@ -68,15 +73,15 @@ const NewPostCard = ({ data }) => {
           <div className="flex gap-3 items-center">
             <h3
               className={`text-sm mb-2 font-medium ${
-                !isDarkMode ? "text-slate-200" : "text-slate-400"
+                !isDarkMode ? "text-zinc-200" : "text-zinc-400"
               }`}
             >
               {formatDate(new Date(data.timeStamp))}
             </h3>
           </div>
           <button
-            className={`underline underline-offset-4 decoration-slate-400 text-base flex gap-2 font-medium text-slate-500 ${
-              !isDarkMode ? "text-slate-300" : "text-black"
+            className={`underline underline-offset-4 decoration-zinc-400 text-base flex gap-2 font-medium ${
+              !isDarkMode ? "text-zinc-100" : "text-zinc-600"
             }`}
             onClick={handleReadMore}
           >

@@ -6,7 +6,7 @@ const PostTitle = ({ data }) => {
   return (
     <div
       className={`font-black capitalize tracking-wide ${
-        isDarkMode ? "text-gray-800" : "text-white"
+        isDarkMode ? "text-zinc-800" : "text-white"
       } text-4xl md:text-7xl pb-2 md:pb-1 text-center`}
     >
       {data}

@@ -1,6 +1,4 @@
 import React, { useContext, useRef, useState } from "react";
-import PostCard from "../components/postCard/PostCard";
-import SearchTag from "../components/searchTag/SearchTag";
 import SkeletonLoaderLatestPost from "../components/skeletonLoaderLatestPost/SkeletonLoaderLatestPost";
 import Title from "../components/title/Title";
 import { PostDataProvider } from "../contexts/PostDataContext";
@@ -9,6 +7,8 @@ import { DarkModeProvider } from "../contexts/DarkModeContext";
 import NewPostCard from "../components/newPostCard/NewPostCard";
 import SkeletonNewLatestPostCard from "../components/skeletonNewLatestPostCard/SkeletonNewLatestPostCard";
 import { ReactSVG } from "react-svg";
+import SearchCard from "../components/searchCard/SearchCard";
+import Tag from "../components/tag/Tag";
 
 const Home = () => {
   const {
@@ -28,7 +28,7 @@ const Home = () => {
   const triggerSearch = (e) => {
     const query = e.target.value;
     setIsSearching(true);
-    debouncedSearch(query);
+    debouncedSearch(query.toLowerCase());
     if (query.length) {
       setShowClear(true);
     } else {
@@ -70,31 +70,31 @@ const Home = () => {
           type="text"
           ref={searchRef}
           spellCheck="false"
-          className={`bg-slate-100 outline outline-3 w-full outline-slate-200 rounded-md py-2 pr-10 pl-10 font-medium ${
-            isDarkMode ? "outline-slate-200" : "outline-none"
+          className={`bg-zinc-100 outline outline-3 w-full outline-zinc-200 rounded-md py-2 pr-10 pl-10 font-medium ${
+            isDarkMode ? "outline-zinc-200" : "outline-none"
           }`}
           onChange={triggerSearch}
         />
-        <IconSearch className="absolute left-3 text-slate-400 text-2xl" />
+        <IconSearch className="absolute left-3 text-zinc-400 text-2xl" />
         {showClear ? (
           <IconX
-            className="absolute right-3 text-2xl text-slate-400 cursor-pointer"
+            className="absolute right-3 text-2xl text-zinc-400 cursor-pointer"
             onClick={handleClear}
           />
         ) : (
           ""
         )}
       </div>
-      <div className="flex gap-3 flex-wrap">
+      <div className="flex gap-2 flex-wrap">
         {fetchedTags.length ? (
           fetchedTags.map((singleTag) => (
-            <SearchTag data={singleTag} key={singleTag} />
+            <Tag data={singleTag} key={singleTag} isClickable={true} />
           ))
         ) : (
           <div className="flex flex-wrap gap-3">
-            <div className="w-20 h-8 rounded-md bg-slate-200 animate-pulse"></div>
-            <div className="w-20 h-8 rounded-md bg-slate-200 animate-pulse"></div>
-            <div className="w-20 h-8 rounded-md bg-slate-200 animate-pulse"></div>
+            <div className="w-20 h-8 rounded-md bg-zinc-200 animate-pulse"></div>
+            <div className="w-20 h-8 rounded-md bg-zinc-200 animate-pulse"></div>
+            <div className="w-20 h-8 rounded-md bg-zinc-200 animate-pulse"></div>
           </div>
         )}
       </div>
@@ -103,7 +103,7 @@ const Home = () => {
         <div className="flex flex-col gap-7 pt-5 relative">
           {searchData.length
             ? searchData.map((singleData) => (
-                <PostCard data={singleData} key={singleData.id} />
+                <SearchCard data={singleData} key={singleData.id} />
               ))
             : ""}
         </div>
@@ -114,8 +114,8 @@ const Home = () => {
         </div>
       ) : (
         <div className="flex flex-col gap-5 justify-center items-center pt-32">
-          <IconMoodCry className="text-slate-400" size={"3em"} />
-          <h3 className="font-medium text-2xl text-slate-400">Not found</h3>
+          <IconMoodCry className="text-zinc-400" size={"3em"} />
+          <h3 className="font-medium text-2xl text-zinc-400">Not found</h3>
         </div>
       )}
     </div>

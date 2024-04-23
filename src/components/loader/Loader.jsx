@@ -9,7 +9,7 @@ const Loader = () => {
       <IconLoader2
         size={"4em"}
         className={`animate-spin ${
-          !isDarkMode ? "text-white" : "text-slate-400"
+          !isDarkMode ? "text-white" : "text-zinc-400"
         }`}
       />
     </div>

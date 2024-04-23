@@ -9,11 +9,11 @@ const Error = () => {
     <div className="h-[86vh] w-full flex justify-center items-center flex-col">
       <IconError404
         size={"7em"}
-        className={`${!isDarkMode ? "text-white" : "text-slate-800"}`}
+        className={`${!isDarkMode ? "text-white" : "text-zinc-800"}`}
       />
       <p
         className={`font-medium text-2xl ${
-          !isDarkMode ? "text-white" : "text-slate-800"
+          !isDarkMode ? "text-white" : "text-zinc-800"
         }`}
       >
         Oops! You are in the worng place.
@@ -21,7 +21,7 @@ const Error = () => {
       <Link
         to={"/"}
         className={`underline underline-offset-8 pt-5 text-lg font-medium ${
-          !isDarkMode ? "text-white" : "text-slate-900"
+          !isDarkMode ? "text-white" : "text-zinc-900"
         }`}
       >
         Take me home

@@ -35,7 +35,7 @@ const DSASheet = () => {
       <div className="w-full flex flex-col md:flex-row justify-center items-center gap-10 md:gap-0">
         <h1
           className={`text-2xl font-medium ${
-            isDarkMode ? "text-gray-700" : "text-white"
+            isDarkMode ? "text-zinc-700" : "text-white"
           } w-full first-letter:uppercase first-letter:text-[3rem] leading-8`}
         >
           curated list of problems that will help you crack your next coding

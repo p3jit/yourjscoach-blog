@@ -6,7 +6,7 @@ const Title = ({ data }) => {
   return (
     <div
       className={`font-extrabold ${
-        isDarkMode ? "text-gray-800" : "text-white"
+        isDarkMode ? "text-zinc-800" : "text-white"
       } text-2xl md:text-4xl break-words`}
     >
       {data}

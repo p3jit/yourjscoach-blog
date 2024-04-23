@@ -14,32 +14,32 @@ const Home = () => {
           <IconBrandJavascript
             size={"3em"}
             stroke={"2"}
-            className={` ${isDarkMode ? "text-gray-800" : "text-white"}`}
+            className={` ${isDarkMode ? "text-zinc-800" : "text-white"}`}
           />
           <h1
             className={`cursor-pointer font-extrabold text-3xl md:text-3xl lg:text-4xl ${
-              isDarkMode ? "text-gray-800" : "text-white"
+              isDarkMode ? "text-zinc-800" : "text-white"
             }`}
           >
             YourJsCoach
           </h1>
         </div>
 
-        <h2 className="text-xl font-bold text-gray-400 ">
+        <h2 className="text-xl font-bold text-zinc-400 ">
           Your one stop solution for cracking interviews and practice javascript
           questions
         </h2>
-        <h2 className="text-lg font-bold text-gray-400 pt-6">Explore:</h2>
+        <h2 className="text-lg font-bold text-zinc-400 pt-6">Explore:</h2>
         <div className="flex md:flex-col gap-2">
           <Link
             to={`/blog`}
-            className="inline-block rounded bg-slate-300 hover:bg-slate-400 text-gray-900 px-4 py-2 text-sm font-bold w-fit"
+            className="inline-block rounded bg-zinc-300 hover:bg-zinc-400 text-zinc-900 px-4 py-2 text-sm font-bold w-fit"
           >
             Blog
           </Link>
           <Link
             to={`/dsa`}
-            className="inline-block rounded bg-slate-300 hover:bg-slate-400 text-gray-900 px-4 py-2 text-sm font-bold w-fit"
+            className="inline-block rounded bg-zinc-300 hover:bg-zinc-400 text-zinc-900 px-4 py-2 text-sm font-bold w-fit"
           >
             Dsa Questions
           </Link>

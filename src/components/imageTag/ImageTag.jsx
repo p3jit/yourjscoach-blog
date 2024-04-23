@@ -9,7 +9,7 @@ const ImageTag = ({ children, index, ...props }) => {
   return (
     <div
       className={`w-auto rounded-md p-3 my-5 ${
-        !isDarkMode ? "ring-slate-700 ring-1" : "p-0"
+        !isDarkMode ? "ring-zinc-700 ring-1" : "p-0"
       }`}
     >
       {!imageList[parseInt(index)] ? (

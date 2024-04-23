@@ -20,7 +20,7 @@ export default function NewCode({ children, language }) {
         <pre
           className={`${className} py-5 px-5 rounded-lg leading-6 overflow-auto ${
             isMobile || isTrue ? "text-sm" : "text-base"
-          } ${isDarkMode ? "" : "ring-1 ring-slate-700"}`}
+          } ${isDarkMode ? "" : "ring-1 ring-zinc-700"}`}
           style={style}
         >
           {tokens.map((line, i) => (
