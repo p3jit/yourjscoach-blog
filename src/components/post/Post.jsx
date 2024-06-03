@@ -60,10 +60,10 @@ export const Post = ({ data }) => {
                 <ProgressiveImage
                   src={`${import.meta.env.VITE_API_URL}/assets/${
                     data.bannerImage
-                  }`}
+                  }?quality=70`}
                   placeholder={`${import.meta.env.VITE_API_URL}/assets/${
                     data.bannerImage
-                  }`}
+                  }?quality=1`}
                 >
                   {(src, loading) => (
                     <img

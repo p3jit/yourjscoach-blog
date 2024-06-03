@@ -29,8 +29,8 @@ const NewPostCard = ({ data }) => {
       <div className="m-[0.04rem]">
         {data.bannerImage ? (
           <ProgressiveImage
-            src={`${import.meta.env.VITE_API_URL}/assets/${data.bannerImage}`}
-            placeholder={`${import.meta.env.VITE_API_URL}/assets/${data.bannerImage}`}
+            src={`${import.meta.env.VITE_API_URL}/assets/${data.bannerImage}?quality=70`}
+            placeholder={`${import.meta.env.VITE_API_URL}/assets/${data.bannerImage}?quality=1`}
           >
             {(src, loading) => (
               <img
@@ -39,7 +39,7 @@ const NewPostCard = ({ data }) => {
                   loading ? "blur-[4px]" : "blur-none"
                 } delay-200 mb-4 rounded-t-md w-full h-[15rem] object-cover`}
                 src={src}
-                alt="an image"
+                alt={data.bannerImage}
                 width={"500"}
                 height={"300"}
               />

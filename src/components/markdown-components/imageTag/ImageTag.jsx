@@ -3,48 +3,32 @@ import ProgressiveImage from "react-progressive-graceful-image";
 import { DarkModeProvider } from "../../../contexts/DarkModeContext";
 
 const ImageTag = ({ children, index, ...props }) => {
-  const [isLoading, setIsLoading] = useState(true);
   const { isDarkMode } = useContext(DarkModeProvider);
-  const { imageList } = props;
+
+  const imageLink = children[0].props
+    ? String(children[0].props.href)
+    : `${import.meta.env.VITE_API_URL}/assets/${String(children[0])}`;
+
   return (
     <div
       className={`w-auto rounded-md p-3 my-5 ${
         !isDarkMode ? "ring-zinc-700 ring-1" : "p-0"
       }`}
     >
-      { props.imageList && index && props.imageList[index] ? (
-        <div className="">
-          <ProgressiveImage
-            src={imageList[parseInt(index)].highQuality.url}
-            placeholder={imageList[parseInt(index)].lowQuality.url}
-          >
-            {(src, loading) => (
-              <img
-                rel="preload"
-                className={`${
-                  loading ? "blur-[4px]" : "blur-none"
-                } delay-300 mb-2 mt-1 rounded-xl w-full min-h-[20rem] md:min-h-[25rem] lg:min-h-[30rem] respImage object-contain`}
-                src={src}
-                alt="an image"
-                width={"600"}
-                height={"300px"}
-              />
-            )}
-          </ProgressiveImage>
-        </div>
-      ) : (
-        <img
-          src={children[0].props ? String(children[0].props.href) : `${import.meta.env.VITE_API_URL}/assets/${String(children[0])}`}
-          alt={String(children[0])}
-          loading="lazy"
-          className={`object-cover bg-no-repeat rounded-md w-full min-h-[20rem] md:min-h-[25rem] lg:min-h-[30rem] ${
-            isLoading ? "invisible" : "visible"
-          }`}
-          onLoad={() => {
-            setIsLoading(!isLoading);
-          }}
-        />
-      )}
+      <ProgressiveImage src={`${imageLink}?quality=70`} placeholder={`${imageLink}?quality=1`}>
+        {(src, loading) => (
+          <img
+            rel="preload"
+            className={`${
+              loading ? "blur-[4px]" : "blur-none"
+            } delay-300 mb-2 mt-1 rounded-xl w-full min-h-[20rem] md:min-h-[25rem] lg:min-h-[30rem] respImage object-contain`}
+            src={src}
+            alt={String(children[0])}
+            width={"600"}
+            height={"300px"}
+          />
+        )}
+      </ProgressiveImage>
     </div>
   );
 };
