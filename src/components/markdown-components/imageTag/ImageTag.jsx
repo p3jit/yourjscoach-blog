@@ -15,7 +15,7 @@ const ImageTag = ({ children, index, ...props }) => {
         !isDarkMode ? "ring-zinc-700 ring-1" : "p-0"
       }`}
     >
-      <ProgressiveImage src={`${imageLink}?quality=70`} placeholder={`${imageLink}?quality=1`}>
+      <ProgressiveImage src={`${imageLink}?quality=70&format=webp`} placeholder={`${imageLink}?quality=1&format=webp`}>
         {(src, loading) => (
           <img
             rel="lazy"

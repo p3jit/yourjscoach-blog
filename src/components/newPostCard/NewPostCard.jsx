@@ -29,12 +29,12 @@ const NewPostCard = ({ data }) => {
       <div className="m-[0.04rem]">
         {data.bannerImage ? (
           <ProgressiveImage
-            src={`${import.meta.env.VITE_API_URL}/assets/${data.bannerImage}?quality=70`}
-            placeholder={`${import.meta.env.VITE_API_URL}/assets/${data.bannerImage}?quality=1`}
+            src={`${import.meta.env.VITE_API_URL}/assets/${data.bannerImage}?quality=70&format=webp`}
+            placeholder={`${import.meta.env.VITE_API_URL}/assets/${data.bannerImage}?quality=1&format=webp`}
           >
             {(src, loading) => (
               <img
-                rel="lazy"
+                rel="preload"
                 className={`${
                   loading ? "blur-[4px]" : "blur-none"
                 } delay-200 mb-4 rounded-t-md w-full h-[15rem] object-cover`}

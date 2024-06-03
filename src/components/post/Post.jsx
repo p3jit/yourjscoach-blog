@@ -60,14 +60,14 @@ export const Post = ({ data }) => {
                 <ProgressiveImage
                   src={`${import.meta.env.VITE_API_URL}/assets/${
                     data.bannerImage
-                  }?quality=70`}
+                  }?quality=70&format=webp`}
                   placeholder={`${import.meta.env.VITE_API_URL}/assets/${
                     data.bannerImage
-                  }?quality=1`}
+                  }?quality=1&format=webp`}
                 >
                   {(src, loading) => (
                     <img
-                      rel="lazy"
+                      rel="preload"
                       className={`${
                         loading ? "blur-[4px]" : "blur-none"
                       } delay-200 mb-2 mt-1 rounded-xl w-full h-[20rem] md:h-[25rem] lg:h-[30rem] respImage object-contain`}
