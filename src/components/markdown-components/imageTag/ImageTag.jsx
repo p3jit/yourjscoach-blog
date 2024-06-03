@@ -18,7 +18,7 @@ const ImageTag = ({ children, index, ...props }) => {
       <ProgressiveImage src={`${imageLink}?quality=70`} placeholder={`${imageLink}?quality=1`}>
         {(src, loading) => (
           <img
-            rel="preload"
+            rel="lazy"
             className={`${
               loading ? "blur-[4px]" : "blur-none"
             } delay-300 mb-2 mt-1 rounded-xl w-full min-h-[20rem] md:min-h-[25rem] lg:min-h-[30rem] respImage object-contain`}

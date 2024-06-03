@@ -67,7 +67,7 @@ export const Post = ({ data }) => {
                 >
                   {(src, loading) => (
                     <img
-                      rel="preload"
+                      rel="lazy"
                       className={`${
                         loading ? "blur-[4px]" : "blur-none"
                       } delay-200 mb-2 mt-1 rounded-xl w-full h-[20rem] md:h-[25rem] lg:h-[30rem] respImage object-contain`}

@@ -34,7 +34,7 @@ const NewPostCard = ({ data }) => {
           >
             {(src, loading) => (
               <img
-                rel="preload"
+                rel="lazy"
                 className={`${
                   loading ? "blur-[4px]" : "blur-none"
                 } delay-200 mb-4 rounded-t-md w-full h-[15rem] object-cover`}
