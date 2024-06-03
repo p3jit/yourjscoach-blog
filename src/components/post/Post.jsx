@@ -3,16 +3,20 @@ import { useContext, useEffect, useState, lazy, Suspense } from "react";
 import ProgressiveImage from "react-progressive-graceful-image";
 import { useNavigate } from "react-router-dom";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
-import Heading from "../heading/Heading";
-import NormalText from "../normalText/NormalText";
+import Heading from "../markdown-components/heading/Heading";
+import NormalText from "../markdown-components/normalText/NormalText";
 import PostTitle from "../PostTitle/PostTitle";
-import RoundedText from "../roundedText/RoundedText";
-import SkeletonLoaderPost from "../skeletonLoaderPost/SkeletonLoaderPost";
-import UrlTag from "../urlTag/UrlTag";
+import RoundedText from "../markdown-components/roundedText/RoundedText";
+import SkeletonLoaderPost from "../skeleton-loader-components/skeletonLoaderPost/SkeletonLoaderPost";
+import UrlTag from "../markdown-components/urlTag/UrlTag";
 
-const LazyCode = lazy(() => import("../newCode/NewCode"));
-const LazyVideoTag = lazy(() => import("../videoTag/VideoTag"));
-const LazyImageTag = lazy(() => import("../imageTag/ImageTag"));
+const LazyCode = lazy(() => import("../markdown-components/newCode/NewCode"));
+const LazyVideoTag = lazy(() =>
+  import("../markdown-components/videoTag/VideoTag")
+);
+const LazyImageTag = lazy(() =>
+  import("../markdown-components/imageTag/ImageTag")
+);
 
 export const Post = ({ data }) => {
   const [postContent, setPostContent] = useState("");
@@ -28,7 +32,7 @@ export const Post = ({ data }) => {
   };
 
   useEffect(() => {
-    fetch(data.mdFile.url)
+    fetch(`${import.meta.env.VITE_API_URL}/assets/${data.mdFile}`)
       .then((response) => {
         return response.text();
       })
@@ -54,8 +58,12 @@ export const Post = ({ data }) => {
             <div className=" mt-5">
               {data.bannerImage ? (
                 <ProgressiveImage
-                  src={data.bannerImage.highQuality.url}
-                  placeholder={data.bannerImage.lowQuality.url}
+                  src={`${import.meta.env.VITE_API_URL}/assets/${
+                    data.bannerImage
+                  }`}
+                  placeholder={`${import.meta.env.VITE_API_URL}/assets/${
+                    data.bannerImage
+                  }`}
                 >
                   {(src, loading) => (
                     <img

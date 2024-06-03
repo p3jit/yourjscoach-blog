@@ -1,14 +1,14 @@
 import React, { useContext, useRef, useState } from "react";
-import SkeletonLoaderLatestPost from "../components/skeletonLoaderLatestPost/SkeletonLoaderLatestPost";
 import Title from "../components/title/Title";
 import { PostDataProvider } from "../contexts/PostDataContext";
 import { IconSearch, IconMoodCry, IconX } from "@tabler/icons";
 import { DarkModeProvider } from "../contexts/DarkModeContext";
 import NewPostCard from "../components/newPostCard/NewPostCard";
-import SkeletonNewLatestPostCard from "../components/skeletonNewLatestPostCard/SkeletonNewLatestPostCard";
 import { ReactSVG } from "react-svg";
 import SearchCard from "../components/searchCard/SearchCard";
 import Tag from "../components/tag/Tag";
+import SkeletonLoaderLatestPost from "../components/skeleton-loader-components/skeletonLoaderLatestPost/SkeletonLoaderLatestPost";
+import SkeletonNewLatestPostCard from "../components/skeleton-loader-components/skeletonNewLatestPostCard/SkeletonNewLatestPostCard";
 
 const Home = () => {
   const {

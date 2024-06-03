@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { DarkModeProvider } from "../../contexts/DarkModeContext";
+import { DarkModeProvider } from "../../../contexts/DarkModeContext";
 
 const Heading = ({ children }) => {
   const { isDarkMode } = useContext(DarkModeProvider);

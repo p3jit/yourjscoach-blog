@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import ProgressiveImage from "react-progressive-graceful-image";
-import { DarkModeProvider } from "../../contexts/DarkModeContext";
+import { DarkModeProvider } from "../../../contexts/DarkModeContext";
 
 const ImageTag = ({ children, index, ...props }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -12,22 +12,7 @@ const ImageTag = ({ children, index, ...props }) => {
         !isDarkMode ? "ring-zinc-700 ring-1" : "p-0"
       }`}
     >
-      {!imageList[parseInt(index)] ? (
-        <img
-          src={String(children[0].props.href)}
-          alt="newImage"
-          loading="lazy"
-          className={`object-cover bg-no-repeat rounded-md ${
-            isLoading ? "invisible" : "visible"
-          }`}
-          onLoad={() => {
-            setIsLoading(!isLoading);
-          }}
-        />
-      ) : (
-        ""
-      )}
-      {props.imageList[index] ? (
+      { props.imageList && index && props.imageList[index] ? (
         <div className="">
           <ProgressiveImage
             src={imageList[parseInt(index)].highQuality.url}
@@ -48,7 +33,17 @@ const ImageTag = ({ children, index, ...props }) => {
           </ProgressiveImage>
         </div>
       ) : (
-        ""
+        <img
+          src={children[0].props ? String(children[0].props.href) : `${import.meta.env.VITE_API_URL}/assets/${String(children[0])}`}
+          alt={String(children[0])}
+          loading="lazy"
+          className={`object-cover bg-no-repeat rounded-md w-full min-h-[20rem] md:min-h-[25rem] lg:min-h-[30rem] ${
+            isLoading ? "invisible" : "visible"
+          }`}
+          onLoad={() => {
+            setIsLoading(!isLoading);
+          }}
+        />
       )}
     </div>
   );

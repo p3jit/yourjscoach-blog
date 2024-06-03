@@ -30,48 +30,13 @@ const PostDataContext = ({ children }) => {
   const debouncedSearch = useDebounce(normalSearch, 1000);
 
   const newFetchPostsandTags = async () => {
-    // dynamic import gql and request
-    const { gql, request } = await import("graphql-request");
-    const query = gql`
-      query {
-        pluralPost(stage: PUBLISHED) {
-          description
-          displayId
-          id
-          minRead
-          tags
-          title
-          mdFile {
-            url
-          }
-          imageList {
-            highQuality {
-              url
-            }
-            lowQuality {
-              url
-            }
-          }
-          timeStamp
-          bannerImage {
-            highQuality {
-              url
-            }
-            lowQuality {
-              url
-            }
-          }
-        }
-      }
-    `;
-    let { pluralPost } = await request(
-      "https://ap-south-1.cdn.hygraph.com/content/clcz3t3t93rpg01t7a3v40onf/master",
-      query
-    );
+    const { data } = await (
+      await fetch(`${import.meta.env.VITE_API_URL}/items/blog_post`)
+    ).json();
 
     //Filling the posts
-    await setPostData(pluralPost);
-    let sortedValue = new Array(...pluralPost);
+    await setPostData(data);
+    let sortedValue = new Array(...data);
     sortedValue
       .sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp))
       .slice(0, 2);
@@ -84,7 +49,7 @@ const PostDataContext = ({ children }) => {
 
     // Filling the tags
     let tagSet = new Set();
-    pluralPost.forEach((singlePost) => {
+    data.forEach((singlePost) => {
       singlePost.tags.forEach((singleTag) => {
         tagSet.add(singleTag);
       });

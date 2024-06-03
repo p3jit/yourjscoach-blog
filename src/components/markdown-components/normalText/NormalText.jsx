@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { DarkModeProvider } from "../../contexts/DarkModeContext";
+import { DarkModeProvider } from "../../../contexts/DarkModeContext";
 
 const NormalText = ({ children }) => {
   const { isDarkMode } = useContext(DarkModeProvider);

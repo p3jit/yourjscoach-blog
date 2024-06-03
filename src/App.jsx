@@ -10,13 +10,14 @@ import Modal from "./components/modal/Modal.jsx";
 const LazyError = lazy(() => import("./pages/Error"));
 const LazyBlog = lazy(() => import("./pages/Blog.jsx"));
 const LazySinglePost = lazy(() => import("./pages/SinglePost.jsx"));
+const LazyEditor = lazy(() => import("./pages/Editor.jsx"));
 // const LazyDSASheet = lazy(() => import("./pages/DSASheet"));
 // const LazyHome = lazy(() => import("./pages/Home"));
 
 function App() {
   const { isModalOpen, setIsModalOpen } = useContext(ModalProvider);
   const { isDarkMode } = useContext(DarkModeProvider);
-  const location = useLocation();
+  // const location = useLocation();
 
   return (
     <div
@@ -25,7 +26,7 @@ function App() {
       }`}
     >
       <div
-        className={`font-sofia min-h-screen flex flex-col gap-10 relative tracking-tight py-[2vh] px-[6vw] 2xl:w-[70vw] min-w-[60vw] ${
+        className={`font-sofia min-h-screen flex flex-col gap-10 relative tracking-tight py-[2vh] px-[6vw] 2xl:w-[80vw] min-w-[60vw] ${
           isDarkMode ? "bg-white" : "bg-zinc-900"
         }`}
       >
@@ -36,6 +37,7 @@ function App() {
             <Route path="/404" element={<LazyError />}></Route>
             <Route path="/" element={<LazyBlog />}></Route>
             <Route path="/:id" element={<LazySinglePost />}></Route>
+            <Route path="/editor" element={<LazyEditor />}></Route>
             {/* <Route path="/dsa" element={<LazyDSASheet />}></Route> */}
             {/* <Route path="/" element={<LazyHome />}></Route> */}
           </Routes>

@@ -29,8 +29,8 @@ const NewPostCard = ({ data }) => {
       <div className="m-[0.04rem]">
         {data.bannerImage ? (
           <ProgressiveImage
-            src={data.bannerImage.highQuality.url}
-            placeholder={data.bannerImage.lowQuality.url}
+            src={`${import.meta.env.VITE_API_URL}/assets/${data.bannerImage}`}
+            placeholder={`${import.meta.env.VITE_API_URL}/assets/${data.bannerImage}`}
           >
             {(src, loading) => (
               <img
