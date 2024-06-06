@@ -6,9 +6,9 @@ const Footer = ({ setIsModalOpen }) => {
     setIsModalOpen(true);
   };
   return (
-    <footer className="flex justify-between items-center w-full">
+    <footer className="flex justify-center items-center w-full">
       <h1 className="text-zinc-400 text-sm">Made with ❤️ in India</h1>
-      <button
+      {/* <button
         className="bg-zinc-300 hover:bg-zinc-400 md:px-3 p-2 md:py-2 text-sm font-medium rounded text-zinc-900 flex items-center gap-2"
         onClick={toggleModalOpen}
       >
@@ -17,7 +17,7 @@ const Footer = ({ setIsModalOpen }) => {
           className="font-medium  text-zinc-700"
         />
         About
-      </button>
+      </button> */}
     </footer>
   );
 };
