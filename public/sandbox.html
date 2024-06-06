@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sandboxed Enviroment</title>
-    <!-- <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self' https://babeljs.io https://github.com https://unpkg.com http://foo.com http://babel.io;
-        script-src 'nonce-runMe' 'nonce-runMe2' https://babeljs.io https://github.com https://unpkg.com http://foo.com http://babel.io 'self'; 
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'nonce-runMe' 'nonce-runMe2' 'self'; 
         style-src 'self'; 
         img-src 'self'; 
         connect-src 'self'; 
@@ -14,13 +14,13 @@
         media-src 'self'; 
         object-src 'none';
         base-uri 'self';
-        script-src-elem 'nonce-runMe' 'nonce-runMe2' https://babeljs.io https://github.com https://unpkg.com http://foo.com http://babel.io 'self';
-    "> -->
+        script-src-elem 'nonce-runMe' 'nonce-runMe2' 'self';
+    ">
 </head>
 <body>
-    <script src="https://api.yourjscoach.online/assets/14b14226-7a42-4d39-ba57-826e851637fd.js"></script>
-    <script src="https://api.yourjscoach.online/assets/7450aff9-ac40-49f6-a23b-6e2a1eb14b53.js" type="module"></script>
-    <!-- <script src="https://unpkg.com/@babel/standalone/babel.min.js" crossorigin nonce="runMe"></script>
-    <script src="sandbox.js" crossorigin nonce="runMe" type="module"></script> -->
+    <!-- <script crossorigin nonce="runMe2" src="https://api.yourjscoach.online/assets/14b14226-7a42-4d39-ba57-826e851637fd.js"></script> -->
+    <!-- <script nonce="runMe" crossorigin src="https://api.yourjscoach.online/assets/7450aff9-ac40-49f6-a23b-6e2a1eb14b53.js" type="module"></script> -->
+    <script src="sandbox.js" crossorigin nonce="runMe" type="module"></script>
+    <script src="babel.min.js" crossorigin nonce="runMe" type="module"></script>
 </body>
 </html>

@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import Editor from "@monaco-editor/react";
+import useDebounce from "../hooks/useDebounce";
+import { sandboxHTML } from "../utils/utils";
 
 const Practice = () => {
   const iframeRef = useRef(null);
@@ -23,8 +25,10 @@ const Practice = () => {
 
   useEffect(() => {
     const handleMessage = (event) => {
-      if (event.origin !== "https://api.yourjscoach.online") {
-        console.warn('Origin mismatch:', event.origin);
+      if (
+        event.origin !== window.location.origin
+      ) {
+        console.warn("Origin mismatch:", event.origin);
         return;
       }
       if (event.data && !event.data.vscodeScheduleAsyncWork) {
@@ -61,9 +65,11 @@ const Practice = () => {
         functionName: currentProblem.functionName,
         testCases: currentProblem.testCases,
       },
-      "https://api.yourjscoach.online"
+      window.location.origin
     );
   };
+
+  const debouncedSendMessageToIframe = useDebounce(sendMessageToIframe,500);
 
   return (
     <PanelGroup direction="horizontal" className="flex gap-1">
@@ -88,14 +94,15 @@ const Practice = () => {
               <div className="flex justify-between items-center">
                 <iframe
                   ref={iframeRef}
-                  src="https://api.yourjscoach.online/assets/2f6c44e7-1cdb-43c0-a251-55fe80f73bff.html"
+                  srcDoc={sandboxHTML}
+                  sandbox="allow-scripts allow-same-origin"
                   className="hidden"
                 ></iframe>
                 <h2 className="text-zinc-400 font-gap-2bold text-xl">Output</h2>
                 <div className="flex gap-3">
                   <button
                     className="bg-zinc-700 rounded-md px-3 py-2 flex gap-2 items-center justify-center text-lime-500 font-bold"
-                    onClick={sendMessageToIframe}
+                    onClick={debouncedSendMessageToIframe}
                   >
                     <span>▶</span>Run
                   </button>
@@ -104,8 +111,20 @@ const Practice = () => {
                   </button>
                 </div>
               </div>
-              {error ? <div className="text-red-600 mt-5 font-bold text-lg">{error}</div> : ""}
-              {success ? <div className="text-lime-500 mt-5 font-bold text-lg">{success}</div> : ""}
+              {error ? (
+                <div className="text-red-600 mt-5 font-bold text-lg">
+                  {error}
+                </div>
+              ) : (
+                ""
+              )}
+              {success ? (
+                <div className="text-lime-500 mt-5 font-bold text-lg">
+                  {success}
+                </div>
+              ) : (
+                ""
+              )}
             </div>
           </Panel>
         </PanelGroup>
