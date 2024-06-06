@@ -23,7 +23,7 @@ const Practice = () => {
 
   useEffect(() => {
     const handleMessage = (event) => {
-      if (event.origin !== "https://www.yourjscoach.online") {
+      if (event.origin !== "https://api.yourjscoach.online") {
         console.warn('Origin mismatch:', event.origin);
         return;
       }
@@ -89,7 +89,6 @@ const Practice = () => {
                 <iframe
                   ref={iframeRef}
                   src="https://api.yourjscoach.online/assets/2f6c44e7-1cdb-43c0-a251-55fe80f73bff.html"
-                  sandbox="allow-scripts"
                   className="hidden"
                 ></iframe>
                 <h2 className="text-zinc-400 font-gap-2bold text-xl">Output</h2>
