@@ -61,7 +61,7 @@ const Practice = () => {
         functionName: currentProblem.functionName,
         testCases: currentProblem.testCases,
       },
-      window.location.origin
+      "https://yourjscoach.online"
     );
   };
 
