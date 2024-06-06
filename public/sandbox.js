@@ -34,7 +34,7 @@ function transpileCode(code) {
 }
 
 window.addEventListener("message", (event) => {
-  if (event.origin !== window.location.origin) {
+  if (event.origin !== "https://yourjscoach.online") {
     console.warn("Origin mismatch:", event.origin);
     return;
   }
