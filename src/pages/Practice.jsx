@@ -61,7 +61,7 @@ const Practice = () => {
         functionName: currentProblem.functionName,
         testCases: currentProblem.testCases,
       },
-      "https://yourjscoach.online"
+      "https://api.yourjscoach.online"
     );
   };
 
