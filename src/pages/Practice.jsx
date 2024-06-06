@@ -23,7 +23,7 @@ const Practice = () => {
 
   useEffect(() => {
     const handleMessage = (event) => {
-      if (event.origin !== window.location.origin) {
+      if (event.origin !== "https://api.yourjscoach.online") {
         console.warn('Origin mismatch:', event.origin);
         return;
       }
