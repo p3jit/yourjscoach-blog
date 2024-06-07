@@ -34,7 +34,7 @@ const Practice = () => {
       if (event.data && !event.data.vscodeScheduleAsyncWork) {
         console.log(event.data)
         if (event.data.stack) {
-          setError(event.data.stack);
+          setError(event.data.stack.toString());
         } else {
           setSuccess(new Array(event.data));
         }
