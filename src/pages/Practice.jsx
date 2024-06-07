@@ -25,12 +25,12 @@ const Practice = () => {
 
   useEffect(() => {
     const handleMessage = (event) => {
-      if (import.meta.env.VITE_ENV !== "dev") {
-        if (event.origin !== "https://www.yourjscoach.online") {
-          console.warn("Origin mismatch:", event.origin);
-          return;
-        }
-      }
+      // if (import.meta.env.VITE_ENV !== "dev") {
+      //   if (event.origin !== "https://www.yourjscoach.online") {
+      //     console.warn("Origin mismatch:", event.origin);
+      //     return;
+      //   }
+      // }
       if (event.data && !event.data.vscodeScheduleAsyncWork) {
         if (event.data.stack) {
           setError(event.data.stack);
