@@ -33,7 +33,7 @@ const Practice = () => {
       // }
       if (event.data && !event.data.vscodeScheduleAsyncWork) {
         console.log(event)
-        if (event.data.stack && event.data.name && event.data.code) {
+        if (event.data.stack || event.data.name || event.data.code) {
           setError(event.data.message.toString());
         } else {
           setSuccess(new Array(event.data));
