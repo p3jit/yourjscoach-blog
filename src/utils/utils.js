@@ -42,28 +42,3 @@
 //   mp.set(tstArr[index][6], currArr);
 // }
 
-export const sandboxHTML = `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sandboxed Enviroment</title>
-    <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self';
-        script-src 'nonce-runMe' 'nonce-runMe2' 'self'; 
-        style-src 'self'; 
-        img-src 'self'; 
-        connect-src 'self'; 
-        font-src 'self'; 
-        media-src 'self'; 
-        object-src 'none';
-        base-uri 'self';
-        script-src-elem 'nonce-runMe' 'nonce-runMe2' 'self';
-    ">
-</head>
-<body>
-    <script src="sandbox.js" nonce="runMe" type="module"></script>
-    <script src="babel.min.js" nonce="runMe" type="module"></script>
-</body>
-</html>
-`;

@@ -2,7 +2,6 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import Editor from "@monaco-editor/react";
 import useDebounce from "../hooks/useDebounce";
-import { sandboxHTML } from "../utils/utils";
 
 const Practice = () => {
   const iframeRef = useRef(null);
@@ -26,9 +25,11 @@ const Practice = () => {
 
   useEffect(() => {
     const handleMessage = (event) => {
-      if (event.origin !== window.location.origin) {
-        console.warn("Origin mismatch:", event.origin);
-        return;
+      if (import.meta.env.VITE_ENV !== "dev") {
+        if (event.origin !== "https://yourjscoach.online" || event.origin !== "https://api.yourjscoach.online") {
+          console.warn("Origin mismatch:", event.origin);
+          return;
+        }
       }
       if (event.data && !event.data.vscodeScheduleAsyncWork) {
         if (event.data.stack) {
@@ -64,7 +65,7 @@ const Practice = () => {
         functionName: currentProblem.functionName,
         testCases: currentProblem.testCases,
       },
-      window.location.origin
+      "*"
     );
   };
 
@@ -98,8 +99,11 @@ const Practice = () => {
               <div className="flex justify-end items-center right-1">
                 <iframe
                   ref={iframeRef}
-                  srcDoc={sandboxHTML}
-                  sandbox="allow-scripts"
+                  // srcDoc={sandboxHTML}
+                  src={
+                    import.meta.env.VITE_ENV === "prod" ? "https://api.yourjscoach.online/assets/3cae4489-5ac4-4c09-bd97-a2cd51409c12.html" : "sandbox.html"
+                  }
+                  sandbox={`allow-scripts ${ import.meta.env.VITE_ENV === "prod" ? "" : "allow-same-origin"}`}
                   className="hidden"
                 ></iframe>
                 <div className="flex gap-3">

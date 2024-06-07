@@ -6,7 +6,6 @@ export function replace(string, regex, value = "") {
   return string.toString().replace(regex, value).trim();
 }
 
-window.parent = {};
 window.YJC_Result = new Array();
 window.YJC_Error = null;
 
@@ -36,7 +35,7 @@ function transpileCode(code) {
 
 window.addEventListener("message", (event) => {
   if (
-    ["https://yourjscoach.online", "http://localhost:5173"].find((currElem) => {
+    ["https://yourjscoach.online", "http://localhost:5173", "https://api.yourjscoach.online"].find((currElem) => {
       currElem == event.origin;
     })
   ) {
