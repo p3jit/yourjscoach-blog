@@ -26,7 +26,7 @@ const Practice = () => {
   useEffect(() => {
     const handleMessage = (event) => {
       if (import.meta.env.VITE_ENV !== "dev") {
-        if (event.origin !== "https://yourjscoach.online" || event.origin !== "https://api.yourjscoach.online") {
+        if (event.origin !== "https://www.yourjscoach.online" || event.origin !== "https://api.yourjscoach.online") {
           console.warn("Origin mismatch:", event.origin);
           return;
         }
