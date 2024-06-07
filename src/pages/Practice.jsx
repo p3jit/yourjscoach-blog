@@ -99,7 +99,7 @@ const Practice = () => {
                 <iframe
                   ref={iframeRef}
                   srcDoc={sandboxHTML}
-                  sandbox="allow-scripts allow-same-origin"
+                  sandbox="allow-scripts"
                   className="hidden"
                 ></iframe>
                 <div className="flex gap-3">
