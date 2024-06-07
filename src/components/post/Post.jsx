@@ -111,9 +111,10 @@ export const Post = ({ data }) => {
           <hr className="bg-zinc-400" />
           <div className="flex flex-col justify-between pt-1">
             <div className="text-zinc-600 flex gap-2 flex-wrap">
-              {data.tags.map((tag) => {
+              {data.tags.map((tag, index) => {
                 return (
                   <span
+                    key={index}
                     className={`w-fit px-3 py-1 rounded-xl ${
                       isDarkMode ? "bg-zinc-200" : "bg-zinc-600 text-white"
                     }`}

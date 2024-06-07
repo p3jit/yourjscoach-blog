@@ -45,7 +45,7 @@ const DSASheet = () => {
           <ReactSVG src="/code-typing-animate.svg" className="" />
         </div>
       </div>
-      {tableData?.map((singleTableData) => (
+      {tableData?.map((singleTableData, index) => (
         <Table data={singleTableData} key={Math.random()} />
       ))}
     </div>

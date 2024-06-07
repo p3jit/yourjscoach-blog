@@ -34,7 +34,11 @@ function transpileCode(code) {
 }
 
 window.addEventListener("message", (event) => {
-  if (["https://yourjscoach.online", "http://localhost:5173"].find((currElem) => {currElem == event.origin})) {
+  if (
+    ["https://yourjscoach.online", "http://localhost:5173"].find((currElem) => {
+      currElem == event.origin;
+    })
+  ) {
     console.warn("Origin mismatch:", event.origin);
     return;
   }
