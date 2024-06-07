@@ -32,10 +32,10 @@ const Practice = () => {
       //   }
       // }
       if (event.data && !event.data.vscodeScheduleAsyncWork) {
+        console.log(event.data)
         if (event.data.stack) {
           setError(event.data.stack);
         } else {
-          console.log(event);
           setSuccess(new Array(event.data));
         }
       }
