@@ -16,5 +16,5 @@ module.exports = {
       sofia: ['Sofia Sans' , 'sans-serif']
     }
   },
-  plugins: [],
+  plugins: [require('tailwind-scrollbar')({ nocompatible: true })],
 }

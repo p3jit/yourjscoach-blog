@@ -18,7 +18,7 @@ const LazyPractice = lazy(() => import("./pages/Practice.jsx"));
 function App() {
   const { isModalOpen, setIsModalOpen } = useContext(ModalProvider);
   const { isDarkMode } = useContext(DarkModeProvider);
-  // const location = useLocation();
+  const location = useLocation();
 
   return (
     <div
@@ -27,7 +27,7 @@ function App() {
       }`}
     >
       <div
-        className={`font-sofia min-h-screen flex flex-col gap-10 relative tracking-tight py-[2vh] px-[6vw] 2xl:w-[90vw] min-w-[60vw] ${
+        className={`font-sofia min-h-screen flex flex-col relative tracking-tight  ${location.pathname === "/practice" ? "w-[96vw] py-5 px-2 gap-5" : " gap-10 py-[2vh] px-[6vw] 2xl:w-[90vw] min-w-[60vw]" }  ${
           isDarkMode ? "bg-white" : "bg-zinc-900"
         }`}
       >
@@ -52,7 +52,6 @@ function App() {
         ) : (
           ""
         )}
-        <Footer setIsModalOpen={setIsModalOpen} />
       </div>
     </div>
   );

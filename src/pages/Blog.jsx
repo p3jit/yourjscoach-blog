@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { Fragment, useContext, useRef, useState } from "react";
 import Title from "../components/title/Title";
 import { PostDataProvider } from "../contexts/PostDataContext";
 import { IconSearch, IconMoodCry, IconX } from "@tabler/icons";
@@ -57,10 +57,10 @@ const Home = () => {
             <NewPostCard data={singlePost} key={singlePost.id} />
           ))
         ) : (
-          <div className="flex flex-col gap-5 md:flex-row justify-center 2xl:w-[50vw]">
+          <Fragment>
             <SkeletonNewLatestPostCard />
             <SkeletonNewLatestPostCard />
-          </div>
+          </Fragment>
         )}
       </div>
       <br />

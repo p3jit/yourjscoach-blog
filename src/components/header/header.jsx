@@ -1,11 +1,12 @@
 import { useContext } from "react";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { PostDataProvider } from "../../contexts/PostDataContext";
 import { IconBrandJavascript, IconMoon, IconSun } from "@tabler/icons";
 
 export const Header = () => {
   const { isDarkMode, setIsDarkMode } = useContext(DarkModeProvider);
+  const location = useLocation();
   const { postData, setSearchData, setSearchFilter } =
     useContext(PostDataProvider);
 
@@ -32,22 +33,26 @@ export const Header = () => {
           />
           <h2
             onClick={handleHomeRedirect}
-            className={`cursor-pointer font-extrabold text-3xl md:text-3xl lg:text-4xl ${
+            className={`cursor-pointer font-bold text-2xl md:text-2xl lg:text-3xl ${
               isDarkMode ? "text-zinc-800" : "text-white"
             }`}
           >
             YourJsCoach
           </h2>
         </div>
-        <div className="flex gap-4 md:gap-8">
-          <button className="text-2xl md:text-3xl" onClick={handleModeToggle}>
-            {isDarkMode ? (
-              <IconMoon className="text-zinc-700" />
-            ) : (
-              <IconSun className="text-white" />
-            )}
-          </button>
-        </div>
+        {location.pathname !== "/practice" ? (
+          <div className="flex gap-4 md:gap-8">
+            <button className="text-2xl md:text-3xl" onClick={handleModeToggle}>
+              {isDarkMode ? (
+                <IconMoon className="text-zinc-700" />
+              ) : (
+                <IconSun className="text-white" />
+              )}
+            </button>
+          </div>
+        ) : (
+          ""
+        )}
       </nav>
     </>
   );
