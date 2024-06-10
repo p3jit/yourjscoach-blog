@@ -48,9 +48,7 @@ const Home = () => {
       <ReactSVG src="/creative-writing-animate.svg" className="w-96 mx-auto" />
       <Title data={"Latest Posts"}></Title>
       <div
-        className={`grid grid-rows-1 gap-10 mt-2 ${
-          latestPostData.length > 1 ? "md:grid-cols-2" : "md:grid-cols-1"
-        }`}
+        className={`grid grid-rows-1 gap-10 mt-2 md:grid-cols-2`}
       >
         {latestPostData[0] ? (
           latestPostData.map((singlePost) => (

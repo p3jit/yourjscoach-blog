@@ -40,7 +40,7 @@ export const Header = () => {
             YourJsCoach
           </h2>
         </div>
-        {location.pathname !== "/practice" ? (
+        {/* {location.pathname !== "/practice" ? (
           <div className="flex gap-4 md:gap-8">
             <button className="text-2xl md:text-3xl" onClick={handleModeToggle}>
               {isDarkMode ? (
@@ -52,7 +52,7 @@ export const Header = () => {
           </div>
         ) : (
           ""
-        )}
+        )} */}
       </nav>
     </>
   );

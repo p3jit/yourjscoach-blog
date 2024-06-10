@@ -7,6 +7,7 @@ import { IconH1 } from "@tabler/icons";
 import Markdown from "markdown-to-jsx";
 import NormalText from "../components/markdown-components/normalText/NormalText";
 import ExampleBlock from "../components/markdown-components/example-block/ExampleBlock";
+import Tag from "../components/tag/Tag";
 
 const Practice = () => {
   const iframeRef = useRef(null);
@@ -33,6 +34,7 @@ const Practice = () => {
       [2, 3],
       [4, 5],
     ],
+    output: [5,9]
   });
 
   useEffect(() => {
@@ -91,17 +93,24 @@ const Practice = () => {
       <Panel minSize={30}>
         <div className="w-full rounded-md h-[87vh] p-7 bg-zinc-800 flex flex-col gap-4 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-zinc-500">
           <h1 className="text-zinc-100 text-2xl font-semibold text-wrap">{currentProblem.problemTitle}</h1>
-          <div className="px-2 py-1 rounded-lg bg-zinc-600 font-bold text-md text-lime-500 w-fit">
-            {currentProblem.Difficulty}
+          <div className="flex justify-between w-full">
+            <span className="px-2 py-1 rounded-lg bg-zinc-600 font-bold text-md text-lime-500 w-fit">
+              {currentProblem.Difficulty}
+            </span>
+            <div className="flex gap-2">
+              <Tag data={"array"}></Tag>
+              <Tag data={"dp"}></Tag>
+            </div>
           </div>
-          {/* <p className="text-lg text-pretty text-zinc-300">{currentProblem.mdContent}</p> */}
-          <Markdown options={{ overrides: { NormalText: { component: NormalText }, Example: {component: ExampleBlock} } }}>
+          <Markdown
+            options={{ overrides: { NormalText: { component: NormalText }, Example: { component: ExampleBlock } } }}
+          >
             {currentProblem.mdContent}
           </Markdown>
         </div>
       </Panel>
       <PanelResizeHandle className="bg-zinc-500 w-1 h-10 self-center rounded-md" />
-      <Panel minSize={45} className="mt-1">
+      <Panel minSize={45}>
         <PanelGroup direction="vertical" className="flex gap-1 relative">
           <Panel defaultSize={55} minSize={55} className="rounded-md">
             <Editor
@@ -112,7 +121,7 @@ const Practice = () => {
               options={{
                 minimap: {
                   enabled: false,
-                },
+                }
               }}
             />
             ;
@@ -195,23 +204,9 @@ const Practice = () => {
                   </div>
                 </div>
               </div>
-              {/* {error ? (
-                <div className="text-red-600 mt-5 font-bold text-lg">
-                  {error}
-                </div>
-              ) : (
-                ""
-              )}
-              {success ? (
-                <div className="text-lime-500 mt-5 font-bold text-lg">
-                  {success}
-                </div>
-              ) : (
-                ""
-              )} */}
               <div className="w-full h-full">
                 {showTestCases ? (
-                  <TestCasesContainer data={eval(JSON.stringify(currentProblem.testCases)).slice(0, 3)} />
+                  <TestCasesContainer data={eval(JSON.stringify(currentProblem.testCases)).slice(0, 3)} output={currentProblem.output} />
                 ) : (
                   ""
                 )}

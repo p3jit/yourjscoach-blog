@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 
-const TestCasesContainer = ({ data }) => {
+const TestCasesContainer = ({ data, output }) => {
   const [currentTestCase, setCurrentTestCase] = useState(data[0]);
+  const [currIndex, setCurrentIndex] = useState(0);
 
   const handleSingleTestCaseClick = (index) => {
+    setCurrentIndex(index);
     setCurrentTestCase(data[index]);
   };
   return (
@@ -38,11 +40,11 @@ const TestCasesContainer = ({ data }) => {
         })}
         <div>
           <h2 className="text-white">Expected output</h2>
-          <input className="mt-1 px-3 py-1 rounded bg-zinc-400 font-semibold w-full" readOnly />
+          <input className="mt-1 px-3 py-1 rounded bg-zinc-400 font-semibold w-full" value={output[currIndex]} readOnly />
         </div>
         <div>
           <h2 className="text-white">Your output</h2>
-          <input className="mt-1 px-3 py-1 rounded bg-zinc-400 font-semibold w-full" readOnly />
+          <input className="mt-1 px-3 py-1 rounded bg-zinc-400 font-semibold w-full text-lime-300 " value={'-- Execute first --'} readOnly />
         </div>
       </div>
     </div>
