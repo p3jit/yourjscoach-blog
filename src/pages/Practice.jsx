@@ -8,11 +8,13 @@ import Markdown from "markdown-to-jsx";
 import NormalText from "../components/markdown-components/normalText/NormalText";
 import ExampleBlock from "../components/markdown-components/example-block/ExampleBlock";
 import Tag from "../components/tag/Tag";
+import { arraysEqual } from "../utils/utils";
 
 const Practice = () => {
   const iframeRef = useRef(null);
   const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
+  const [success, setSuccess] = useState(false);
+  const [incommingResult, setIncommingResult] = useState([]);
   const [showTestCases, setShowTestCases] = useState(false);
   const [showResults, setShowResults] = useState(true);
   const [currentProblem, setCurrentProblem] = useState({
@@ -23,7 +25,7 @@ const Practice = () => {
     Difficulty: "Easy",
     editorValue: `\
     // Complete the following function to execute the code
-    function addTwoNumbers (x,y) {
+    function addTwoNumber (x,y) {
         return x+y;
     }
     
@@ -34,17 +36,26 @@ const Practice = () => {
       [2, 3],
       [4, 5],
     ],
-    output: [5,9]
+    correctOutput: [5, 9],
   });
 
   useEffect(() => {
     const handleMessage = (event) => {
       if (event.data && !event.data.vscodeScheduleAsyncWork) {
         if (event.data.stack || event.data.name || event.data.code) {
-          if (event.data.stack) setError(event.data.stack);
-          else setError(event.data.message);
+          if (event.data.stack) {
+            setError(event.data.stack);
+          } else {
+            setError(event.data.message);
+          }
         } else {
-          setSuccess(new Array(event.data));
+          const res = JSON.parse(event.data);
+          if (arraysEqual(res, currentProblem.correctOutput)) {
+            setSuccess(true);
+          } else {
+            setError("Test case mismatch");
+          }
+          setIncommingResult(res);
         }
       }
     };
@@ -76,6 +87,7 @@ const Practice = () => {
   const sendMessageToIframe = () => {
     setError(null);
     setSuccess(null);
+    setIncommingResult([]);
     iframeRef.current.contentWindow.postMessage(
       {
         code: currentProblem.editorValue,
@@ -121,7 +133,7 @@ const Practice = () => {
               options={{
                 minimap: {
                   enabled: false,
-                }
+                },
               }}
             />
             ;
@@ -206,15 +218,68 @@ const Practice = () => {
               </div>
               <div className="w-full h-full">
                 {showTestCases ? (
-                  <TestCasesContainer data={eval(JSON.stringify(currentProblem.testCases)).slice(0, 3)} output={currentProblem.output} />
+                  <TestCasesContainer
+                    error={error}
+                    incommingResult={incommingResult}
+                    success={success}
+                    data={eval(JSON.stringify(currentProblem.testCases)).slice(0, 3)}
+                    output={currentProblem.correctOutput}
+                  />
                 ) : (
                   ""
                 )}
                 {showResults ? (
                   <div className="w-full h-full">
-                    {success && !error ? <h1 className="text-lime-500 p-5 text-xl font-semibold">{success}</h1> : ""}
+                    {success && !error ? (
+                      <h1 className="text-lime-500 p-5 text-xl font-semibold flex items-center gap-3">
+                        <span>
+                          <svg
+                            className="w-6 h-6"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                            />
+                          </svg>
+                        </span>
+                        {`All test cases has passed - ${currentProblem.correctOutput}`}
+                      </h1>
+                    ) : (
+                      ""
+                    )}
                     {error && !success ? (
-                      <h1 className="text-red-500 py-10 pr-10 text-wrap text-lg font-semibold">{error}</h1>
+                      <h1 className="text-red-500 py-10 pr-10 text-wrap text-lg font-semibold flex items-center gap-3">
+                        <span>
+                          {" "}
+                          <svg
+                            className="w-6 h-6"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              stroke="currentColor"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                            />
+                          </svg>
+                        </span>
+                        {error}
+                      </h1>
                     ) : (
                       ""
                     )}

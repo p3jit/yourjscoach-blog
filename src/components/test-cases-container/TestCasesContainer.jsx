@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-const TestCasesContainer = ({ data, output }) => {
+const TestCasesContainer = ({ data, output, success, incommingResult, error }) => {
   const [currentTestCase, setCurrentTestCase] = useState(data[0]);
   const [currIndex, setCurrentIndex] = useState(0);
 
@@ -10,12 +10,12 @@ const TestCasesContainer = ({ data, output }) => {
   };
   return (
     <div className="mt-6 p-2 overflow-auto overflow-x-hidden">
-      <div className="flex text-white gap-3 ">
+      <div className="flex text-white gap-5 ">
         {data.map((singleData, index) => {
           return (
             <button
               key={index}
-              className="px-3 py-2 bg-zinc-700 rounded-md text-sm font-semibold"
+              className={`px-3 py-2 bg-zinc-700 rounded-md text-sm font-semibold ${success ? "outline-lime-600 outline-4 outline" : "" } ${error ? "outline-red-500 outline-4 outline" : "" }`}
               onClick={() => {
                 handleSingleTestCaseClick(index);
               }}
@@ -32,7 +32,7 @@ const TestCasesContainer = ({ data, output }) => {
               <h2 className="text-white">param {index} =</h2>
               <input
                 value={singleTestCase}
-                className="mt-1 px-3 py-1 rounded bg-zinc-400 font-semibold w-full"
+                className="mt-1 px-3 py-1 rounded bg-zinc-400 font-semibold w-full outline-0"
                 readOnly
               />
             </div>
@@ -40,11 +40,11 @@ const TestCasesContainer = ({ data, output }) => {
         })}
         <div>
           <h2 className="text-white">Expected output</h2>
-          <input className="mt-1 px-3 py-1 rounded bg-zinc-400 font-semibold w-full" value={output[currIndex]} readOnly />
+          <input className={`mt-1 px-3 py-1 rounded bg-zinc-400 font-semibold w-full outline-0 ${success ? "outline-lime-600 outline-4 outline" : "" } ${error ? "outline-red-500 outline-4 outline" : "" }`} value={output[currIndex]} readOnly />
         </div>
         <div>
           <h2 className="text-white">Your output</h2>
-          <input className="mt-1 px-3 py-1 rounded bg-zinc-400 font-semibold w-full text-lime-300 " value={'-- Execute first --'} readOnly />
+          <input className={`mt-1 px-3 py-1 rounded bg-zinc-400 font-semibold w-full outline-0 ${success ? "outline-lime-600 outline-4 outline" : "" } ${error ? "outline-red-500 outline-4 outline" : "" }`} value={ incommingResult[0] ? incommingResult[currIndex] : ' -- Execute first --'} readOnly />
         </div>
       </div>
     </div>
