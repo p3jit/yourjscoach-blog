@@ -27,7 +27,7 @@ function App() {
       }`}
     >
       <div
-        className={`font-sofia min-h-screen flex flex-col relative tracking-tight  ${location.pathname === "/practice" ? "w-full py-5 px-7 gap-5" : " gap-10 py-[3vh] px-[7vw] 2xl:w-[89vw] min-w-[56vw]" }  ${
+        className={`font-sofia min-h-screen flex flex-col relative tracking-tight w-full  ${location.pathname === "/practice" ? "py-5 px-7 gap-5" : " gap-10 py-[3vh] 2xl:px-[20vw] lg:px-[10vw] px-[7vw] min-w-[56vw]" }  ${
           isDarkMode ? "bg-white" : "bg-zinc-900"
         }`}
       >

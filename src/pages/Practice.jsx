@@ -13,10 +13,11 @@ import { arraysEqual } from "../utils/utils";
 const Practice = () => {
   const iframeRef = useRef(null);
   const [error, setError] = useState(null);
+  const [timeTaken, setTimeTaken] = useState(null);
   const [success, setSuccess] = useState(false);
   const [incommingResult, setIncommingResult] = useState([]);
-  const [showTestCases, setShowTestCases] = useState(false);
-  const [showResults, setShowResults] = useState(true);
+  const [showTestCases, setShowTestCases] = useState(true);
+  const [showResults, setShowResults] = useState(false);
   const [currentProblem, setCurrentProblem] = useState({
     problemTitle: "1. Add two numbers with javascript",
     mdContent: `<NormalText>In this task, you are required to write a function that takes two integers as input and returns their sum. The function should be able to handle positive, negative, and zero values.</NormalText>\
@@ -49,7 +50,8 @@ const Practice = () => {
             setError(event.data.message);
           }
         } else {
-          const res = JSON.parse(event.data);
+          const res = JSON.parse(event.data.message);
+          setTimeTaken(event.data.timeTaken);
           if (arraysEqual(res, currentProblem.correctOutput)) {
             setSuccess(true);
           } else {
@@ -221,6 +223,7 @@ const Practice = () => {
                   <TestCasesContainer
                     error={error}
                     incommingResult={incommingResult}
+                    timeTaken={timeTaken}
                     success={success}
                     data={eval(JSON.stringify(currentProblem.testCases)).slice(0, 3)}
                     output={currentProblem.correctOutput}

@@ -56,9 +56,13 @@ function postMessage(event) {
       try {
         ${res.iframeCode.split("\n").slice(1).join("\n")}
         const testCases = ${JSON.stringify(data.testCases)};
+        const startTime = performance.now();
         testCases.forEach((currTestCase) => {
           window.YJC_Result.push(${data.functionName}(...currTestCase));
         });
+        const endTime = performance.now();
+        const timeTaken = endTime - startTime;
+        window.YJC_TimeTaken = timeTaken;
       } catch (error) {
         window.YJC_Error = error;
       }
@@ -67,7 +71,7 @@ function postMessage(event) {
 
     setTimeout(() => {
       if (!window.YJC_Error) {
-        event.source.postMessage(`[${window.YJC_Result}]`, event.origin);
+        event.source.postMessage({timeTaken: window.YJC_TimeTaken, message: `[${window.YJC_Result}]`}, event.origin);
       } else {
         event.source.postMessage(window.YJC_Error, event.origin);
       }
