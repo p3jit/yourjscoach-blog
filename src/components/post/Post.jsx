@@ -9,16 +9,13 @@ import PostTitle from "../PostTitle/PostTitle";
 import RoundedText from "../markdown-components/roundedText/RoundedText";
 import SkeletonLoaderPost from "../skeleton-loader-components/skeletonLoaderPost/SkeletonLoaderPost";
 import UrlTag from "../markdown-components/urlTag/UrlTag";
+const ENV_VITE_API_URL = import.meta.env.VITE_API_URL;
 
 const LazyCode = lazy(() => import("../markdown-components/newCode/NewCode"));
-const LazyVideoTag = lazy(() =>
-  import("../markdown-components/videoTag/VideoTag")
-);
-const LazyImageTag = lazy(() =>
-  import("../markdown-components/imageTag/ImageTag")
-);
+const LazyVideoTag = lazy(() => import("../markdown-components/videoTag/VideoTag"));
+const LazyImageTag = lazy(() => import("../markdown-components/imageTag/ImageTag"));
 
-export const Post = ({ data }) => {
+export const Post = ({ data }) => {             
   const [postContent, setPostContent] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const { isDarkMode } = useContext(DarkModeProvider);
@@ -32,7 +29,10 @@ export const Post = ({ data }) => {
   };
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/assets/${data.mdFile}`)
+    const fetchUrl = !ENV_VITE_API_URL
+      ? `${"mdFiles/" + data.mdFile + ".md"}`
+      : `${import.meta.env.VITE_API_URL}/assets/${data.mdFile}`;
+    fetch(fetchUrl)
       .then((response) => {
         return response.text();
       })
@@ -58,12 +58,8 @@ export const Post = ({ data }) => {
             <div className=" mt-5">
               {data.bannerImage ? (
                 <ProgressiveImage
-                  src={`${import.meta.env.VITE_API_URL}/assets/${
-                    data.bannerImage
-                  }?quality=70&format=webp`}
-                  placeholder={`${import.meta.env.VITE_API_URL}/assets/${
-                    data.bannerImage
-                  }?quality=1&format=webp`}
+                  src={`${import.meta.env.VITE_API_URL}/assets/${data.bannerImage}?quality=70&format=webp`}
+                  placeholder={`${import.meta.env.VITE_API_URL}/assets/${data.bannerImage}?quality=1&format=webp`}
                 >
                   {(src, loading) => (
                     <img
@@ -115,9 +111,7 @@ export const Post = ({ data }) => {
                 return (
                   <span
                     key={index}
-                    className={`w-fit px-3 py-1 rounded-xl ${
-                      isDarkMode ? "bg-zinc-200" : "bg-zinc-600 text-white"
-                    }`}
+                    className={`w-fit px-3 py-1 rounded-xl ${isDarkMode ? "bg-zinc-200" : "bg-zinc-600 text-white"}`}
                   >
                     {tag}
                   </span>

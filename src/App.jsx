@@ -4,8 +4,8 @@ import { Header } from "./components/header/header.jsx";
 import { DarkModeProvider } from "./contexts/DarkModeContext.jsx";
 import { ModalProvider } from "./contexts/ModalContext.jsx";
 import Loader from "./components/loader/Loader.jsx";
-import Footer from "./components/footer/Footer.jsx";
-import Modal from "./components/modal/Modal.jsx";
+// import Footer from "./components/footer/Footer.jsx";
+// import Modal from "./components/modal/Modal.jsx";
 
 const LazyError = lazy(() => import("./pages/Error"));
 const LazyBlog = lazy(() => import("./pages/Blog.jsx"));
@@ -21,15 +21,13 @@ function App() {
   const location = useLocation();
 
   return (
-    <div
-      className={`w-full flex flex-col justify-center 2xl:items-center ${
-        isDarkMode ? "bg-white" : "bg-zinc-900"
-      }`}
-    >
+    <div className={`w-full flex flex-col justify-center 2xl:items-center ${isDarkMode ? "bg-white" : "bg-zinc-900"}`}>
       <div
-        className={`font-sofia min-h-screen flex flex-col relative tracking-tight w-full  ${location.pathname === "/practice" ? "py-5 px-7 gap-5" : " gap-10 py-[3vh] 2xl:px-[20vw] lg:px-[10vw] px-[7vw] min-w-[56vw]" }  ${
-          isDarkMode ? "bg-white" : "bg-zinc-900"
-        }`}
+        className={`font-sofia min-h-screen flex flex-col relative tracking-tight w-full  ${
+          location.pathname === "/practice"
+            ? "py-5 px-7 gap-5"
+            : " gap-10 py-[3vh] 2xl:px-[20vw] lg:px-[10vw] px-[7vw] min-w-[56vw]"
+        }  ${isDarkMode ? "bg-white" : "bg-zinc-900"}`}
       >
         {/* {location.pathname !== "/" ? <Header /> : ""} */}
         <Header />

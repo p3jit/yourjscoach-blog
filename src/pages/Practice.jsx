@@ -3,12 +3,12 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import Editor from "@monaco-editor/react";
 import useDebounce from "../hooks/useDebounce";
 import TestCasesContainer from "../components/test-cases-container/TestCasesContainer";
-import { IconH1 } from "@tabler/icons";
 import Markdown from "markdown-to-jsx";
 import NormalText from "../components/markdown-components/normalText/NormalText";
 import ExampleBlock from "../components/markdown-components/example-block/ExampleBlock";
 import Tag from "../components/tag/Tag";
 import { arraysEqual } from "../utils/utils";
+import { mockPractice } from "../utils/mockData";
 
 const Practice = () => {
   const iframeRef = useRef(null);
@@ -18,27 +18,7 @@ const Practice = () => {
   const [incommingResult, setIncommingResult] = useState([]);
   const [showTestCases, setShowTestCases] = useState(true);
   const [showResults, setShowResults] = useState(false);
-  const [currentProblem, setCurrentProblem] = useState({
-    problemTitle: "1. Add two numbers with javascript",
-    mdContent: `<NormalText>In this task, you are required to write a function that takes two integers as input and returns their sum. The function should be able to handle positive, negative, and zero values.</NormalText>\
-      <br/><Example input="2,3" output="5">Example 1</Example>\
-      <br/><Example input="5,6" output="11">Example 2</Example>`,
-    Difficulty: "Easy",
-    editorValue: `\
-    // Complete the following function to execute the code
-    function addTwoNumber (x,y) {
-        return x+y;
-    }
-    
-    console.log(window.parent.document);
-  `,
-    functionName: "addTwoNumber",
-    testCases: [
-      [2, 3],
-      [4, 5],
-    ],
-    correctOutput: [5, 9],
-  });
+  const [currentProblem, setCurrentProblem] = useState(mockPractice);
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -109,11 +89,16 @@ const Practice = () => {
           <h1 className="text-zinc-100 text-2xl font-semibold text-wrap">{currentProblem.problemTitle}</h1>
           <div className="flex justify-between w-full">
             <span className="px-2 py-1 rounded-lg bg-zinc-600 font-bold text-md text-lime-500 w-fit">
-              {currentProblem.Difficulty}
+              {currentProblem.difficulty}
             </span>
             <div className="flex gap-2">
-              <Tag data={"array"}></Tag>
-              <Tag data={"dp"}></Tag>
+              {currentProblem.tags.map((currentTag) => {
+                return (
+                  <Fragment>
+                    <Tag data={currentTag}></Tag>
+                  </Fragment>
+                );
+              })}
             </div>
           </div>
           <Markdown
