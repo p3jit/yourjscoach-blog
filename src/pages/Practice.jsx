@@ -19,11 +19,14 @@ const Practice = () => {
   const [showTestCases, setShowTestCases] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [currentProblem, setCurrentProblem] = useState(mockPractice);
+  const [currentEditorTabIndex, setCurrentEditorTabIndex] = useState(0);
+  const [defaultCode, setDefaultCode] = useState("");
+  const [defaultTestCode, setDefaultTestCode] = useState("");
 
   useEffect(() => {
     const handleMessage = (event) => {
       if (event.data) {
-        if (event.data.stack || event.data.name || event.data.code) {
+        if (event.data.stack || event.data.name || event.data.code || !event.data.message) {
           if (event.data.stack) {
             setError(event.data.stack);
           } else {
@@ -31,6 +34,7 @@ const Practice = () => {
           }
         } else {
           const res = JSON.parse(event.data.message);
+          console.log(event.data.testResults);
           setTimeTaken(Math.round(event.data.timeTaken * 10) / 100);
           if (arraysEqual(res, currentProblem.correctOutput)) {
             setSuccess(true);
@@ -42,16 +46,22 @@ const Practice = () => {
       }
     };
 
+    // Add iframe message event listener
     window.addEventListener("message", handleMessage);
+
+    // Set default code and test
+    setDefaultCode(currentProblem.editorValueCode);
+    setDefaultTestCode(currentProblem.editorValueTests);
+    
     // Clean up the event listener on component unmount
     return () => {
       window.removeEventListener("message", handleMessage);
     };
   }, []);
 
-  const handleCodeChange = (value, event) => {
+  const handleEditorValueChange = (value) => {
     setCurrentProblem((oldValue) => {
-      oldValue.editorValue = value;
+       currentProblem.currentEditorTabIndex === 0 ? oldValue.editorValueCode = value : oldValue.editorValueTests = value;
       return oldValue;
     });
   };
@@ -72,13 +82,18 @@ const Practice = () => {
     setIncommingResult([]);
     iframeRef.current.contentWindow.postMessage(
       {
-        code: currentProblem.editorValue,
+        code: currentProblem.editorValueCode,
         functionName: currentProblem.functionName,
         testCases: currentProblem.testCases,
+        testCode: currentProblem.editorValueTests
       },
       "*"
     );
   };
+
+  const handleEditorTabClick = (id) => {
+    setCurrentEditorTabIndex(id);
+  }
 
   const debouncedSendMessageToIframe = useDebounce(sendMessageToIframe, 800);
 
@@ -112,10 +127,56 @@ const Practice = () => {
       <Panel minSize={45}>
         <PanelGroup direction="vertical" className="flex gap-1 relative">
           <Panel defaultSize={55} minSize={55} className="rounded-md">
+            <div className="flex gap-6 py-3 bg-zinc-800 px-3">
+              <button
+                className={`${currentEditorTabIndex === 0 ? "text-zinc-200 " : "text-zinc-500"} flex gap-1 cursor-pointer`}
+                onClick={() => handleEditorTabClick(0)}
+              >
+                <svg
+                  className={`w-4 h-5 ${currentEditorTabIndex === 0 ? "text-zinc-200" : "text-zinc-500"}`}
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="m8 8-4 4 4 4m8 0 4-4-4-4m-2-3-4 14"
+                  />
+                </svg>
+                Code
+              </button>
+              <button
+                className={`${currentEditorTabIndex === 1 ? "text-zinc-200 " : "text-zinc-500"} flex gap-1 cursor-pointer`}
+                onClick={() => handleEditorTabClick(1)}
+              >
+                <svg
+                  className={`w-4 h-5 ${currentEditorTabIndex === 1 ? "text-zinc-200" : "text-zinc-500"}`}
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-7Zm-.293 9.293a1 1 0 0 1 0 1.414L9.414 14l1.293 1.293a1 1 0 0 1-1.414 1.414l-2-2a1 1 0 0 1 0-1.414l2-2a1 1 0 0 1 1.414 0Zm2.586 1.414a1 1 0 0 1 1.414-1.414l2 2a1 1 0 0 1 0 1.414l-2 2a1 1 0 0 1-1.414-1.414L14.586 14l-1.293-1.293Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Test Cases
+              </button>
+            </div>
             <Editor
               defaultLanguage="javascript"
-              defaultValue={currentProblem.editorValue}
-              onChange={handleCodeChange}
+              value={ currentEditorTabIndex === 0 ? currentProblem.editorValueCode : currentProblem.editorValueTests}
+              onChange={handleEditorValueChange}
               theme="vs-dark"
               options={{
                 minimap: {
@@ -142,9 +203,8 @@ const Practice = () => {
                 <div className="flex gap-3 justify-between w-full">
                   <div className="flex gap-3">
                     <button
-                      className={`${
-                        showTestCases ? "bg-zinc-800 outline-1 outline-zinc-300 outline-double" : "bg-zinc-700"
-                      }  rounded-md text-sm px-3 py-2 font-bold text-zinc-200 flex justify-center items-center gap-2`}
+                      className={`${showTestCases ? "bg-zinc-800 outline-1 outline-zinc-300 outline-double" : "bg-zinc-700"
+                        }  rounded-md text-sm px-3 py-2 font-bold text-zinc-200 flex justify-center items-center gap-2`}
                       onClick={handleShowTestCases}
                     >
                       <svg
@@ -165,9 +225,8 @@ const Practice = () => {
                       Test cases
                     </button>
                     <button
-                      className={`${
-                        showResults ? "bg-zinc-800 outline-1 outline-zinc-300 outline-double" : "bg-zinc-700"
-                      }  rounded-md text-sm px-3 py-2 font-bold text-zinc-200 flex justify-center items-center gap-2`}
+                      className={`${showResults ? "bg-zinc-800 outline-1 outline-zinc-300 outline-double" : "bg-zinc-700"
+                        }  rounded-md text-sm px-3 py-2 font-bold text-zinc-200 flex justify-center items-center gap-2`}
                       onClick={handleShowResults}
                     >
                       <svg

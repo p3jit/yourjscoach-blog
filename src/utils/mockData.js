@@ -4,13 +4,24 @@ export const mockPractice = {
       <br/><Example input="2,3" output="5">Example 1</Example>\
       <br/><Example input="5,6" output="11">Example 2</Example>`,
   difficulty: "Easy",
-  editorValue: `\
+  editorValueCode: `\
     // Complete the following function to execute the code
     function addTwoNumber (x,y) {
         return x+y;
     }
-    
-    console.log(window.parent.document);
+  `,
+  editorValueTests: `\
+  describe("addTwoNumber", () => {
+    it("should match correct ouput 1", () => {
+        expect(addTwoNumber(1,2)).equal(3);
+    });
+    it("should match correct ouput 2", () => {
+        expect(addTwoNumber(3,2)).equal(5);
+    });
+    it("should match correct ouput 3", () => {
+        expect(addTwoNumber(100,221)).equal(321);
+    });
+  });
   `,
   functionName: "addTwoNumber",
   testCases: [

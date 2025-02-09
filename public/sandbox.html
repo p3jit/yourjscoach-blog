@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/mocha/mocha.css" nonce="runMe"/>
     <title>Sandboxed Enviroment</title>
     <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
@@ -14,10 +15,14 @@
         media-src 'self'; 
         object-src 'none';
         base-uri 'self';
-        script-src-elem 'nonce-runMe' https://api.yourjscoach.online 'self';
+        script-src-elem 'nonce-runMe' 'self';
+        style-src-elem 'nonce-runMe' 'self';
     ">
 </head>
 <body>
+    <div id="mocha"></div>
+    <script src="https://unpkg.com/chai@4/chai.js" nonce="runMe"></script>
+    <script src="https://unpkg.com/mocha/mocha.js" nonce="runMe"></script>
     <!-- <script defer src="https://api.yourjscoach.online/assets/ff148cf6-43aa-4f1e-93bd-4f0400415690.js" crossorigin nonce="runMe" type="module"></script>
     <script defer src="https://api.yourjscoach.online/assets/02497ebe-f5bc-44db-9609-710ea20ee1f4.js" crossorigin nonce="runMe" type="module"></script> -->
     <script defer src="babel.min.js" crossorigin nonce="runMe" type="module"></script>

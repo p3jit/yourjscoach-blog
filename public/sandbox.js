@@ -5,11 +5,26 @@ export function replace(string, regex, value = "") {
   return string.toString().replace(regex, value).trim();
 }
 
+window.YJC_Test_Results = [];
+window.expect = chai.expect;
 window.YJC_Result = [];
 window.YJC_Error = null;
 
+const customRootHooks = {
+  afterEach(done) {;
+    window.YJC_Test_Results.push({title: this.currentTest.title, status: this.currentTest.state, parentTitle: this.currentTest.parent.title});
+    done();
+  },
+  beforeAll() {
+    window.YJC_Test_Results = [];
+  }
+}
+
+mocha.setup({ui: 'bdd', rootHooks: customRootHooks, cleanReferencesAfterRun: false});
+mocha.checkLeaks();
+
 function transpileCode(code) {
-  const codeToTranspile = replace(code.code, importsRegex);
+  const codeToTranspile = replace(code, importsRegex);
   const options = { presets: ["es2015-loose", "react"] };
   const { code: transpiledCode } = Babel.transform(codeToTranspile, options);
 
@@ -17,8 +32,8 @@ function transpileCode(code) {
     throw new Error(`Something went wrong transpiling ${codeToTranspile}.`);
   }
 
-  const hasImports = importsRegex.test(code.code);
-  const imports = code.code.match(importsRegex)?.join("\n") ?? "";
+  const hasImports = importsRegex.test(code);
+  const imports = code.match(importsRegex)?.join("\n") ?? "";
 
   return {
     iframeCode: hasImports ? `${imports}\n${transpiledCode}` : transpiledCode,
@@ -41,10 +56,12 @@ function postMessage(event) {
   }
 
   const { data } = event;
-  if (typeof data === "object" && data.code) {
-    let res;
+  if (typeof data === "object" && data.code && data.testCode) {
+    let codeBlock;
+    let testBlock;
     try {
-      res = transpileCode(data);
+      codeBlock = transpileCode(data.code);
+      testBlock = transpileCode(data.testCode);
     } catch (error) {
       window.YJC_Error = error;
       event.source.postMessage(error, event.origin);
@@ -56,7 +73,11 @@ function postMessage(event) {
     scriptElem.setAttribute("nonce", "runMe");
     scriptElem.innerHTML = `
       try {
-        ${res.iframeCode.split("\n").slice(1).join("\n")}
+        ${codeBlock.iframeCode.split("\n").slice(1).join("\n")}
+        async function runTestCode() {
+          ${testBlock.iframeCode.split("\n").slice(1).join("\n")}
+          await mocha.run();
+        }
         const testCases = ${JSON.stringify(data.testCases)};
         const startTime = performance.now();
         testCases.forEach((currTestCase) => {
@@ -65,6 +86,7 @@ function postMessage(event) {
         const endTime = performance.now();
         const timeTaken = endTime - startTime;
         window.YJC_TimeTaken = timeTaken;
+        runTestCode();
       } catch (error) {
         window.YJC_Error = error;
       }
@@ -73,13 +95,12 @@ function postMessage(event) {
 
     setTimeout(() => {
       if (!window.YJC_Error) {
-        event.source.postMessage({ timeTaken: window.YJC_TimeTaken, message: `[${window.YJC_Result}]` }, event.origin);
+        event.source.postMessage({ testResults: window.YJC_Test_Results, timeTaken: window.YJC_TimeTaken, message: `[${window.YJC_Result}]` }, event.origin);
       } else {
         event.source.postMessage(window.YJC_Error, event.origin);
       }
       window.YJC_Result = [];
-      window.YJC_Error = null;
-    }, 10);
+    }, 50);
   } else {
     console.warn("Invalid message data:", data);
   }
