@@ -29,13 +29,15 @@ function transpileCode(code) {
 function postMessage(event) {
   const validOrigins = [
     "https://www.yourjscoach.online",
-    "http://localhost:5173",
     "https://api.yourjscoach.online",
   ];
 
-  if (!validOrigins.includes(event.origin)) {
-    console.warn("Origin mismatch:", event.origin);
-    return;
+  // extra check for local development
+  if (!location.hostname === "localhost" || !location.hostname === "127.0.0.1") {
+    if (!validOrigins.includes(event.origin)) {
+      console.warn("Origin mismatch:", event.origin);
+      return;
+    }
   }
 
   const { data } = event;
@@ -71,7 +73,7 @@ function postMessage(event) {
 
     setTimeout(() => {
       if (!window.YJC_Error) {
-        event.source.postMessage({timeTaken: window.YJC_TimeTaken, message: `[${window.YJC_Result}]`}, event.origin);
+        event.source.postMessage({ timeTaken: window.YJC_TimeTaken, message: `[${window.YJC_Result}]` }, event.origin);
       } else {
         event.source.postMessage(window.YJC_Error, event.origin);
       }

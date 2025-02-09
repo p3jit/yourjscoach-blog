@@ -8,11 +8,12 @@ const TestCasesContainer = ({ data, output, success, incommingResult, timeTaken,
     setCurrentIndex(index);
     setCurrentTestCase(data[index]);
   };
+
   return (
     <div className="mt-6 p-2 overflow-auto overflow-x-hidden">
       <div className="flex justify-between">
-        <div className="flex gap-4 text-white">
-        {data.map((singleData, index) => {
+        <div className="flex gap-3 text-white">
+        {data.map((_, index) => {
           return (
             <button
               key={index}
@@ -26,7 +27,7 @@ const TestCasesContainer = ({ data, output, success, incommingResult, timeTaken,
           );
         })}
         </div>
-        { success ? <h1 className="text-xl text-lime-400">Accepted : <span className="font-semibold">{String(timeTaken)} ms</span></h1> : <h1 className="text-xl text-red-600">Wrong answer : <span className="font-semibold">{String(timeTaken)} ms</span></h1>}
+        { success ? <h1 className="text-xl text-lime-400">Accepted : <span className="font-semibold">{String(timeTaken)} ms</span></h1> : error ? <h1 className="text-xl text-red-600">Wrong answer : <span className="font-semibold">{String(timeTaken)} ms</span></h1> : ""}
       </div>
       <div className="flex-col flex mt-5 gap-3 w-full h-40 flex-wrap ">
         {currentTestCase.map((singleTestCase, index) => {

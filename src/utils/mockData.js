@@ -14,7 +14,7 @@ export const mockPractice = {
   `,
   functionName: "addTwoNumber",
   testCases: [
-    [2, 3],
+    [2, 3, 4],
     [4, 5],
   ],
   correctOutput: [5, 9],

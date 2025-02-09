@@ -22,7 +22,7 @@ const Practice = () => {
 
   useEffect(() => {
     const handleMessage = (event) => {
-      if (event.data && !event.data.vscodeScheduleAsyncWork) {
+      if (event.data) {
         if (event.data.stack || event.data.name || event.data.code) {
           if (event.data.stack) {
             setError(event.data.stack);
@@ -31,7 +31,7 @@ const Practice = () => {
           }
         } else {
           const res = JSON.parse(event.data.message);
-          setTimeTaken(event.data.timeTaken);
+          setTimeTaken(Math.round(event.data.timeTaken * 10) / 100);
           if (arraysEqual(res, currentProblem.correctOutput)) {
             setSuccess(true);
           } else {
@@ -290,7 +290,7 @@ const Practice = () => {
                             d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                           />
                         </svg>
-                        <h1 className="text-zinc-200">Not ran yet </h1>
+                        <h1 className="text-zinc-200">Please execute the problem first </h1>
                       </div>
                     ) : (
                       ""
