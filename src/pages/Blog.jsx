@@ -1,14 +1,14 @@
-import React, { useContext, useRef, useState } from "react";
-import SkeletonLoaderLatestPost from "../components/skeletonLoaderLatestPost/SkeletonLoaderLatestPost";
+import React, { Fragment, useContext, useRef, useState } from "react";
 import Title from "../components/title/Title";
 import { PostDataProvider } from "../contexts/PostDataContext";
 import { IconSearch, IconMoodCry, IconX } from "@tabler/icons";
 import { DarkModeProvider } from "../contexts/DarkModeContext";
 import NewPostCard from "../components/newPostCard/NewPostCard";
-import SkeletonNewLatestPostCard from "../components/skeletonNewLatestPostCard/SkeletonNewLatestPostCard";
 import { ReactSVG } from "react-svg";
 import SearchCard from "../components/searchCard/SearchCard";
 import Tag from "../components/tag/Tag";
+import SkeletonLoaderLatestPost from "../components/skeleton-loader-components/skeletonLoaderLatestPost/SkeletonLoaderLatestPost";
+import SkeletonNewLatestPostCard from "../components/skeleton-loader-components/skeletonNewLatestPostCard/SkeletonNewLatestPostCard";
 
 const Home = () => {
   const {
@@ -48,19 +48,17 @@ const Home = () => {
       <ReactSVG src="/creative-writing-animate.svg" className="w-96 mx-auto" />
       <Title data={"Latest Posts"}></Title>
       <div
-        className={`grid grid-rows-1 gap-10 mt-2 ${
-          latestPostData.length > 1 ? "md:grid-cols-2" : "md:grid-cols-1"
-        }`}
+        className={`grid grid-rows-1 gap-10 mt-2 md:grid-cols-2`}
       >
         {latestPostData[0] ? (
           latestPostData.map((singlePost) => (
             <NewPostCard data={singlePost} key={singlePost.id} />
           ))
         ) : (
-          <div className="flex flex-col gap-5 md:flex-row justify-center 2xl:w-[50vw]">
+          <Fragment>
             <SkeletonNewLatestPostCard />
             <SkeletonNewLatestPostCard />
-          </div>
+          </Fragment>
         )}
       </div>
       <br />

@@ -3,18 +3,19 @@ import { useContext, useEffect, useState, lazy, Suspense } from "react";
 import ProgressiveImage from "react-progressive-graceful-image";
 import { useNavigate } from "react-router-dom";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
-import Heading from "../heading/Heading";
-import NormalText from "../normalText/NormalText";
+import Heading from "../markdown-components/heading/Heading";
+import NormalText from "../markdown-components/normalText/NormalText";
 import PostTitle from "../PostTitle/PostTitle";
-import RoundedText from "../roundedText/RoundedText";
-import SkeletonLoaderPost from "../skeletonLoaderPost/SkeletonLoaderPost";
-import UrlTag from "../urlTag/UrlTag";
+import RoundedText from "../markdown-components/roundedText/RoundedText";
+import SkeletonLoaderPost from "../skeleton-loader-components/skeletonLoaderPost/SkeletonLoaderPost";
+import UrlTag from "../markdown-components/urlTag/UrlTag";
+const ENV_VITE_API_URL = import.meta.env.VITE_API_URL;
 
-const LazyCode = lazy(() => import("../newCode/NewCode"));
-const LazyVideoTag = lazy(() => import("../videoTag/VideoTag"));
-const LazyImageTag = lazy(() => import("../imageTag/ImageTag"));
+const LazyCode = lazy(() => import("../markdown-components/newCode/NewCode"));
+const LazyVideoTag = lazy(() => import("../markdown-components/videoTag/VideoTag"));
+const LazyImageTag = lazy(() => import("../markdown-components/imageTag/ImageTag"));
 
-export const Post = ({ data }) => {
+export const Post = ({ data }) => {             
   const [postContent, setPostContent] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const { isDarkMode } = useContext(DarkModeProvider);
@@ -28,7 +29,10 @@ export const Post = ({ data }) => {
   };
 
   useEffect(() => {
-    fetch(data.mdFile.url)
+    const fetchUrl = !ENV_VITE_API_URL
+      ? `${"mdFiles/" + data.mdFile + ".md"}`
+      : `${import.meta.env.VITE_API_URL}/assets/${data.mdFile}`;
+    fetch(fetchUrl)
       .then((response) => {
         return response.text();
       })
@@ -54,8 +58,8 @@ export const Post = ({ data }) => {
             <div className=" mt-5">
               {data.bannerImage ? (
                 <ProgressiveImage
-                  src={data.bannerImage.highQuality.url}
-                  placeholder={data.bannerImage.lowQuality.url}
+                  src={`${import.meta.env.VITE_API_URL}/assets/${data.bannerImage}?quality=70&format=webp`}
+                  placeholder={`${import.meta.env.VITE_API_URL}/assets/${data.bannerImage}?quality=1&format=webp`}
                 >
                   {(src, loading) => (
                     <img
@@ -103,12 +107,11 @@ export const Post = ({ data }) => {
           <hr className="bg-zinc-400" />
           <div className="flex flex-col justify-between pt-1">
             <div className="text-zinc-600 flex gap-2 flex-wrap">
-              {data.tags.map((tag) => {
+              {data.tags.map((tag, index) => {
                 return (
                   <span
-                    className={`w-fit px-3 py-1 rounded-xl ${
-                      isDarkMode ? "bg-zinc-200" : "bg-zinc-600 text-white"
-                    }`}
+                    key={index}
+                    className={`w-fit px-3 py-1 rounded-xl ${isDarkMode ? "bg-zinc-200" : "bg-zinc-600 text-white"}`}
                   >
                     {tag}
                   </span>

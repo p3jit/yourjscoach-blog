@@ -19,7 +19,7 @@ const SearchCard = ({ data }) => {
 
   return (
     <div
-      className={`flex flex-col rounded p-4 outline outline-2 outline-zinc-200`}
+      className={`flex flex-col rounded p-6 outline outline-2 outline-zinc-200`}
     >
       <div className="flex justify-between itme">
         <div
@@ -43,7 +43,7 @@ const SearchCard = ({ data }) => {
         </h3>
       </div>
       <p
-        className={`break-words font-medium text-black pt-2 text-lg md:text-xl ${
+        className={`break-words font-medium text-black py-4 text-lg md:text-xl ${
           !isDarkMode ? "text-zinc-300" : "text-zinc-500"
         }`}
       >

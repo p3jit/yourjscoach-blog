@@ -1,8 +1,10 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useDebounce from "../hooks/useDebounce";
+import { mockBlogData } from "../utils/mockData";
 
 export const PostDataProvider = createContext();
+const ENV_VITE_API_URL = import.meta.env.VITE_API_URL;
 
 const PostDataContext = ({ children }) => {
   const [postData, setPostData] = useState([]);
@@ -15,10 +17,7 @@ const PostDataContext = ({ children }) => {
 
   const normalSearch = (query) => {
     let result = postData.filter((singlePost) => {
-      return (
-        singlePost.title.toLowerCase().includes(query) ||
-        singlePost.tags.includes(query)
-      );
+      return singlePost.title.toLowerCase().includes(query) || singlePost.tags.includes(query);
     });
     result.sort((a, b) => b.timeStamp - a.timeStamp);
     if (searchFilter.length) {
@@ -30,51 +29,14 @@ const PostDataContext = ({ children }) => {
   const debouncedSearch = useDebounce(normalSearch, 1000);
 
   const newFetchPostsandTags = async () => {
-    // dynamic import gql and request
-    const { gql, request } = await import("graphql-request");
-    const query = gql`
-      query {
-        pluralPost(stage: PUBLISHED) {
-          description
-          displayId
-          id
-          minRead
-          tags
-          title
-          mdFile {
-            url
-          }
-          imageList {
-            highQuality {
-              url
-            }
-            lowQuality {
-              url
-            }
-          }
-          timeStamp
-          bannerImage {
-            highQuality {
-              url
-            }
-            lowQuality {
-              url
-            }
-          }
-        }
-      }
-    `;
-    let { pluralPost } = await request(
-      "https://ap-south-1.cdn.hygraph.com/content/clcz3t3t93rpg01t7a3v40onf/master",
-      query
-    );
+    const { data } = ENV_VITE_API_URL
+      ? await (await fetch(`${ENV_VITE_API_URL}/items/blog_post`)).json()
+      : mockBlogData;
 
     //Filling the posts
-    await setPostData(pluralPost);
-    let sortedValue = new Array(...pluralPost);
-    sortedValue
-      .sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp))
-      .slice(0, 2);
+    await setPostData(data);
+    let sortedValue = new Array(...data);
+    sortedValue.sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp)).slice(0, 2);
     if (sortedValue.length == 1) {
       await setlatestPostData([sortedValue[0]]);
     } else {
@@ -84,7 +46,7 @@ const PostDataContext = ({ children }) => {
 
     // Filling the tags
     let tagSet = new Set();
-    pluralPost.forEach((singlePost) => {
+    data.forEach((singlePost) => {
       singlePost.tags.forEach((singleTag) => {
         tagSet.add(singleTag);
       });

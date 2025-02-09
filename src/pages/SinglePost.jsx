@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Post } from "../components/post/Post";
-import SkeletonLoaderPost from "../components/skeletonLoaderPost/SkeletonLoaderPost";
 import { PostDataProvider } from "../contexts/PostDataContext";
+import SkeletonLoaderPost from "../components/skeleton-loader-components/skeletonLoaderPost/SkeletonLoaderPost";
 
 const SinglePost = () => {
   const { postData } = useContext(PostDataProvider);
@@ -27,7 +27,7 @@ const SinglePost = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  return <>{currPost ? <Post data={currPost} /> : <SkeletonLoaderPost />}</>;
+  return <>{currPost ? <Post data={currPost} /> : <SkeletonLoaderPost/>}</>;
 };
 
 export default SinglePost;
