@@ -67,7 +67,7 @@ function transpileCode(code) {
 function validateOrigin(event) {
   const validOrigins = ["https://www.yourjscoach.online", "https://api.yourjscoach.online"];
   
-  if (!["localhost", "127.0.0.1"].includes(location.hostname) && !validOrigins.includes(event.origin)) {
+  if (!["localhost", "127.0.0.1", "192.168.0.109"].includes(location.hostname) && !validOrigins.includes(event.origin)) {
     console.warn("Origin mismatch:", event.origin);
     return false;
   }

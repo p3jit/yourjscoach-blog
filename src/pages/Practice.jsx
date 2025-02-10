@@ -16,7 +16,7 @@ const Practice = () => {
   const [timeTaken, setTimeTaken] = useState(null);
   const [success, setSuccess] = useState(false);
   const [incommingResult, setIncommingResult] = useState([]);
-  const [showTestCases, setShowTestCases] = useState(true);
+  const [showConsoleOutput, setShowConsoleOutput] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [currentProblem, setCurrentProblem] = useState(mockPractice);
   const [currentEditorTabIndex, setCurrentEditorTabIndex] = useState(0);
@@ -26,21 +26,21 @@ const Practice = () => {
   useEffect(() => {
     const handleMessage = (event) => {
       if (event.data) {
-        if (event.data.stack || event.data.name || event.data.code || !event.data.message) {
-          if (event.data.stack) {
-            setError(event.data.stack);
-          } else {
-            setError(event.data.message);
-          }
+        const { stack, name, code, message, timeTaken, testResults } = event.data;
+
+        if (stack || name || code || !message) {
+          setError(stack || message);
         } else {
-          const res = JSON.parse(event.data.message);
-          console.log(event.data.testResults);
-          setTimeTaken(Math.round(event.data.timeTaken * 10) / 100);
+          const res = JSON.parse(message);
+          console.log(testResults);
+          setTimeTaken(Math.round(timeTaken * 10) / 100);
+
           if (arraysEqual(res, currentProblem.correctOutput)) {
             setSuccess(true);
           } else {
             setError("Test case mismatch");
           }
+
           setIncommingResult(res);
         }
       }
@@ -52,7 +52,7 @@ const Practice = () => {
     // Set default code and test
     setDefaultCode(currentProblem.editorValueCode);
     setDefaultTestCode(currentProblem.editorValueTests);
-    
+
     // Clean up the event listener on component unmount
     return () => {
       window.removeEventListener("message", handleMessage);
@@ -61,19 +61,20 @@ const Practice = () => {
 
   const handleEditorValueChange = (value) => {
     setCurrentProblem((oldValue) => {
-       currentProblem.currentEditorTabIndex === 0 ? oldValue.editorValueCode = value : oldValue.editorValueTests = value;
-      return oldValue;
+      return currentEditorTabIndex === 0
+        ? { ...oldValue, editorValueCode: value }
+        : { ...oldValue, editorValueTests: value };
     });
   };
 
   const handleShowTestCases = () => {
-    setShowTestCases(!showTestCases);
+    setShowConsoleOutput(!showConsoleOutput);
     setShowResults(!showResults);
   };
 
   const handleShowResults = () => {
     setShowResults(!showResults);
-    setShowTestCases(!showTestCases);
+    setShowConsoleOutput(!showConsoleOutput);
   };
 
   const sendMessageToIframe = () => {
@@ -85,7 +86,7 @@ const Practice = () => {
         code: currentProblem.editorValueCode,
         functionName: currentProblem.functionName,
         testCases: currentProblem.testCases,
-        testCode: currentProblem.editorValueTests
+        testCode: currentProblem.editorValueTests,
       },
       "*"
     );
@@ -93,7 +94,7 @@ const Practice = () => {
 
   const handleEditorTabClick = (id) => {
     setCurrentEditorTabIndex(id);
-  }
+  };
 
   const debouncedSendMessageToIframe = useDebounce(sendMessageToIframe, 800);
 
@@ -129,7 +130,9 @@ const Practice = () => {
           <Panel defaultSize={55} minSize={55} className="rounded-md">
             <div className="flex gap-6 py-3 bg-zinc-800 px-3">
               <button
-                className={`${currentEditorTabIndex === 0 ? "text-zinc-200 " : "text-zinc-500"} flex gap-1 cursor-pointer`}
+                className={`${
+                  currentEditorTabIndex === 0 ? "text-zinc-200 " : "text-zinc-500"
+                } flex gap-1 cursor-pointer`}
                 onClick={() => handleEditorTabClick(0)}
               >
                 <svg
@@ -152,7 +155,9 @@ const Practice = () => {
                 Code
               </button>
               <button
-                className={`${currentEditorTabIndex === 1 ? "text-zinc-200 " : "text-zinc-500"} flex gap-1 cursor-pointer`}
+                className={`${
+                  currentEditorTabIndex === 1 ? "text-zinc-200 " : "text-zinc-500"
+                } flex gap-1 cursor-pointer`}
                 onClick={() => handleEditorTabClick(1)}
               >
                 <svg
@@ -175,7 +180,7 @@ const Practice = () => {
             </div>
             <Editor
               defaultLanguage="javascript"
-              value={ currentEditorTabIndex === 0 ? currentProblem.editorValueCode : currentProblem.editorValueTests}
+              value={currentEditorTabIndex === 0 ? currentProblem.editorValueCode : currentProblem.editorValueTests}
               onChange={handleEditorValueChange}
               theme="vs-dark"
               options={{
@@ -203,8 +208,9 @@ const Practice = () => {
                 <div className="flex gap-3 justify-between w-full">
                   <div className="flex gap-3">
                     <button
-                      className={`${showTestCases ? "bg-zinc-800 outline-1 outline-zinc-300 outline-double" : "bg-zinc-700"
-                        }  rounded-md text-sm px-3 py-2 font-bold text-zinc-200 flex justify-center items-center gap-2`}
+                      className={`${
+                        showConsoleOutput ? "bg-zinc-800 outline-1 outline-zinc-300 outline-double" : "bg-zinc-700"
+                      }  rounded-md text-sm px-3 py-2 font-bold text-zinc-200 flex justify-center items-center gap-2`}
                       onClick={handleShowTestCases}
                     >
                       <svg
@@ -222,11 +228,12 @@ const Practice = () => {
                           clipRule="evenodd"
                         />
                       </svg>
-                      Test cases
+                      Output
                     </button>
                     <button
-                      className={`${showResults ? "bg-zinc-800 outline-1 outline-zinc-300 outline-double" : "bg-zinc-700"
-                        }  rounded-md text-sm px-3 py-2 font-bold text-zinc-200 flex justify-center items-center gap-2`}
+                      className={`${
+                        showResults ? "bg-zinc-800 outline-1 outline-zinc-300 outline-double" : "bg-zinc-700"
+                      }  rounded-md text-sm px-3 py-2 font-bold text-zinc-200 flex justify-center items-center gap-2`}
                       onClick={handleShowResults}
                     >
                       <svg
@@ -263,7 +270,7 @@ const Practice = () => {
                 </div>
               </div>
               <div className="w-full h-full">
-                {showTestCases ? (
+                {showConsoleOutput ? (
                   <TestCasesContainer
                     error={error}
                     incommingResult={incommingResult}
