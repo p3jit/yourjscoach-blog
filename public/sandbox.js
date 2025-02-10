@@ -10,12 +10,13 @@ export function replace(string, regex, value = "") {
 // Initialize global variables for test results and error handling
 window.YJC_Test_Results = [];
 window.expect = chai.expect;
+window.assert = chai.assert;
 window.YJC_Result = [];
 window.YJC_Error = null;
 
 // Function to set up Mocha testing environment
 function setupMocha() {
-  const mochaDomScript = document.querySelector("mocha-import");
+  const mochaDomScript = document.getElementById("mocha-import");
   if (mochaDomScript) {
     delete window.mocha;
     mochaDomScript.remove();
@@ -24,7 +25,8 @@ function setupMocha() {
   const newMochaScript = document.createElement("script");
   newMochaScript.src = "https://unpkg.com/mocha/mocha.js";
   newMochaScript.setAttribute("nonce", "runMe");
-  
+  newMochaScript.setAttribute("id", "mocha-import");
+
   newMochaScript.onload = () => {
     const customRootHooks = {
       afterEach(done) {
@@ -33,6 +35,10 @@ function setupMocha() {
           status: this.currentTest.state,
           parentTitle: this.currentTest.parent.title,
         });
+        done();
+      },
+      beforeAll(done) {
+        assert.equal(1,1);
         done();
       }
     };
@@ -66,8 +72,11 @@ function transpileCode(code) {
 // Validate the origin of the message event
 function validateOrigin(event) {
   const validOrigins = ["https://www.yourjscoach.online", "https://api.yourjscoach.online"];
-  
-  if (!["localhost", "127.0.0.1", "192.168.0.109"].includes(location.hostname) && !validOrigins.includes(event.origin)) {
+
+  if (
+    !["localhost", "127.0.0.1", "192.168.0.109"].includes(location.hostname) &&
+    !validOrigins.includes(event.origin)
+  ) {
     console.warn("Origin mismatch:", event.origin);
     return false;
   }
@@ -81,7 +90,7 @@ function postMessage(event) {
   const { data } = event;
   if (typeof data === "object" && data.code && data.testCode) {
     let codeBlock, testBlock;
-    
+
     try {
       codeBlock = transpileCode(data.code);
       testBlock = transpileCode(data.testCode);
