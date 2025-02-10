@@ -8,7 +8,8 @@ export function replace(string, regex, value = "") {
 }
 
 // Initialize global variables for test results and error handling
-window.YJC_Test_Results = [];
+window.YJC_Test_Results_Passed = [];
+window.YJC_Test_Results_Failed = [];
 window.expect = chai.expect;
 window.assert = chai.assert;
 window.YJC_Result = [];
@@ -30,17 +31,25 @@ function setupMocha() {
   newMochaScript.onload = () => {
     const customRootHooks = {
       afterEach(done) {
-        window.YJC_Test_Results.push({
-          title: this.currentTest.title,
-          status: this.currentTest.state,
-          parentTitle: this.currentTest.parent.title,
-        });
+        if (this.currentTest.state === "passed") {
+          window.YJC_Test_Results_Passed.push({
+            title: this.currentTest.title,
+            status: this.currentTest.state,
+            parentTitle: this.currentTest.parent.title,
+          });
+        } else {
+          window.YJC_Test_Results_Failed.push({
+            title: this.currentTest.title,
+            status: this.currentTest.state,
+            parentTitle: this.currentTest.parent.title,
+          });
+        }
         done();
       },
       beforeAll(done) {
-        assert.equal(1,1);
+        assert.equal(1, 1);
         done();
-      }
+      },
     };
 
     mocha.setup({ ui: "bdd", rootHooks: customRootHooks, cleanReferencesAfterRun: true });
@@ -140,7 +149,8 @@ function postTestResults(event) {
   if (!window.YJC_Error) {
     event.source.postMessage(
       {
-        testResults: window.YJC_Test_Results,
+        testResultsPassed: window.YJC_Test_Results_Passed,
+        testResultsFailed: window.YJC_Test_Results_Failed,
         timeTaken: window.YJC_TimeTaken,
         message: `[${window.YJC_Result}]`,
       },
@@ -152,7 +162,8 @@ function postTestResults(event) {
 
   // Reset state
   window.YJC_Result = [];
-  window.YJC_Test_Results = [];
+  window.YJC_Test_Results_Passed = [];
+  window.YJC_Test_Results_Failed = [];
   setupMocha();
 }
 

@@ -2,24 +2,21 @@ import React, { Fragment, useEffect, useRef, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import Editor from "@monaco-editor/react";
 import useDebounce from "../hooks/useDebounce";
-import TestCasesContainer from "../components/test-cases-container/TestCasesContainer";
 import Markdown from "markdown-to-jsx";
 import NormalText from "../components/markdown-components/normalText/NormalText";
 import ExampleBlock from "../components/markdown-components/example-block/ExampleBlock";
 import Tag from "../components/tag/Tag";
-import { arraysEqual } from "../utils/utils";
 import { mockPractice } from "../utils/mockData";
 
 const Practice = () => {
   const iframeRef = useRef(null);
   const [didExecute, setDidExecute] = useState(false);
-  const [error, setError] = useState(null);
+  const [errorMsg, setErrorMsg] = useState("");
   const [timeTaken, setTimeTaken] = useState(null);
   const [success, setSuccess] = useState(false);
-  const [incommingResult, setIncommingResult] = useState([]);
-  const [incommingTestResults, setIncommingTestResults] = useState([]);
-  const [showConsoleOutput, setShowConsoleOutput] = useState(true);
-  const [showResults, setShowResults] = useState(false);
+  const [incommingTestResults, setIncommingTestResults] = useState({passed: [], failed: []});
+  const [showConsoleOutput, setShowConsoleOutput] = useState(false);
+  const [showResults, setShowResults] = useState(true);
   const [currentProblem, setCurrentProblem] = useState(mockPractice);
   const [currentEditorTabIndex, setCurrentEditorTabIndex] = useState(0);
   const [defaultCode, setDefaultCode] = useState("");
@@ -27,24 +24,26 @@ const Practice = () => {
 
   useEffect(() => {
     const handleMessage = (event) => {
-      if (event.data) {
-        const { stack, name, code, message, timeTaken, testResults } = event.data;
 
-        if (stack || name || code || !message) {
-          setError(stack || message);
+      // this check is needed for local development
+      if (event.data && !event.data.vscodeScheduleAsyncWork) {
+        const { stack, name, timeTaken, testResultsPassed, testResultsFailed } = event.data;
+        if (stack || name) {
+          setErrorMsg(stack || name);
         } else {
-          const res = JSON.parse(message);
-          console.log(testResults);
           setTimeTaken(Math.round(timeTaken * 10) / 100);
 
-          if (arraysEqual(res, currentProblem.correctOutput)) {
+          if (testResultsPassed.length === testResultsPassed.length + testResultsFailed.length) {
             setSuccess(true);
           } else {
-            setError("Test case mismatch");
+            setErrorMsg("Test case mismatch");
           }
 
-          setIncommingResult(res);
-          setIncommingTestResults(testResults);
+          //setIncommingResult(res);
+          setIncommingTestResults({
+            passed: testResultsPassed ? testResultsPassed : [],
+            failed: testResultsFailed ? testResultsFailed : [],
+          });
           setDidExecute(true);
         }
       }
@@ -82,9 +81,9 @@ const Practice = () => {
   };
 
   const sendMessageToIframe = () => {
-    setError(null);
-    setSuccess(null);
-    setIncommingResult([]);
+    setErrorMsg("");
+    setSuccess(false);
+    setIncommingTestResults({});
     iframeRef.current.contentWindow.postMessage(
       {
         code: currentProblem.editorValueCode,
@@ -114,9 +113,9 @@ const Practice = () => {
             <div className="flex gap-2">
               {currentProblem.tags.map((currentTag, index) => {
                 return (
-                  <Fragment>
+                  <div key={index}>
                     <Tag data={currentTag} key={index}></Tag>
-                  </Fragment>
+                  </div>
                 );
               })}
             </div>
@@ -273,14 +272,7 @@ const Practice = () => {
               </div>
               <div className="flex-grow bg-zinc-800 rounded-md mb-1 mt-4">
                 {showConsoleOutput ? (
-                  <TestCasesContainer
-                    error={error}
-                    incommingResult={incommingResult}
-                    timeTaken={timeTaken}
-                    success={success}
-                    data={eval(JSON.stringify(currentProblem.testCases)).slice(0, 3)}
-                    output={currentProblem.correctOutput}
-                  />
+                  <></>
                 ) : (
                   ""
                 )}
@@ -289,65 +281,92 @@ const Practice = () => {
                     {didExecute ? (
                       <>
                         <div className="test-case-container min-h-[150px] max-h-[250px] overflow-y-auto flex flex-col gap-5">
-                          {incommingTestResults.map((singleCase, index) => {
-                            return (
-                              <>
-                                <span
-                                  key={index}
-                                  className={`w-fit test-case ml-5 flex ${
-                                    index === 0 ? "mt-4" : ""
-                                  } gap-4 items-center text-md text-zinc-300`}
-                                >
-                                  <svg
-                                    className="w-5 h-5 text-red-600"
-                                    aria-hidden="true"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
+                          {new Array(...incommingTestResults.passed)
+                            .concat(incommingTestResults.failed)
+                            .map((singleCase, index) => {
+                              return (
+                                <div key={index}>
+                                  <span
+                                    className={`w-fit test-case ml-5 flex ${
+                                      index === 0 ? "mt-6" : ""
+                                    } gap-4 items-center text-sm text-zinc-300`}
                                   >
-                                    <path
-                                      stroke="currentColor"
-                                      strokeLinecap="round"
-                                      strokeLinejoin="round"
-                                      strokeWidth="2"
-                                      d="M6 18 17.94 6M18 18 6.06 6"
-                                    />
-                                  </svg>
-                                  {singleCase.parentTitle} {">"} {singleCase.title} {" > "} {singleCase.status}
-                                </span>
-                              </>
-                            );
-                          })}
+                                    {singleCase.status === "passed" ? (
+                                      <svg
+                                        className="w-6 h-6 text-lime-500"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          stroke="currentColor"
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth="2"
+                                          d="M5 11.917 9.724 16.5 19 7.5"
+                                        />
+                                      </svg>
+                                    ) : (
+                                      <svg
+                                        className="w-6 h-6 text-red-600"
+                                        aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="24"
+                                        height="24"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                      >
+                                        <path
+                                          stroke="currentColor"
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          strokeWidth="2"
+                                          d="M6 18 17.94 6M18 18 6.06 6"
+                                        />
+                                      </svg>
+                                    )}
+                                    {singleCase.parentTitle} {">"} {singleCase.title} {" > "} {singleCase.status}
+                                  </span>
+                                </div>
+                              );
+                            })}
                         </div>
                         <div>
                           <hr className="h-px bg-zinc-900 border-0 relative bottom-4"></hr>
                           <div className="mx-3 relative bottom-2 gap-2 flex">
-                            {success && !error ? (
+                            {success || !errorMsg.length > 0 ? (
                               <>
                                 <span className="text-sm text-lime-500 pr-2">Correct answer</span>
-                                <span className="text-sm text-lime-500">3 passed,</span>
+                                <span className="text-sm text-lime-500">
+                                  {incommingTestResults.passed.length} passed,
+                                </span>
                               </>
                             ) : (
                               ""
                             )}
-                            {!success && error ? (
+                            {!success || errorMsg.length > 0 ? (
                               <>
                                 <span className="text-sm text-red-500 pr-2">Wrong answer</span>
-                                <span className="text-sm text-red-500">3 failed,</span>
+                                <span className="text-sm text-red-500">
+                                  {incommingTestResults.failed.length} failed,
+                                </span>
                               </>
                             ) : (
                               ""
                             )}
-                            <span className="text-sm text-zinc-300">3 total</span>
+                            <span className="text-sm text-zinc-300">
+                              {incommingTestResults.failed.length + incommingTestResults.passed.length} total
+                            </span>
                           </div>
                         </div>
                       </>
                     ) : (
                       ""
                     )}
-                    {/* {success && !error ? (
+                    {/* {success && !errorMsg ? (
                       <h1 className="text-lime-500 p-5 text-xl font-semibold flex items-center gap-3">
                         <span>
                           <svg
@@ -373,7 +392,7 @@ const Practice = () => {
                     ) : (
                       ""
                     )} */}
-                    {/* {error && !success ? (
+                    {/* {errorMsg && !success ? (
                       <h1 className="text-red-500 py-10 pr-10 text-wrap text-lg font-semibold flex items-center gap-3">
                         <span>
                           {" "}
@@ -395,7 +414,7 @@ const Practice = () => {
                             />
                           </svg>
                         </span>
-                        {error}
+                        {errorMsg}
                       </h1>
                     ) : (
                       ""
