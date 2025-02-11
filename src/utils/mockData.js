@@ -13,7 +13,7 @@ export const mockPractice = {
   editorValueTests: `\
   describe("addTwoNumber", () => {
     it("should match correct ouput 1", () => {
-        expect(addTwoNumber(1,2)).equal(4);
+        expect(addTwoNumber(1,2)).equal(3);
     });
     it("should match correct ouput 2", () => {
         assert.equal(addTwoNumber(1,2),3);

@@ -14,6 +14,7 @@ window.expect = chai.expect;
 window.assert = chai.assert;
 window.YJC_Result = [];
 window.YJC_Error = null;
+let startTime = null;
 
 // Function to set up Mocha testing environment
 function setupMocha() {
@@ -31,17 +32,20 @@ function setupMocha() {
   newMochaScript.onload = () => {
     const customRootHooks = {
       afterEach(done) {
+        let endTime = performance.now();
         if (this.currentTest.state === "passed") {
           window.YJC_Test_Results_Passed.push({
             title: this.currentTest.title,
             status: this.currentTest.state,
             parentTitle: this.currentTest.parent.title,
+            timeTaken:  Math.round((endTime - startTime) * 10) / 100
           });
         } else {
           window.YJC_Test_Results_Failed.push({
             title: this.currentTest.title,
             status: this.currentTest.state,
             parentTitle: this.currentTest.parent.title,
+            timeTaken:  Math.round((endTime - startTime) * 10) / 100
           });
         }
         done();
@@ -50,6 +54,9 @@ function setupMocha() {
         assert.equal(1, 1);
         done();
       },
+      beforeEach() {
+        startTime = performance.now();
+      }
     };
 
     mocha.setup({ ui: "bdd", rootHooks: customRootHooks, cleanReferencesAfterRun: true });
@@ -131,12 +138,6 @@ function createTestScript(codeBlock, testBlock, data) {
       ${testBlock.iframeCode.split("\n").slice(1).join("\n")}
       mocha.run();
       const testCases = ${JSON.stringify(data.testCases)};
-      const startTime = performance.now();
-      testCases.forEach((currTestCase) => {
-        window.YJC_Result.push(${data.functionName}(...currTestCase));
-      });
-      const endTime = performance.now();
-      window.YJC_TimeTaken = endTime - startTime;
     } catch (error) {
       window.YJC_Error = error;
     }
@@ -150,9 +151,7 @@ function postTestResults(event) {
     event.source.postMessage(
       {
         testResultsPassed: window.YJC_Test_Results_Passed,
-        testResultsFailed: window.YJC_Test_Results_Failed,
-        timeTaken: window.YJC_TimeTaken,
-        message: `[${window.YJC_Result}]`,
+        testResultsFailed: window.YJC_Test_Results_Failed
       },
       event.origin
     );
@@ -164,6 +163,7 @@ function postTestResults(event) {
   window.YJC_Result = [];
   window.YJC_Test_Results_Passed = [];
   window.YJC_Test_Results_Failed = [];
+  startTime = null;
   setupMocha();
 }
 

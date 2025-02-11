@@ -12,9 +12,8 @@ const Practice = () => {
   const iframeRef = useRef(null);
   const [didExecute, setDidExecute] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const [timeTaken, setTimeTaken] = useState(null);
   const [success, setSuccess] = useState(false);
-  const [incommingTestResults, setIncommingTestResults] = useState({passed: [], failed: []});
+  const [incommingTestResults, setIncommingTestResults] = useState({ passed: [], failed: [] });
   const [showConsoleOutput, setShowConsoleOutput] = useState(false);
   const [showResults, setShowResults] = useState(true);
   const [currentProblem, setCurrentProblem] = useState(mockPractice);
@@ -24,15 +23,12 @@ const Practice = () => {
 
   useEffect(() => {
     const handleMessage = (event) => {
-
       // this check is needed for local development
       if (event.data && !event.data.vscodeScheduleAsyncWork) {
-        const { stack, name, timeTaken, testResultsPassed, testResultsFailed } = event.data;
+        const { stack, name, testResultsPassed, testResultsFailed } = event.data;
         if (stack || name) {
           setErrorMsg(stack || name);
         } else {
-          setTimeTaken(Math.round(timeTaken * 10) / 100);
-
           if (testResultsPassed.length === testResultsPassed.length + testResultsFailed.length) {
             setSuccess(true);
           } else {
@@ -41,8 +37,8 @@ const Practice = () => {
 
           //setIncommingResult(res);
           setIncommingTestResults({
-            passed: testResultsPassed ? testResultsPassed : [],
-            failed: testResultsFailed ? testResultsFailed : [],
+            passed: testResultsPassed !== undefined ? testResultsPassed : [],
+            failed: testResultsFailed !== undefined ? testResultsFailed : [],
           });
           setDidExecute(true);
         }
@@ -71,28 +67,30 @@ const Practice = () => {
   };
 
   const handleShowTestCases = () => {
-    setShowConsoleOutput(!showConsoleOutput);
-    setShowResults(!showResults);
+    setShowConsoleOutput(true);
+    setShowResults(false);
   };
 
   const handleShowResults = () => {
-    setShowResults(!showResults);
-    setShowConsoleOutput(!showConsoleOutput);
+    setShowResults(true);
+    setShowConsoleOutput(false);
   };
 
-  const sendMessageToIframe = () => {
+  const sendMessageToIframe = (type) => {
+    debugger;
     setErrorMsg("");
     setSuccess(false);
     setIncommingTestResults({});
     iframeRef.current.contentWindow.postMessage(
       {
-        code: currentProblem.editorValueCode,
+        code: type === "submit" ? defaultCode : currentProblem.editorValueCode,
         functionName: currentProblem.functionName,
         testCases: currentProblem.testCases,
-        testCode: currentProblem.editorValueTests,
+        testCode: type === "submit" ? defaultTestCode : currentProblem.editorValueTests
       },
       "*"
     );
+    handleShowResults();
   };
 
   const handleEditorTabClick = (id) => {
@@ -190,6 +188,7 @@ const Practice = () => {
                 minimap: {
                   enabled: false,
                 },
+                autoIndent: true,
               }}
             />
             ;
@@ -260,79 +259,81 @@ const Practice = () => {
                   <div className="flex gap-3">
                     <button
                       className="bg-zinc-600 hover:bg-zinc-700 rounded-md text-sm px-3 py-2 flex gap-2 items-center justify-center text-lime-500 font-bold"
-                      onClick={debouncedSendMessageToIframe}
+                      onClick={() => debouncedSendMessageToIframe()}
                     >
                       <span>▶</span>Run
                     </button>
-                    <button className="bg-zinc-600 hover:bg-zinc-700 rounded-md text-sm px-3 py-2 font-bold text-zinc-300">
+                    <button
+                      className="bg-zinc-600 hover:bg-zinc-700 rounded-md text-sm px-3 py-2 font-bold text-zinc-300"
+                      onClick={() => debouncedSendMessageToIframe("submit")}
+                    >
                       Submit
                     </button>
                   </div>
                 </div>
               </div>
               <div className="flex-grow bg-zinc-800 rounded-md mb-1 mt-4">
-                {showConsoleOutput ? (
-                  <></>
-                ) : (
-                  ""
-                )}
+                {showConsoleOutput ? <></> : ""}
                 {showResults ? (
                   <div className="w-full h-full flex flex-col justify-between relative">
                     {didExecute ? (
                       <>
-                        <div className="test-case-container min-h-[150px] max-h-[250px] overflow-y-auto flex flex-col gap-5">
-                          {new Array(...incommingTestResults.passed)
-                            .concat(incommingTestResults.failed)
-                            .map((singleCase, index) => {
-                              return (
-                                <div key={index}>
-                                  <span
-                                    className={`w-fit test-case ml-5 flex ${
-                                      index === 0 ? "mt-6" : ""
-                                    } gap-4 items-center text-sm text-zinc-300`}
-                                  >
-                                    {singleCase.status === "passed" ? (
-                                      <svg
-                                        className="w-6 h-6 text-lime-500"
-                                        aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
+                        <div className="test-case-container min-h-[150px] max-h-[250px] overflow-y-auto flex flex-col ">
+                          {Array.isArray(incommingTestResults.passed)
+                            ? new Array(...incommingTestResults.passed)
+                                .concat(incommingTestResults.failed)
+                                .map((singleCase, index) => {
+                                  return (
+                                    <div key={index}>
+                                      <span
+                                        className={`test-case pl-6 py-2 flex relative  border-b-2 border-zinc-700 ${
+                                          index === 0 ? "mt-4 border-t-2" : ""
+                                        } gap-1 items-center text-sm text-zinc-300`}
                                       >
-                                        <path
-                                          stroke="currentColor"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          strokeWidth="2"
-                                          d="M5 11.917 9.724 16.5 19 7.5"
-                                        />
-                                      </svg>
-                                    ) : (
-                                      <svg
-                                        className="w-6 h-6 text-red-600"
-                                        aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                      >
-                                        <path
-                                          stroke="currentColor"
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          strokeWidth="2"
-                                          d="M6 18 17.94 6M18 18 6.06 6"
-                                        />
-                                      </svg>
-                                    )}
-                                    {singleCase.parentTitle} {">"} {singleCase.title} {" > "} {singleCase.status}
-                                  </span>
-                                </div>
-                              );
-                            })}
+                                        {singleCase.status === "passed" ? (
+                                          <svg
+                                            className="w-5 h-5 text-lime-500"
+                                            aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="24"
+                                            height="24"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                          >
+                                            <path
+                                              stroke="currentColor"
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              strokeWidth="2"
+                                              d="M5 11.917 9.724 16.5 19 7.5"
+                                            />
+                                          </svg>
+                                        ) : (
+                                          <svg
+                                            className="w-5 h-5 text-red-600"
+                                            aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="24"
+                                            height="24"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                          >
+                                            <path
+                                              stroke="currentColor"
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              strokeWidth="2"
+                                              d="M6 18 17.94 6M18 18 6.06 6"
+                                            />
+                                          </svg>
+                                        )}
+                                        {singleCase.parentTitle} {">"} {singleCase.title} {" > "} {singleCase.status}{" "}
+                                        <span className="">{singleCase.timeTaken}</span>
+                                      </span>
+                                    </div>
+                                  );
+                                })
+                            : ""}
                         </div>
                         <div>
                           <hr className="h-px bg-zinc-900 border-0 relative bottom-4"></hr>
@@ -341,7 +342,7 @@ const Practice = () => {
                               <>
                                 <span className="text-sm text-lime-500 pr-2">Correct answer</span>
                                 <span className="text-sm text-lime-500">
-                                  {incommingTestResults.passed.length} passed,
+                                  {incommingTestResults?.passed?.length} passed,
                                 </span>
                               </>
                             ) : (
@@ -351,15 +352,21 @@ const Practice = () => {
                               <>
                                 <span className="text-sm text-red-500 pr-2">Wrong answer</span>
                                 <span className="text-sm text-red-500">
-                                  {incommingTestResults.failed.length} failed,
+                                  {incommingTestResults?.failed?.length} failed,
                                 </span>
                               </>
                             ) : (
                               ""
                             )}
                             <span className="text-sm text-zinc-300">
-                              {incommingTestResults.failed.length + incommingTestResults.passed.length} total
+                              {incommingTestResults?.failed?.length + incommingTestResults?.passed?.length} total
                             </span>
+                            <button
+                              className="relative text-end flex-grow text-sm text-zinc-300"
+                              onClick={() => handleEditorTabClick(1)}
+                            >
+                              Edit tests
+                            </button>
                           </div>
                         </div>
                       </>
