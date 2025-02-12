@@ -23,7 +23,7 @@ const SearchCard = ({ data }) => {
     >
       <div className="flex justify-between itme">
         <div
-          className={`font-bold leading-6 text-xl w-9/12 md:text-2xl tracking-tight ${
+          className={`font-medium leading-6 text-xl w-9/12 md:text-2xl tracking-normal ${
             !isDarkMode ? "text-zinc-200" : "text-black"
           }`}
         >
@@ -43,8 +43,8 @@ const SearchCard = ({ data }) => {
         </h3>
       </div>
       <p
-        className={`break-words font-medium text-black py-4 text-lg md:text-xl ${
-          !isDarkMode ? "text-zinc-300" : "text-zinc-500"
+        className={`break-words font-normal text-black py-4 text-md md:text-lg ${
+          !isDarkMode ? "text-zinc-400" : "text-zinc-500"
         }`}
       >
         {data.description.slice(0, 280) + "..." || data.description}

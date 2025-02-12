@@ -5,9 +5,9 @@ const Title = ({ data }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
   return (
     <div
-      className={`font-extrabold ${
+      className={`font-medium ${
         isDarkMode ? "text-zinc-800" : "text-white"
-      } text-2xl md:text-4xl break-words`}
+      } text-2xl md:text-3xl break-words`}
     >
       {data}
     </div>

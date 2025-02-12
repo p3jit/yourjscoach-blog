@@ -105,9 +105,9 @@ const Practice = () => {
     <PanelGroup direction="horizontal" className="flex gap-1">
       <Panel minSize={30}>
         <div className="w-full rounded-md h-[87vh] p-7 bg-zinc-800 flex flex-col gap-4 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-zinc-500">
-          <h1 className="text-zinc-100 text-2xl font-semibold text-wrap">{currentProblem.problemTitle}</h1>
+          <h1 className="text-zinc-100 text-2xl font-medium text-wrap">{currentProblem.problemTitle}</h1>
           <div className="flex justify-between w-full">
-            <span className="px-2 py-1 rounded-lg bg-zinc-600 font-bold text-md text-lime-500 w-fit">
+            <span className="px-2 py-1 rounded-lg bg-zinc-600 font-normal text-sm text-lime-500 w-fit h-fit">
               {currentProblem.difficulty}
             </span>
             <div className="flex gap-2">
@@ -130,16 +130,16 @@ const Practice = () => {
       <PanelResizeHandle className="bg-zinc-500 w-1 h-16 self-center rounded-md bottom-32 left-1 relative" />
       <Panel minSize={45}>
         <PanelGroup direction="vertical" className="flex gap-1">
-          <Panel defaultSize={55} minSize={55} className="rounded-md mx-2">
+          <Panel defaultSize={55} minSize={48} className="rounded-md mx-2">
             <div className="flex gap-6 py-3 bg-zinc-800 px-3">
               <button
                 className={`${
                   currentEditorTabIndex === 0 ? "text-zinc-200 " : "text-zinc-500"
-                } flex gap-1 cursor-pointer`}
+                } flex gap-1 cursor-pointer text-sm`}
                 onClick={() => handleEditorTabClick(0)}
               >
                 <svg
-                  className={`w-4 h-5 ${currentEditorTabIndex === 0 ? "text-zinc-200" : "text-zinc-500"}`}
+                  className={`w-4 h-4 mt-px ${currentEditorTabIndex === 0 ? "text-zinc-200" : "text-zinc-500"}`}
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -160,11 +160,11 @@ const Practice = () => {
               <button
                 className={`${
                   currentEditorTabIndex === 1 ? "text-zinc-200 " : "text-zinc-500"
-                } flex gap-1 cursor-pointer`}
+                } flex gap-1 cursor-pointer text-sm`}
                 onClick={() => handleEditorTabClick(1)}
               >
                 <svg
-                  className={`w-4 h-5 ${currentEditorTabIndex === 1 ? "text-zinc-200" : "text-zinc-500"}`}
+                  className={`w-4 h-4 mt-px ${currentEditorTabIndex === 1 ? "text-zinc-200" : "text-zinc-500"}`}
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -195,8 +195,8 @@ const Practice = () => {
             />
             ;
           </Panel>
-          <PanelResizeHandle className="h-1 w-10 self-center bg-zinc-500 rounded-md" />
-          <Panel defaultSize={45} minSize={6}>
+          <PanelResizeHandle className="h-1 w-10 self-center bg-zinc-500 rounded-md relative top-2" />
+          <Panel defaultSize={45} minSize={8}>
             <div className="mt-1 pl-2 w-full h-full flex flex-col">
               <div className="flex items-center right-1">
                 <iframe
@@ -209,16 +209,20 @@ const Practice = () => {
                   sandbox={`allow-scripts ${import.meta.env.VITE_ENV === "prod" ? "" : "allow-same-origin"}`}
                   className="hidden"
                 ></iframe>
+              </div>
+              <div className="flex-grow bg-zinc-800 rounded-md mb-1 mt-4">
                 <div className="flex gap-3 justify-between w-full">
-                  <div className="flex gap-3">
+                  <div className="flex gap-1 p-2">
                     <button
                       className={`${
-                        showConsoleOutput ? "bg-zinc-800 outline-1 outline-zinc-300 outline-double" : "bg-zinc-700"
-                      }  rounded-md text-sm px-3 py-2 font-bold text-zinc-200 flex justify-center items-center gap-2`}
+                        showConsoleOutput ? "text-zinc-300" : "text-zinc-500"
+                      }  text-sm flex gap-2 items-center w-fit h-fit self-center px-2 py-1 rounded-lg`}
                       onClick={handleShowTestCases}
                     >
                       <svg
-                        className="w-4 h-5 text-zinc-200 "
+                        className={`${
+                          showConsoleOutput ? "text-zinc-300" : "text-zinc-500"
+                        } h-4 w-4`}
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -236,12 +240,14 @@ const Practice = () => {
                     </button>
                     <button
                       className={`${
-                        showResults ? "bg-zinc-800 outline-1 outline-zinc-300 outline-double" : "bg-zinc-700"
-                      }  rounded-md text-sm px-3 py-2 font-bold text-zinc-200 flex justify-center items-center gap-1`}
+                        showResults ? "text-zinc-300" : "text-zinc-500"
+                      }  text-sm flex gap-1 items-center w-fit h-fit self-center px-2 py-1 rounded-lg`}
                       onClick={handleShowResults}
                     >
                       <svg
-                        className="w-5 h-5 text-zinc-200"
+                        className={`${
+                          showResults ? "text-zinc-300" : "text-zinc-500"
+                        } h-4 w-4`}
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -260,21 +266,19 @@ const Practice = () => {
                   </div>
                   <div className="flex gap-3">
                     <button
-                      className="bg-zinc-600 hover:bg-zinc-700 rounded-md text-sm px-3 py-2 flex gap-2 items-center justify-center text-lime-500 font-bold"
+                      className="text-lime-500 text-sm flex gap-2 items-center h-fit w-fit self-center px-3 py-1 rounded-lg"
                       onClick={() => debouncedSendMessageToIframe()}
                     >
-                      <span>▶</span>Run
+                      <span className="text-xs mt-1">▶</span>Run
                     </button>
                     <button
-                      className="bg-zinc-600 hover:bg-zinc-700 rounded-md text-sm px-3 py-2 font-bold text-zinc-300"
+                      className="text-zinc-300 text-sm flex gap-2 items-center h-fit w-fit self-center px-3 py-1 rounded-lg mr-2"
                       onClick={() => debouncedSendMessageToIframe("submit")}
                     >
                       Submit
                     </button>
                   </div>
                 </div>
-              </div>
-              <div className="flex-grow bg-zinc-800 rounded-md mb-1 mt-4">
                 {showConsoleOutput ? (
                   <>
                     {" "}
@@ -288,7 +292,10 @@ const Practice = () => {
                                     singleCount === 0 ? "mt-4 border-t-2" : ""
                                   } gap-4 items-center text-xs text-zinc-300`}
                                 >
-                                  <span className="bg-yellow-400 text-black rounded-md px-2 py-px">{consoleLogMap[singleKey]}</span>  {singleKey}
+                                  <span className="bg-yellow-400 text-black rounded-md px-2 py-px">
+                                    {consoleLogMap[singleKey]}
+                                  </span>{" "}
+                                  {singleKey}
                                 </span>
                               </div>
                             );
@@ -361,8 +368,8 @@ const Practice = () => {
                             : ""}
                         </div>
                         <div>
-                          <hr className="h-px bg-zinc-900 border-0 relative bottom-4"></hr>
-                          <div className="mx-3 relative bottom-2 gap-2 flex">
+                          <hr className="h-px bg-zinc-900 border-0 relative bottom-14"></hr>
+                          <div className="mx-3 mb-1 relative bottom-12 gap-2 flex">
                             {success || !errorMsg.length > 0 ? (
                               <>
                                 <span className="text-sm text-lime-500 pr-2">Correct answer</span>

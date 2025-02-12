@@ -106,7 +106,7 @@ const Home = () => {
             : ""}
         </div>
       ) : isSearching ? (
-        <div className="flex flex-col gap-5">
+        <div className="flex flex-col gap-5 mt-4">
           <SkeletonLoaderLatestPost />
           <SkeletonLoaderLatestPost />
         </div>

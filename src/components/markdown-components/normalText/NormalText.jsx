@@ -7,8 +7,8 @@ const NormalText = ({ children }) => {
   const location = useLocation();
   return (
     <p
-      className={`${location.pathname === "/practice" ? "leading-6 md:leading-7" : "leading-8 md:leading-9"}  font-medium text-lg md:text-xl ${
-        isDarkMode ? "text-zinc-600" : "text-zinc-300"
+      className={`${location.pathname === "/practice" ? "leading-6 md:leading-7" : "leading-8 md:leading-9"} tracking-normal font-medium text-lg ${
+        isDarkMode ? "text-zinc-600" : "text-zinc-400"
       }`}
     >
       {children}

@@ -13,7 +13,8 @@ module.exports = {
     },
     fontFamily: {
       roboto: ['Roboto' , 'sans-serif'],
-      sofia: ['Sofia Sans' , 'sans-serif']
+      sofia: ['Sofia Sans' , 'sans-serif'],
+      montserrat: ['Montserrat', 'sans-serif']
     }
   },
   plugins: [require('tailwind-scrollbar')({ nocompatible: true })],

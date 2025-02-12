@@ -7,7 +7,8 @@ export const mockPractice = {
   editorValueCode: `\
     // Complete the following function to execute the code
     function addTwoNumber (x,y) {
-        return x+y;
+      console.log("Test1", "Test2");
+      return x+y;
     }
   `,
   editorValueTests: `\
@@ -24,8 +25,8 @@ export const mockPractice = {
   });
   `,
   functionName: "addTwoNumber",
-  sampleTestInput: [1,2],
-  test: [1,2,3,4,5,6,7,8,9],
+  sampleTestInput: [1, 2],
+  test: [1, 2, 3, 4, 5, 6, 7, 8, 9],
   correctOutput: [5, 9],
   tags: ["array", "dp"],
 };
@@ -41,7 +42,8 @@ export const mockBlogData = {
       imageList: [],
       videoList: [],
       tags: ["tag1", "tag2"],
-      description: "test1",
+      description:
+        "If you are someone who is starting out in react you might have faced this issue where we use multiple useState in a single component and it makes the code dirty and not readable. In this blog we will talk about how we can overcome this using two possible solution. But before that lets talk about what this useState Hell really is.",
     },
     {
       mdFile: "how-i-increased-my-blog-website-performance",
@@ -52,7 +54,8 @@ export const mockBlogData = {
       imageList: [],
       videoList: [],
       tags: ["tag1", "tag2"],
-      description: "test2",
+      description:
+        "If you are someone who is starting out in react you might have faced this issue where we use multiple useState in a single component and it makes the code dirty and not readable. In this blog we will talk about how we can overcome this using two possible solution. But before that lets talk about what this useState Hell really is.",
     },
   ],
 };

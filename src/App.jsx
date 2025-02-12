@@ -23,7 +23,7 @@ function App() {
   return (
     <div className={`w-full flex flex-col justify-center 2xl:items-center ${isDarkMode ? "bg-white" : "bg-zinc-900"}`}>
       <div
-        className={`font-sofia min-h-screen flex flex-col relative tracking-tight w-full  ${
+        className={`font-roboto min-h-screen flex flex-col relative tracking-tight w-full  ${
           location.pathname === "/practice"
             ? "py-5 px-7 gap-5 min-w-[950px]"
             : " gap-10 py-[3vh] 2xl:px-[20vw] lg:px-[10vw] px-[7vw] min-w-[56vw]"
