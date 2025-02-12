@@ -220,9 +220,7 @@ const Practice = () => {
                       onClick={handleShowTestCases}
                     >
                       <svg
-                        className={`${
-                          showConsoleOutput ? "text-zinc-300" : "text-zinc-500"
-                        } h-4 w-4`}
+                        className={`${showConsoleOutput ? "text-zinc-300" : "text-zinc-500"} h-4 w-4`}
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -245,9 +243,7 @@ const Practice = () => {
                       onClick={handleShowResults}
                     >
                       <svg
-                        className={`${
-                          showResults ? "text-zinc-300" : "text-zinc-500"
-                        } h-4 w-4`}
+                        className={`${showResults ? "text-zinc-300" : "text-zinc-500"} h-4 w-4`}
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         width="24"
@@ -316,12 +312,13 @@ const Practice = () => {
                                 .concat(incommingTestResults.failed)
                                 .map((singleCase, index) => {
                                   return (
-                                    <div key={index}>
-                                      <span
-                                        className={`test-case pl-6 py-2 flex relative  border-b-2 border-zinc-700 ${
-                                          index === 0 ? "mt-4 border-t-2" : ""
-                                        } gap-1 items-center text-sm text-zinc-300`}
-                                      >
+                                    <div
+                                      className={`pl-6 relative py-2 justify-between flex border-b-2 border-zinc-700 ${
+                                        index === 0 ? "mt-4 border-t-2" : ""
+                                      } gap-1 items-center text-sm text-zinc-300`}
+                                    >
+                                      {/* {singleCase.parentTitle} {">"} {singleCase.title} {" > "} {singleCase.status}{" "} */}
+                                      <div className="flex gap-3">
                                         {singleCase.status === "passed" ? (
                                           <svg
                                             className="w-5 h-5 text-lime-500"
@@ -359,9 +356,11 @@ const Practice = () => {
                                             />
                                           </svg>
                                         )}
-                                        {singleCase.parentTitle} {">"} {singleCase.title} {" > "} {singleCase.status}{" "}
-                                        <span className="">{singleCase.timeTaken}</span>
-                                      </span>
+                                        <span>{singleCase.parentTitle}</span>
+                                        {">"}
+                                        <span>{singleCase.title}</span>
+                                      </div>
+                                      <div className="flex text-zinc-500 justify-end mr-6">{singleCase.timeTaken} ms</div>
                                     </div>
                                   );
                                 })
