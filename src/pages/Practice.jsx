@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import Editor from "@monaco-editor/react";
 import useDebounce from "../hooks/useDebounce";
@@ -20,28 +20,30 @@ const Practice = () => {
   const [currentEditorTabIndex, setCurrentEditorTabIndex] = useState(0);
   const [defaultCode, setDefaultCode] = useState("");
   const [defaultTestCode, setDefaultTestCode] = useState("");
+  const [consoleLogMap, setConsoleLogMap] = useState({});
 
   useEffect(() => {
     const handleMessage = (event) => {
       // this check is needed for local development
       if (event.data && !event.data.vscodeScheduleAsyncWork) {
-        const { stack, name, testResultsPassed, testResultsFailed } = event.data;
-        if (stack || name) {
-          setErrorMsg(stack || name);
+        const { stack, name, error, testResultsPassed, testResultsFailed, consoleLogList } = event.data;
+        if (error || stack || name) {
+          setErrorMsg(error || stack || name);
+          setSuccess(false);
         } else {
-          if (testResultsPassed.length === testResultsPassed.length + testResultsFailed.length) {
+          if (testResultsPassed?.length === testResultsPassed?.length + testResultsFailed?.length) {
             setSuccess(true);
           } else {
             setErrorMsg("Test case mismatch");
           }
-
-          //setIncommingResult(res);
-          setIncommingTestResults({
-            passed: testResultsPassed !== undefined ? testResultsPassed : [],
-            failed: testResultsFailed !== undefined ? testResultsFailed : [],
-          });
-          setDidExecute(true);
         }
+        //setIncommingResult(res);
+        setIncommingTestResults({
+          passed: testResultsPassed !== undefined ? testResultsPassed : [],
+          failed: testResultsFailed !== undefined ? testResultsFailed : [],
+        });
+        setConsoleLogMap(consoleLogList ? consoleLogList : {});
+        setDidExecute(true);
       }
     };
 
@@ -77,7 +79,6 @@ const Practice = () => {
   };
 
   const sendMessageToIframe = (type) => {
-    debugger;
     setErrorMsg("");
     setSuccess(false);
     setIncommingTestResults({});
@@ -86,7 +87,8 @@ const Practice = () => {
         code: type === "submit" ? defaultCode : currentProblem.editorValueCode,
         functionName: currentProblem.functionName,
         testCases: currentProblem.testCases,
-        testCode: type === "submit" ? defaultTestCode : currentProblem.editorValueTests
+        testCode: type === "submit" ? defaultTestCode : currentProblem.editorValueTests,
+        sampleTestInput: currentProblem.sampleTestInput,
       },
       "*"
     );
@@ -97,7 +99,7 @@ const Practice = () => {
     setCurrentEditorTabIndex(id);
   };
 
-  const debouncedSendMessageToIframe = useDebounce(sendMessageToIframe, 800);
+  const debouncedSendMessageToIframe = useDebounce(sendMessageToIframe, 1000);
 
   return (
     <PanelGroup direction="horizontal" className="flex gap-1">
@@ -273,7 +275,30 @@ const Practice = () => {
                 </div>
               </div>
               <div className="flex-grow bg-zinc-800 rounded-md mb-1 mt-4">
-                {showConsoleOutput ? <></> : ""}
+                {showConsoleOutput ? (
+                  <>
+                    {" "}
+                    <div className="test-case-container min-h-[150px] max-h-[250px] overflow-y-auto flex flex-col ">
+                      {consoleLogMap
+                        ? Object.keys(consoleLogMap).map((singleKey, singleCount) => {
+                            return (
+                              <div key={singleCount}>
+                                <span
+                                  className={`test-case pl-4 py-2 flex relative  border-b-2 border-zinc-700 ${
+                                    singleCount === 0 ? "mt-4 border-t-2" : ""
+                                  } gap-4 items-center text-xs text-zinc-300`}
+                                >
+                                  <span className="bg-yellow-400 text-black rounded-md px-2 py-px">{consoleLogMap[singleKey]}</span>  {singleKey}
+                                </span>
+                              </div>
+                            );
+                          })
+                        : ""}
+                    </div>
+                  </>
+                ) : (
+                  ""
+                )}
                 {showResults ? (
                   <div className="w-full h-full flex flex-col justify-between relative">
                     {didExecute ? (
@@ -373,59 +398,6 @@ const Practice = () => {
                     ) : (
                       ""
                     )}
-                    {/* {success && !errorMsg ? (
-                      <h1 className="text-lime-500 p-5 text-xl font-semibold flex items-center gap-3">
-                        <span>
-                          <svg
-                            className="w-6 h-6"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                            />
-                          </svg>
-                        </span>
-                        {`All test cases has passed - ${currentProblem.correctOutput}`}
-                      </h1>
-                    ) : (
-                      ""
-                    )} */}
-                    {/* {errorMsg && !success ? (
-                      <h1 className="text-red-500 py-10 pr-10 text-wrap text-lg font-semibold flex items-center gap-3">
-                        <span>
-                          {" "}
-                          <svg
-                            className="w-6 h-6"
-                            aria-hidden="true"
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              stroke="currentColor"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth="2"
-                              d="M10 11h2v5m-2 0h4m-2.592-8.5h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                            />
-                          </svg>
-                        </span>
-                        {errorMsg}
-                      </h1>
-                    ) : (
-                      ""
-                    )} */}
                     {!didExecute ? (
                       <div className="w-full h-full flex flex-col justify-center items-center gap-5">
                         <svg

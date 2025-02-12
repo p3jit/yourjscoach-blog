@@ -1,15 +1,16 @@
 // Regex for matching imports and pure markers in code
-export const importsRegex = /import(?:["'\s]*([\w*{}\n\r\t, ]+)from\s*)?["'\s].*([@\w/_-]+)["'\s].*/g;
-export const pureRegex = /\/\*#__PURE__\*\//g;
+const importsRegex = /import(?:["'\s]*([\w*{}\n\r\t, ]+)from\s*)?["'\s].*([@\w/_-]+)["'\s].*/g;
+const pureRegex = /\/\*#__PURE__\*\//g;
 
 // Helper function to replace content in a string using regex
-export function replace(string, regex, value = "") {
+function replace(string, regex, value = "") {
   return string.toString().replace(regex, value).trim();
 }
 
 // Initialize global variables for test results and error handling
 window.YJC_Test_Results_Passed = [];
 window.YJC_Test_Results_Failed = [];
+window.YJC_Console_Log_List = {};
 window.expect = chai.expect;
 window.assert = chai.assert;
 window.YJC_Result = [];
@@ -38,14 +39,14 @@ function setupMocha() {
             title: this.currentTest.title,
             status: this.currentTest.state,
             parentTitle: this.currentTest.parent.title,
-            timeTaken:  Math.round((endTime - startTime) * 10) / 100
+            timeTaken: Math.round((endTime - startTime) * 10) / 100,
           });
         } else {
           window.YJC_Test_Results_Failed.push({
             title: this.currentTest.title,
             status: this.currentTest.state,
             parentTitle: this.currentTest.parent.title,
-            timeTaken:  Math.round((endTime - startTime) * 10) / 100
+            timeTaken: Math.round((endTime - startTime) * 10) / 100,
           });
         }
         done();
@@ -56,7 +57,7 @@ function setupMocha() {
       },
       beforeEach() {
         startTime = performance.now();
-      }
+      },
     };
 
     mocha.setup({ ui: "bdd", rootHooks: customRootHooks, cleanReferencesAfterRun: true });
@@ -130,15 +131,28 @@ function postMessage(event) {
 // Create a script element to run the tests
 function createTestScript(codeBlock, testBlock, data) {
   const scriptElem = document.createElement("script");
-  scriptElem.setAttribute("type", "module");
+  scriptElem.setAttribute("type", "text/javascript");
   scriptElem.setAttribute("nonce", "runMe");
   scriptElem.innerHTML = `
+    // Override Default Console
+    (function(){
+    var _privateLog = console.log;
+    console.log = function () {
+      const strArguments = Object.keys(arguments).map((singleKey) => arguments[singleKey]).toString();
+      window.YJC_Console_Log_List[strArguments]
+      ? (window.YJC_Console_Log_List[strArguments] = window.YJC_Console_Log_List[strArguments] + 1)
+      : (window.YJC_Console_Log_List[strArguments] = 1);
+    _privateLog.apply(console, arguments);
+    };
+    })();
     try {
       ${codeBlock.iframeCode.split("\n").slice(1).join("\n")}
       ${testBlock.iframeCode.split("\n").slice(1).join("\n")}
+      // warmup to check errors in code
+      ${data.functionName}(1,2);
       mocha.run();
-      const testCases = ${JSON.stringify(data.testCases)};
     } catch (error) {
+      console.log(error);
       window.YJC_Error = error;
     }
   `;
@@ -151,7 +165,9 @@ function postTestResults(event) {
     event.source.postMessage(
       {
         testResultsPassed: window.YJC_Test_Results_Passed,
-        testResultsFailed: window.YJC_Test_Results_Failed
+        testResultsFailed: window.YJC_Test_Results_Failed,
+        consoleLogList: window.YJC_Console_Log_List ? window.YJC_Console_Log_List : {},
+        error: window.YJC_Error,
       },
       event.origin
     );

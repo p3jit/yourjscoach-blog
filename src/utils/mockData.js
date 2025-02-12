@@ -16,18 +16,15 @@ export const mockPractice = {
         expect(addTwoNumber(1,2)).equal(3);
     });
     it("should match correct ouput 2", () => {
-        assert.equal(addTwoNumber(1,2),3);
+        expect(addTwoNumber(3,4)).equal(7);
     });
     it("should match correct ouput 3", () => {
-        assert.equal(addTwoNumber(1,2),3);
+        expect(addTwoNumber(5,6)).equal(120012);
     });
   });
   `,
   functionName: "addTwoNumber",
-  testCases: [
-    [2, 3],
-    [4, 5],
-  ],
+  sampleTestInput: [1,2],
   test: [1,2,3,4,5,6,7,8,9],
   correctOutput: [5, 9],
   tags: ["array", "dp"],
