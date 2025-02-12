@@ -360,7 +360,9 @@ const Practice = () => {
                                         {">"}
                                         <span>{singleCase.title}</span>
                                       </div>
-                                      <div className="flex text-zinc-500 justify-end mr-6">{singleCase.timeTaken} ms</div>
+                                      <div className="flex text-zinc-500 justify-end mr-6">
+                                        {singleCase.timeTaken} ms
+                                      </div>
                                     </div>
                                   );
                                 })

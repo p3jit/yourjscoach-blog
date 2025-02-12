@@ -12,7 +12,7 @@ const LazyBlog = lazy(() => import("./pages/Blog.jsx"));
 const LazySinglePost = lazy(() => import("./pages/SinglePost.jsx"));
 const LazyEditor = lazy(() => import("./pages/Editor.jsx"));
 const LazyPractice = lazy(() => import("./pages/Practice.jsx"));
-// const LazyDSASheet = lazy(() => import("./pages/DSASheet"));
+const LazyDSASheet = lazy(() => import("./pages/DSASheet"));
 // const LazyHome = lazy(() => import("./pages/Home"));
 
 function App() {
@@ -38,7 +38,7 @@ function App() {
             <Route path="/:id" element={<LazySinglePost />}></Route>
             <Route path="/editor" element={<LazyEditor />}></Route>
             <Route path="/practice" element={<LazyPractice />}></Route>
-            {/* <Route path="/dsa" element={<LazyDSASheet />}></Route> */}
+            <Route path="/questions" element={<LazyDSASheet />}></Route>
             {/* <Route path="/" element={<LazyHome />}></Route> */}
           </Routes>
         </Suspense>

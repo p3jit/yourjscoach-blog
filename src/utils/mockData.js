@@ -31,6 +31,37 @@ export const mockPractice = {
   tags: ["array", "dp"],
 };
 
+export const mockQuestions = [
+  {
+    questionName: "Contains Duplicate",
+    difficulty: 0,
+    askedIn: ["Google", "Adobe", "Microsoft", "Amazon"],
+    id: "contains-duplicate",
+    topics: ["Array", "DP", "Graph"],
+  },
+  {
+    questionName: "Concatanation of Array",
+    difficulty: 1,
+    askedIn: ["Ola", "Oracle", "Airbnb", "Amazon"],
+    id: "concatanation-of-array",
+    topics: ["Array", "DP", "Graph"],
+  },
+  {
+    questionName: "Second largest element in the array",
+    difficulty: 0,
+    askedIn: ["Google", "Adobe", "Microsoft", "Amazon"],
+    id: "second-largest-element-in-the-array",
+    topics: ["Array", "DP", "Graph"],
+  },
+  {
+    questionName: "Remove duplicates from an sorted array",
+    difficulty: 0,
+    askedIn: ["Google", "Adobe", "Microsoft", "Amazon"],
+    id: "remove-duplicates-from-an-sorted-array",
+    topics: ["Array", "DP", "Graph"],
+  },
+];
+
 export const mockBlogData = {
   data: [
     {
