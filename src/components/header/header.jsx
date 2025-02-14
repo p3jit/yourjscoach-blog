@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PostDataProvider } from "../../contexts/PostDataContext";
@@ -7,10 +7,13 @@ import { IconBrandJavascript, IconMoon, IconSun } from "@tabler/icons";
 export const Header = () => {
   const { isDarkMode, setIsDarkMode } = useContext(DarkModeProvider);
   const location = useLocation();
-  const { postData, setSearchData, setSearchFilter } =
-    useContext(PostDataProvider);
+  const { postData, setSearchData, setSearchFilter } = useContext(PostDataProvider);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    console.log(location);
+  },[])
 
   const handleModeToggle = () => {
     setIsDarkMode(!isDarkMode);
@@ -29,12 +32,12 @@ export const Header = () => {
           <IconBrandJavascript
             size={"2em"}
             stroke={"2"}
-            className={` ${isDarkMode ? "text-zinc-700" : "text-white"}`}
+            className={` ${isDarkMode ? "text-zinc-700" : "text-zinc-200"}`}
           />
           <h2
             onClick={handleHomeRedirect}
             className={`cursor-pointer font-bold text-2xl md:text-2xl lg:text-3xl ${
-              isDarkMode ? "text-zinc-800" : "text-white"
+              isDarkMode ? "text-zinc-800" : "text-zinc-200"
             }`}
           >
             YourJsCoach
@@ -53,6 +56,10 @@ export const Header = () => {
         ) : (
           ""
         )} */}
+        <div className="flex gap-7 text-base pr-4">
+          <h3 onClick={() => navigate("/blog")} className={`cursor-pointer ${location.pathname.split("/")[1] === "blog" || location.pathname === "blog" ? "text-zinc-200" : "text-zinc-600"}`}>Blog</h3>
+          <h3 onClick={() => navigate("/questions")} className={`cursor-pointer ${location.pathname === "/questions" ? "text-zinc-200" : "text-zinc-600"}`}>Questions</h3>
+        </div>
       </nav>
     </>
   );

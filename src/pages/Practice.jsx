@@ -21,6 +21,7 @@ const Practice = () => {
   const [defaultCode, setDefaultCode] = useState("");
   const [defaultTestCode, setDefaultTestCode] = useState("");
   const [consoleLogMap, setConsoleLogMap] = useState({});
+  const [isRunning, setIsRunning] = useState(false);
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -79,6 +80,7 @@ const Practice = () => {
   };
 
   const sendMessageToIframe = (type) => {
+    setIsRunning(false);
     setErrorMsg("");
     setSuccess(false);
     setIncommingTestResults({});
@@ -92,7 +94,6 @@ const Practice = () => {
       },
       "*"
     );
-    handleShowResults();
   };
 
   const handleEditorTabClick = (id) => {
@@ -263,13 +264,20 @@ const Practice = () => {
                   <div className="flex gap-3">
                     <button
                       className="text-lime-500 text-sm flex gap-2 items-center h-fit w-fit self-center px-3 py-1 rounded-lg"
-                      onClick={() => debouncedSendMessageToIframe()}
+                      onClick={() => {
+                        setDidExecute(false);
+                        handleShowResults();
+                        setIsRunning(true);
+                        debouncedSendMessageToIframe();
+                      }}
                     >
                       <span className="text-xs mt-1">▶</span>Run
                     </button>
                     <button
                       className="text-zinc-300 text-sm flex gap-2 items-center h-fit w-fit self-center px-3 py-1 rounded-lg mr-2"
-                      onClick={() => debouncedSendMessageToIframe("submit")}
+                      onClick={() => {
+                        debouncedSendMessageToIframe("submit");
+                      }}
                     >
                       Submit
                     </button>
@@ -288,10 +296,7 @@ const Practice = () => {
                                     singleCount === 0 ? "mt-4 border-t-2" : ""
                                   } gap-4 items-center text-xs text-zinc-300`}
                                 >
-                                  <span className="bg-yellow-400 text-black rounded-md px-2 py-px">
-                                    {consoleLogMap[singleKey]}
-                                  </span>{" "}
-                                  {singleKey}
+                                  {consoleLogMap[singleKey]}
                                 </span>
                               </div>
                             );
@@ -406,7 +411,7 @@ const Practice = () => {
                     ) : (
                       ""
                     )}
-                    {!didExecute ? (
+                    {!didExecute && !isRunning && (
                       <div className="w-full h-full flex flex-col justify-center items-center gap-5">
                         <svg
                           stroke="currentColor"
@@ -414,17 +419,38 @@ const Practice = () => {
                           strokeWidth="0"
                           viewBox="0 0 24 24"
                           aria-hidden="true"
-                          className="w-10 h-10 text-zinc-200 "
+                          className="w-10 h-10 text-zinc-400 "
                           height="1em"
                           width="1em"
                           xmlns="http://www.w3.org/2000/svg"
                         >
                           <path d="M15.9994 2V4H14.9994V7.24291C14.9994 8.40051 15.2506 9.54432 15.7357 10.5954L20.017 19.8714C20.3641 20.6236 20.0358 21.5148 19.2836 21.8619C19.0865 21.9529 18.8721 22 18.655 22H5.34375C4.51532 22 3.84375 21.3284 3.84375 20.5C3.84375 20.2829 3.89085 20.0685 3.98181 19.8714L8.26306 10.5954C8.74816 9.54432 8.99939 8.40051 8.99939 7.24291V4H7.99939V2H15.9994ZM13.3873 10.0012H10.6115C10.5072 10.3644 10.3823 10.7221 10.2371 11.0724L10.079 11.4335L6.12439 20H17.8734L13.9198 11.4335C13.7054 10.9691 13.5276 10.4902 13.3873 10.0012ZM10.9994 7.24291C10.9994 7.49626 10.9898 7.7491 10.9706 8.00087H13.0282C13.0189 7.87982 13.0119 7.75852 13.0072 7.63704L12.9994 7.24291V4H10.9994V7.24291Z"></path>
                         </svg>
-                        <h1 className="text-zinc-200">Please run your code to see the result </h1>
+                        <h1 className="text-zinc-400">Please run your code to see the result </h1>
                       </div>
-                    ) : (
-                      ""
+                    )}
+                    {isRunning && (
+                      <div className="flex w-full h-full justify-center items-center relative">
+                        <div role="status" className="bottom-10 left-9 relative">
+                          <svg
+                            aria-hidden="true"
+                            className="w-5 h-5 text-gray-600 animate-spin dark:text-gray-600 fill-zinc-400"
+                            viewBox="0 0 100 101"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                              fill="currentColor"
+                            />
+                            <path
+                              d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                              fill="currentFill"
+                            />
+                          </svg>
+                        </div>
+                        <span className="text-zinc-500 text-md">Running...</span>
+                      </div>
                     )}
                   </div>
                 ) : (

@@ -6,8 +6,8 @@ const RoundedText = ({ children }) => {
   return (
     <>
       <span
-        className={`w-fit px-2 py-1 mx-1 ${
-          isDarkMode ? "bg-zinc-200" : "bg-zinc-600 text-white"
+        className={`w-fit px-2 py-1 mx-1 rounded-md h-fit ${
+          isDarkMode ? "bg-zinc-200" : "bg-zinc-700 text-white"
         }`}
       >
         {children}

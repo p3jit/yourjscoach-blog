@@ -1,10 +1,9 @@
 import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useDebounce from "../hooks/useDebounce";
-import { mockBlogData } from "../utils/mockData";
 
 export const PostDataProvider = createContext();
-const ENV_VITE_API_URL = import.meta.env.VITE_API_URL;
+// const ENV_VITE_API_URL = import.meta.env.VITE_API_URL;
 
 const PostDataContext = ({ children }) => {
   const [postData, setPostData] = useState([]);
@@ -29,9 +28,7 @@ const PostDataContext = ({ children }) => {
   const debouncedSearch = useDebounce(normalSearch, 1000);
 
   const newFetchPostsandTags = async () => {
-    const { data } = ENV_VITE_API_URL
-      ? await (await fetch(`${ENV_VITE_API_URL}/items/blog_post`)).json()
-      : mockBlogData;
+    const { data } =  await (await fetch(`/data/blogs.json`)).json();
 
     //Filling the posts
     await setPostData(data);

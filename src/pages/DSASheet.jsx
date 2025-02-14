@@ -1,16 +1,19 @@
-import React, { useContext, useEffect, useState } from "react";
 // import { ReactSVG } from "react-svg";
 // import { DarkModeProvider } from "../contexts/DarkModeContext";
+// import { mockQuestions } from "../utils/mockData";
+// import { generateTableDataFromCsv } from "../utils/utils";
 import Table from "../components/table/Table";
-import { mockQuestions } from "../utils/mockData";
+import React, { useEffect, useState } from "react";
 import { IconSearch, IconMoodCry, IconX } from "@tabler/icons";
 import useDebounce from "../hooks/useDebounce";
-// import { generateTableDataFromCsv } from "../utils/utils";
+import { useNavigate } from "react-router-dom";
 
 const DSASheet = () => {
   // const { isDarkMode } = useContext(DarkModeProvider);
-  const [questions, setQuestions] = useState(mockQuestions);
-  const [filteredQuestions, setFilteredQuestions] = useState(questions);
+  const [questions, setQuestions] = useState([]);
+  const [filteredQuestions, setFilteredQuestions] = useState([]);
+
+  const navigate = useNavigate();
 
   const handleSearchQuestion = (e) => {
     const val = e.target.value;
@@ -25,25 +28,20 @@ const DSASheet = () => {
   };
   const debouncedHandleSearchQuestion = useDebounce(handleSearchQuestion, 400);
 
-  // useEffect(() => {
-  //   fetch("/data/sampleCsv.csv")
-  //     .then((response) => {
-  //       return response.text();
-  //     })
-  //     .then((txt) => {
-  //       readString(txt, {
-  //         worker: true,
-  //         complete: (results) => {
-  //           const parsedData = generateTableDataFromCsv(results.data);
-  //           setTableData(parsedData);
-  //         },
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       navigate("/404");
-  //       console.log(err);
-  //     });
-  // }, []);
+  useEffect(() => {
+    fetch("/data/questions.json")
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        setQuestions(data);
+        setFilteredQuestions(data);
+      })
+      .catch((err) => {
+        navigate("/404");
+        console.log(err);
+      });
+  }, []);
 
   return (
     <div className="py-10 flex flex-col items-center gap-10 min-h-[85vh]">

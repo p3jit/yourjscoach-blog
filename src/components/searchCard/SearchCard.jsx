@@ -6,7 +6,7 @@ const SearchCard = ({ data }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
   const navigate = useNavigate();
   const handleReadMore = () => {
-    navigate(`/${data.displayId}`);
+    navigate(`/blog/${data.displayId}`);
   };
 
   const formatDate = (value) => {

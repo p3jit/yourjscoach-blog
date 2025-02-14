@@ -30,7 +30,7 @@ export const Post = ({ data }) => {
 
   useEffect(() => {
     const fetchUrl = !ENV_VITE_API_URL
-      ? `${"mdFiles/" + data.mdFile + ".md"}`
+      ? `../${"mdFiles/" + data.mdFile + ".md"}`
       : `${import.meta.env.VITE_API_URL}/assets/${data.mdFile}`;
     fetch(fetchUrl)
       .then((response) => {

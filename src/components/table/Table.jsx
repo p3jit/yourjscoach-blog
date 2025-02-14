@@ -1,12 +1,15 @@
 import React, { useContext } from "react";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
 import { returnColor, returnDifficultyText } from "../../utils/utils";
+import { useNavigate } from "react-router-dom";
 
 const Table = ({ data }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
 
+  const navigate = useNavigate();
+
   const handleRowClick = () => {
-    console.log("clicked");
+    navigate("/practice");
   };
 
   return (

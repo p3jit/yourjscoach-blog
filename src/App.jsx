@@ -1,5 +1,5 @@
 import { useContext, Suspense, lazy } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Header } from "./components/header/header.jsx";
 import { DarkModeProvider } from "./contexts/DarkModeContext.jsx";
 import { ModalProvider } from "./contexts/ModalContext.jsx";
@@ -33,12 +33,14 @@ function App() {
         <Header />
         <Suspense fallback={<Loader />}>
           <Routes>
-            <Route path="/404" element={<LazyError />}></Route>
-            <Route path="/" element={<LazyBlog />}></Route>
-            <Route path="/:id" element={<LazySinglePost />}></Route>
+            <Route path="/" element={<Navigate to="/blog" />} />
+            <Route path="/blog" element={<LazyBlog />}></Route>
+            <Route path="/blog/:id" element={<LazySinglePost />}></Route>
             <Route path="/editor" element={<LazyEditor />}></Route>
             <Route path="/practice" element={<LazyPractice />}></Route>
             <Route path="/questions" element={<LazyDSASheet />}></Route>
+            <Route path="/404" element={<LazyError />}></Route>
+            <Route path="*" element={<LazyError />}></Route>
             {/* <Route path="/" element={<LazyHome />}></Route> */}
           </Routes>
         </Suspense>

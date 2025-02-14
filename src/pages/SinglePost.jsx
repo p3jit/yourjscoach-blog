@@ -10,7 +10,7 @@ const SinglePost = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const pathName = location.pathname.split("/")[1];
+    const pathName = location.pathname.split("/")[2];
     if (postData.length) {
       const foundPostData = postData.find(
         (elem) => elem.displayId === pathName

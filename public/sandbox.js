@@ -10,7 +10,7 @@ function replace(string, regex, value = "") {
 // Initialize global variables for test results and error handling
 window.YJC_Test_Results_Passed = [];
 window.YJC_Test_Results_Failed = [];
-window.YJC_Console_Log_List = {};
+window.YJC_Console_Log_List = [];
 window.expect = chai.expect;
 window.assert = chai.assert;
 window.YJC_Result = [];
@@ -91,7 +91,8 @@ function validateOrigin(event) {
   const validOrigins = ["https://www.yourjscoach.online", "https://api.yourjscoach.online"];
 
   if (
-    !["localhost", "127.0.0.1", "192.168.0.109"].includes(location.hostname) &&
+    // replace any other local ip if you see mismatch origin error in console
+    !["localhost", "127.0.0.1", "192.168.0.104"].includes(location.hostname) &&
     !validOrigins.includes(event.origin)
   ) {
     console.warn("Origin mismatch:", event.origin);
@@ -137,12 +138,11 @@ function createTestScript(codeBlock, testBlock, data) {
     // Override Default Console
     (function(){
     var _privateLog = console.log;
-    console.log = function () {
-      const strArguments = Object.keys(arguments).map((singleKey) => arguments[singleKey]).toString();
-      window.YJC_Console_Log_List[strArguments]
-      ? (window.YJC_Console_Log_List[strArguments] = window.YJC_Console_Log_List[strArguments] + 1)
-      : (window.YJC_Console_Log_List[strArguments] = 1);
-    _privateLog.apply(console, arguments);
+    console.log = function (...msg) {
+      const strArguments = [...msg].flat(Infinity).toString();
+      window.YJC_Console_Log_List.push(strArguments);
+      _privateLog(strArguments);
+    //_privateLog.apply(console, arguments);
     };
     })();
     try {
@@ -154,6 +154,8 @@ function createTestScript(codeBlock, testBlock, data) {
     } catch (error) {
       console.log(error);
       window.YJC_Error = error;
+    } finally {
+      window.YJC_Console_Log_List = [];
     }
   `;
   return scriptElem;
@@ -166,7 +168,7 @@ function postTestResults(event) {
       {
         testResultsPassed: window.YJC_Test_Results_Passed,
         testResultsFailed: window.YJC_Test_Results_Failed,
-        consoleLogList: window.YJC_Console_Log_List ? window.YJC_Console_Log_List : {},
+        consoleLogList: window.YJC_Console_Log_List ? window.YJC_Console_Log_List : [],
         error: window.YJC_Error,
       },
       event.origin
