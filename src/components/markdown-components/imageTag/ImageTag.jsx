@@ -1,13 +1,13 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import ProgressiveImage from "react-progressive-graceful-image";
 import { DarkModeProvider } from "../../../contexts/DarkModeContext";
 
-const ImageTag = ({ children, index, ...props }) => {
+const ImageTag = ({ children, index, identifier }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
-
-  const imageLink = children[0].props
+  debugger;
+  const imageLink = children[0]?.props?.href
     ? String(children[0].props.href)
-    : `${import.meta.env.VITE_API_URL}/assets/${String(children[0])}`;
+    : `/images/${identifier}/${identifier}_${index}.png`;
 
   return (
     <div

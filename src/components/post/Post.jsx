@@ -58,8 +58,8 @@ export const Post = ({ data }) => {
             <div className=" mt-5">
               {data.bannerImage ? (
                 <ProgressiveImage
-                  src={`${import.meta.env.VITE_API_URL}/assets/${data.bannerImage}?quality=70&format=webp`}
-                  placeholder={`${import.meta.env.VITE_API_URL}/assets/${data.bannerImage}?quality=1&format=webp`}
+                  src={`/images/${data.identifier}/${data.identifier}_banner.png`}
+                  placeholder={`/images/${data.identifier}/${data.identifier}_banner.png`}
                 >
                   {(src, loading) => (
                     <img
@@ -68,7 +68,7 @@ export const Post = ({ data }) => {
                         loading ? "blur-[4px]" : "blur-none"
                       } delay-200 mb-2 mt-1 rounded-xl w-full h-[20rem] md:h-[25rem] lg:h-[30rem] respImage object-contain`}
                       src={src}
-                      alt="an image"
+                      alt={`${data.identifier}_banner`}
                       width={"600"}
                       height={"300"}
                     />

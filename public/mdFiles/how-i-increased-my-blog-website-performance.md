@@ -14,25 +14,25 @@
 <br/>
 <NormalText>Like these there are couple of more metrics that are important.I will leave down a picture as a summary of all the important metrics.</NormalText>
 <br/>
-<ImageTag index="0">https://images.unsplash.com/photo-1488456682038-659fb6e7ddf7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1624&q=80</ImageTag>
+<ImageTag index="0" identifier="performance"></ImageTag>
 <UrlTag data="https://web.dev/metrics/">Read more about the metrics on web.dev</UrlTag>
 <br/>
 <br/>
 <Heading>Google Rail Model</Heading>
 <NormalText>RAIL stands for four distinct aspects of web app life cycle: response, animation, idle, and load. Users have different performance expectations for each of these contexts, so performance goals are defined based on the context. I will attach a reference where you can read more about this in details. For summary I will attach a picture which is I believe is better for summary purpose.</NormalText>
 <br/>
-<ImageTag index="1">https://images.unsplash.com/photo-1488456682038-659fb6e7ddf7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1624&q=80</ImageTag>
+<ImageTag index="1" identifier="performance"></ImageTag>
 <UrlTag data="https://web.dev/rail/">Read more about the RAIL on web.dev</UrlTag>
 <br/>
 <br/>
 <Heading>Before Optimization</Heading>
 <NormalText>Now that we know the basic metrics now lets move on to the main interest of this post. Lets look at the state of the application before doing any kind of optimization. We take the Lighthouse Audit as the reference. Since discussing all of the details in a single post will be huge and can also make you feel bored, I will seperate the content in two or most posts.</NormalText>
 <br/>
-<ImageTag index="2">https://images.unsplash.com/photo-1488456682038-659fb6e7ddf7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1624&q=80</ImageTag>
+<ImageTag index="2" identifier="performance"></ImageTag>
 <br/>
 <NormalText>Now lets take a look at the scores after performing the optimzations.</NormalText>
 <br/>
-<ImageTag index="3">https://images.unsplash.com/photo-1488456682038-659fb6e7ddf7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1624&q=80</ImageTag>
+<ImageTag index="3" identifier="performance"></ImageTag>
 <br/>
 <NormalText>WOW! thats a lot of improvement. Lets break down the things that made the high scores.</NormalText>
 <br/>
@@ -41,7 +41,7 @@
 <br/>
 <NormalText>These bundles most of the times do the hardwork for you and does the minification in the production builds.</NormalText>
 <br/>
-<ImageTag index="4">https://images.unsplash.com/photo-1488456682038-659fb6e7ddf7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1624&q=80</ImageTag>
+<ImageTag index="4" identifier="performance"></ImageTag>
 <br/>
 <NormalText>If you run the application without building you will see that in the Lighthouse Audit it will tell you some of the ways you can optimize the application. You can see in the above picture where it is telling us to minify the JavaScript files and also to enble text compression.</NormalText>
 <NormalText>Now run the same application in production preview mode.</NormalText>
@@ -53,14 +53,14 @@ npm run preview // for running in preview mode
 <br/>
 <NormalText>I use <RoundedText>Vite</RoundedText> for my application. You can run the app in production mode using the above code. After running that and testing again with Lighthouse you will see a lot of improvement as the bundler will bundle your asset files in chunks.</NormalText>
 <br/>
-<ImageTag index="5">https://images.unsplash.com/photo-1488456682038-659fb6e7ddf7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1624&q=80</ImageTag>
+<ImageTag index="5" identifier="performance"></ImageTag>
 <br/>
 <NormalText>After running the command you will see something like the above. You can see the bundles which the bundler has made after spliting the code and minification. You might see some yellow warning message which is something we will talk and improve later in this post.</NormalText>
 <br/>
 <Heading><span>2</span>. Image Compression</Heading>
 <NormalText>Serving uncompressed images can sometimes cause performance issue when the image size is too big. I made sure all the images that I used in this blog website are somewhat compressed. You can do the samething using any compression software or website of your choice. But one thing to note is that dont compress the image to a extent where it is not understanable anymore.</NormalText>
 <br/>
-<ImageTag index="6">https://images.unsplash.com/photo-1488456682038-659fb6e7ddf7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1624&q=80</ImageTag>
+<ImageTag index="6" identifier="performance"></ImageTag>
 <br/>
 <NormalText>In the above picture you can see the differnce is size with different compression algorithm used.</NormalText>
 <br/>
@@ -107,7 +107,7 @@ export default App;
 <br/>
 <NormalText>This a basic app.jsx file that most people will use but with this if you run the build command and analyze the bundle sizes you get a result something like below</NormalText>
 <br/>
-<ImageTag index="7">https://images.unsplash.com/photo-1673941733064-2445362593ce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80</ImageTag>
+<ImageTag index="7" identifier="performance"></ImageTag>
 <br/>
 <NormalText>Now lets use React Suspense and React Lazy combined with the routes.</NormalText>
 <br/>
@@ -160,7 +160,7 @@ export default App;
 <br/>
 <NormalText>Now if we preview the production build again we can see the bundles are divided into more chunks.</NormalText>
 <br/>
-<ImageTag index="8">https://images.unsplash.com/photo-1673941733064-2445362593ce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80</ImageTag>
+<ImageTag index="8" identifier="performance"></ImageTag>
 <br/>
 <NormalText>Just like this we can add speration of concern into react routing and only make the browser laod the files when necessary. Pretty handy way to add Lazy Loading into React. This can also be done in other components as well.</NormalText>
 <br/>
@@ -169,7 +169,7 @@ export default App;
 <Heading><span>4</span>. Replace Big Bundle Size Libraries</Heading>
 <NormalText>Even after doing all this things Lighthouse scores were not satisfactory to me. At that time I was using firebase as my backend and I saw that even after lazy loading firebase components it was still not performent enough. I used <RoundedText>Vite Bundle Visualizer</RoundedText> to check the bundle sizes and found that firebase exports were not tree shakeable and was causing issues.</NormalText>
 <br/>
-<ImageTag index="9">https://images.unsplash.com/photo-1673941733064-2445362593ce?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80</ImageTag>
+<ImageTag index="9" identifier="performance"></ImageTag>
 <br/>
 <NormalText>In desktop mode Lighthouse was giving good score but when it comes to mobile mode removing firebase was helpful. So the point is just because a framework is handy does not mean it will give you a good user experiance. So <RoundedText>Choose Your Tech Stack Wisely</RoundedText>. After removing firebase I moved to a CSM name Hygraph which was very lightweight compared to firebase.</NormalText>
 <br/>
