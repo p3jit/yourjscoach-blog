@@ -4,7 +4,6 @@ import { DarkModeProvider } from "../../../contexts/DarkModeContext";
 
 const ImageTag = ({ children, index, identifier }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
-  debugger;
   const imageLink = children[0]?.props?.href
     ? String(children[0].props.href)
     : `/images/${identifier}/${identifier}_${index}.png`;

@@ -92,7 +92,7 @@ function validateOrigin(event) {
 
   if (
     // replace any other local ip if you see mismatch origin error in console
-    !["localhost", "127.0.0.1", "192.168.0.104"].includes(location.hostname) &&
+    !["localhost", "127.0.0.1", "192.168.0.106"].includes(location.hostname) &&
     !validOrigins.includes(event.origin)
   ) {
     console.warn("Origin mismatch:", event.origin);

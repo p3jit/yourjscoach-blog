@@ -5,11 +5,11 @@
       "displayId": "what-is-usestatehell-and-how-to-overcome-it",
       "title": "What is useStateHell and how to overcome it",
       "bannerImage": true,
-      "timeStamp": 123334444123,
-      "imageList": [],
+      "timeStamp": 1739646438405,
       "videoList": [],
-      "tags": ["tag1", "tag2"],
+      "tags": ["usestate", "usereduce"],
       "identifier": "useStateHell",
+      "minRead": "7",
       "description": "If you are someone who is starting out in react you might have faced this issue where we use multiple useState in a single component and it makes the code dirty and not readable. In this blog we will talk about how we can overcome this using two possible solution. But before that lets talk about what this useState Hell really is."
     },
     {
@@ -17,12 +17,12 @@
       "displayId": "how-i-increased-my-blog-website-performance",
       "title": "How I increased my blog website performance",
       "bannerImage": true,
-      "timeStamp": 123334444123,
-      "imageList": [],
+      "timeStamp": 1739646438405,
       "videoList": [],
+      "minRead": "8",
       "identifier": "performance",
-      "tags": ["tag1", "tag2"],
-      "description": "If you are someone who is starting out in react you might have faced this issue where we use multiple useState in a single component and it makes the code dirty and not readable. In this blog we will talk about how we can overcome this using two possible solution. But before that lets talk about what this useState Hell really is."
+      "tags": ["performance", "web.dev", "vitals"],
+      "description": "Performance optimization is very critical skill to have for an Frontend Developer. With the rise of different new tech stack choices we often keep jumping from one framework to another framework but we skip this most valuable thing which can make you standout from other developers in an organization or in an interview. We know that slow page loads drive people away. In recent years users expect web pages to load in 3 seconds or less - even on mobile devices. Speed is considered the most important feature by some. In this blog we will talk about how I managed to increase the performance of my blog website by more than 20%."
     }
   ]
 }
