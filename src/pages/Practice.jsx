@@ -276,6 +276,9 @@ const Practice = () => {
                     <button
                       className="text-zinc-300 text-sm flex gap-2 items-center h-fit w-fit self-center px-3 py-1 rounded-lg mr-2"
                       onClick={() => {
+                        setDidExecute(false);
+                        handleShowResults();
+                        setIsRunning(true);
                         debouncedSendMessageToIframe("submit");
                       }}
                     >
