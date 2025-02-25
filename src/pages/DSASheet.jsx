@@ -12,20 +12,32 @@ const DSASheet = () => {
   // const { isDarkMode } = useContext(DarkModeProvider);
   const [questions, setQuestions] = useState([]);
   const [filteredQuestions, setFilteredQuestions] = useState([]);
+  const [currentTab, setCurrentTab] = useState("all");
 
   const navigate = useNavigate();
 
-  const handleSearchQuestion = (e) => {
+  const handleSearchQuestion = (e, txt = "") => {
     const val = e.target.value;
+    let res = [];
     if (val.length === 0) {
-      setFilteredQuestions(questions);
-      return;
+      res = questions;
+    } else {
+      res = questions.filter(
+        (singleQuestion) =>
+          singleQuestion.questionName.includes(val) ||
+          singleQuestion.askedIn.map((a) => a.toLowerCase()).includes(val) ||
+          singleQuestion.topics.map((a) => a.toLowerCase()).includes(val)
+      );
     }
-    const res = questions.filter(
-      (singleQuestion) => singleQuestion.questionName.includes(val) || singleQuestion.askedIn.map((a) => a.toLowerCase()).includes(val) || singleQuestion.topics.map((a) => a.toLowerCase()).includes(val)
-    );
+    res = txt && txt.length > 0 ? res.filter((singleQuestion) => singleQuestion.category === txt) : res;
     setFilteredQuestions(res);
   };
+
+  const handleTabChange = (val) => {
+    setCurrentTab(val);
+    handleSearchQuestion({ target: { value: "" } }, val);
+  };
+
   const debouncedHandleSearchQuestion = useDebounce(handleSearchQuestion, 400);
 
   useEffect(() => {
@@ -60,6 +72,51 @@ const DSASheet = () => {
         ) : (
           ""
         )}
+      </div>
+      <div className="self-start">
+        {/* for mobile hide this */}
+        {/* <div className="sm:hidden">
+          <label htmlFor="Tab" className="sr-only">
+            Tab
+          </label>
+
+          <select id="Tab" className="w-full rounded-md border-gray-200">
+            <option>All</option>
+            <option>JS Questions</option>
+            <option>DSA Questions</option>
+          </select>
+        </div> */}
+
+        <div className="hidden sm:block">
+          <div className="border-b border-zinc-500">
+            <nav className="-mb-px flex gap-6" aria-label="Tabs">
+              <button
+                onClick={() => {
+                  handleTabChange("");
+                }}
+                className={`inline-flex shrink-0 items-center gap-2 border-b-2 px-1 pb-4 text-sm font-medium  hover:border-gray-300 hover:text-zinc-200 ${currentTab === 'all' ? "text-zinc-200 border-zinc-200" : "text-zinc-500 border-transparent"}`}
+              >
+                All
+              </button>
+              <button
+                onClick={() => {
+                  handleTabChange("js");
+                }}
+                className={`inline-flex shrink-0 items-center gap-2 border-b-2 px-1 pb-4 text-sm font-medium hover:border-gray-300 hover:text-zinc-200 ${currentTab === 'js' ? "text-zinc-200 border-zinc-200" : "text-zinc-500 border-transparent"}`}
+              >
+                JS Questions
+              </button>
+              <button
+                onClick={() => {
+                  handleTabChange("dsa");
+                }}
+                className={`inline-flex shrink-0 items-center gap-2 border-b-2 px-1 pb-4 text-sm font-medium hover:border-gray-300 hover:text-zinc-200 ${currentTab === 'dsa' ? "text-zinc-200 border-zinc-200" : "text-zinc-500 border-transparent"}`}
+              >
+                DSA Questions
+              </button>
+            </nav>
+          </div>
+        </div>
       </div>
       {filteredQuestions?.length > 0 ? (
         <Table data={filteredQuestions} key={Math.random()} />
