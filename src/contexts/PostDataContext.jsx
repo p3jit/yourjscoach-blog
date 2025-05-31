@@ -2,111 +2,119 @@ import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useDebounce from "../hooks/useDebounce";
 
+/**
+ * Context for managing blog post data across the application
+ */
 export const PostDataProvider = createContext();
-// const ENV_VITE_API_URL = import.meta.env.VITE_API_URL;
 
+/**
+ * PostDataContext component that provides post data and search functionality
+ * @param {Object} props - Component props
+ * @param {React.ReactNode} props.children - Child components
+ * @returns {JSX.Element} The PostDataProvider context provider
+ */
 const PostDataContext = ({ children }) => {
+  // State management
   const [postData, setPostData] = useState([]);
-  const [latestPostData, setlatestPostData] = useState([]);
+  const [latestPostData, setLatestPostData] = useState([]);
   const [searchFilter, setSearchFilter] = useState([]);
   const [searchData, setSearchData] = useState([]);
   const [fetchedTags, setFetchedTags] = useState([]);
   const [isSearching, setIsSearching] = useState(true);
+
   const navigate = useNavigate();
 
-  const normalSearch = (query) => {
-    let result = postData.filter((singlePost) => {
-      return singlePost.title.toLowerCase().includes(query) || singlePost.tags.includes(query);
-    });
+  /**
+   * Filter posts by search query (title or tags)
+   * @param {string} query - Search query string
+   */
+  const searchPostsByQuery = (query) => {
+    const result = postData.filter((post) => post.title.toLowerCase().includes(query) || post.tags.includes(query));
+
+    // Sort by timestamp, newest first
     result.sort((a, b) => b.timeStamp - a.timeStamp);
-    if (searchFilter.length) {
-    }
+
     setSearchData(result);
     setIsSearching(false);
   };
 
-  const debouncedSearch = useDebounce(normalSearch, 1000);
+  // Debounce search for better performance
+  const debouncedSearch = useDebounce(searchPostsByQuery, 1000);
 
-  const newFetchPostsandTags = async () => {
-    const { data } =  await (await fetch(`/data/blogs.json`)).json();
-
-    //Filling the posts
-    await setPostData(data);
-    let sortedValue = new Array(...data);
-    sortedValue.sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp)).slice(0, 2);
-    if (sortedValue.length == 1) {
-      await setlatestPostData([sortedValue[0]]);
-    } else {
-      await setlatestPostData([sortedValue[0], sortedValue[1]]);
+  /**
+   * Filter posts by selected tags
+   * @returns {Array} Filtered posts
+   */
+  const filterPostsByTags = () => {
+    if (!searchFilter.length) {
+      return postData.slice().sort((a, b) => b.timeStamp - a.timeStamp);
     }
-    await setSearchData(sortedValue);
 
-    // Filling the tags
-    let tagSet = new Set();
-    data.forEach((singlePost) => {
-      singlePost.tags.forEach((singleTag) => {
-        tagSet.add(singleTag);
-      });
-    });
-    await setFetchedTags(new Array(...tagSet));
-    setIsSearching(false);
+    return postData.filter((post) => post.tags.some((tag) => searchFilter.includes(tag)));
   };
 
-  useEffect(() => {
+  /**
+   * Fetch posts and extract tags from the data
+   */
+  const fetchPostsAndTags = async () => {
     try {
-      newFetchPostsandTags();
-    } catch (err) {
+      const response = await fetch(`/data/blogs.json`);
+      const { data } = await response.json();
+
+      // Set all posts data
+      setPostData(data);
+
+      // Sort posts by timestamp, newest first
+      const sortedPosts = [...data].sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp));
+
+      // Set latest posts (up to 2)
+      setLatestPostData(sortedPosts.slice(0, Math.min(2, sortedPosts.length)));
+
+      // Set initial search data
+      setSearchData(sortedPosts);
+
+      // Extract unique tags from all posts
+      const tagSet = new Set();
+      data.forEach((post) => {
+        post.tags.forEach((tag) => tagSet.add(tag));
+      });
+
+      setFetchedTags([...tagSet]);
+      setIsSearching(false);
+    } catch (error) {
+      console.error("Failed to fetch blog data:", error);
       navigate("/404");
     }
-  }, []);
-
-  const includeFilters = async () => {
-    let result = [];
-    for (let i = 0; i < postData.length; i++) {
-      let flag = false;
-      for (let j = 0; j < searchFilter.length; j++) {
-        if (postData[i].tags.includes(searchFilter[j])) flag = true;
-      }
-      if (flag) {
-        result.push(postData[i]);
-      }
-    }
-    return result;
   };
 
+  // Fetch posts on component mount
+  useEffect(() => {
+    fetchPostsAndTags();
+  }, []);
+
+  // Update search results when filters change
   useEffect(() => {
     if (!postData.length) return;
-    async function triggerSearch() {
-      let ans = await includeFilters();
-      if (ans.length) {
-        setSearchData([...ans]);
-      } else if (!ans.length && searchFilter.length) {
-        setSearchData([]);
-      } else {
-        setSearchData(postData.sort((a, b) => b.timeStamp - a.timeStamp));
-      }
-    }
-    triggerSearch();
-  }, [searchFilter]);
 
-  return (
-    <PostDataProvider.Provider
-      value={{
-        postData,
-        latestPostData,
-        searchFilter,
-        setSearchFilter,
-        debouncedSearch,
-        searchData,
-        setSearchData,
-        fetchedTags,
-        isSearching,
-        setIsSearching,
-      }}
-    >
-      {children}
-    </PostDataProvider.Provider>
-  );
+    const filteredPosts = filterPostsByTags();
+    setSearchData(filteredPosts);
+  }, [searchFilter, postData]);
+
+  // Context value with all data and functions
+  const contextValue = {
+    postData,
+    latestPostData,
+    searchFilter,
+    setSearchFilter,
+    debouncedSearch,
+    searchData,
+    setSearchData,
+    fetchedTags,
+    isSearching,
+    setIsSearching,
+  };
+
+  return <PostDataProvider.Provider value={contextValue}>{children}</PostDataProvider.Provider>;
 };
 
 export default PostDataContext;
