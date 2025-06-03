@@ -3,35 +3,37 @@ import React, { useEffect, useState } from "react";
 import { IconSearch, IconX } from "@tabler/icons";
 import useDebounce from "../hooks/useDebounce";
 import { useNavigate } from "react-router-dom";
+import InterviewPrepPlans from "../components/interviewPrep/InterviewPrepPlans";
 
 const DSASheet = () => {
   const [questions, setQuestions] = useState([]);
   const [filteredQuestions, setFilteredQuestions] = useState([]);
   const [currentTab, setCurrentTab] = useState("all");
   const [searchText, setSearchText] = useState("");
-  
+
   const navigate = useNavigate();
 
   // Filter questions based on search text and selected category
   const filterQuestions = (searchValue, category = "") => {
     if (!questions.length) return [];
-    
+
     let filtered = questions;
-    
+
     // Apply search text filter
     if (searchValue.length > 0) {
-      filtered = questions.filter(question => 
-        question.questionName.includes(searchValue) ||
-        question.askedIn.some(company => company.toLowerCase().includes(searchValue)) ||
-        question.topics.some(topic => topic.toLowerCase().includes(searchValue))
+      filtered = questions.filter(
+        (question) =>
+          question.questionName.includes(searchValue) ||
+          question.askedIn.some((company) => company.toLowerCase().includes(searchValue)) ||
+          question.topics.some((topic) => topic.toLowerCase().includes(searchValue))
       );
     }
-    
+
     // Apply category filter
     if (category && category !== "all") {
-      filtered = filtered.filter(question => question.category === category);
+      filtered = filtered.filter((question) => question.category === category);
     }
-    
+
     return filtered;
   };
 
@@ -45,7 +47,7 @@ const DSASheet = () => {
     setCurrentTab(tab);
     setFilteredQuestions(filterQuestions(searchText, tab !== "all" ? tab : ""));
   };
-  
+
   const clearSearch = () => {
     setSearchText("");
     setFilteredQuestions(filterQuestions("", currentTab !== "all" ? currentTab : ""));
@@ -56,12 +58,12 @@ const DSASheet = () => {
   // Fetch questions data on component mount
   useEffect(() => {
     fetch("/data/questions.json")
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         setQuestions(data);
         setFilteredQuestions(data);
       })
-      .catch(err => {
+      .catch((err) => {
         console.error("Failed to fetch questions:", err);
         navigate("/404");
       });
@@ -71,17 +73,17 @@ const DSASheet = () => {
   const TabNavigation = () => (
     <div className="self-start">
       <div className="hidden sm:block">
-        <div className="border-b border-zinc-500">
+        <div className="">
           <nav className="-mb-px flex gap-6" aria-label="Tabs">
-            {["all", "js", "dsa"].map(tab => (
+            {["all", "js", "dsa"].map((tab) => (
               <button
                 key={tab}
                 onClick={() => handleTabChange(tab)}
-                className={`inline-flex shrink-0 items-center gap-2 border-b-2 px-1 pb-4 text-sm font-medium hover:border-gray-300 hover:text-zinc-200 ${
-                  currentTab === tab ? "text-zinc-200 border-zinc-200" : "text-zinc-500 border-transparent"
+                className={`inline-flex shrink-0 items-center gap-2 px-1 pb-2 text-sm font-medium hover:border-gray-300 hover:text-zinc-200 ${
+                  currentTab === tab ? "text-zinc-200 border-zinc-200 border-b-2" : "text-zinc-500 border-transparent"
                 }`}
               >
-                {tab === "all" ? "All" : tab === "js" ? "JS Questions" : "DSA Questions"}
+                {tab === "all" ? "All Problems" : tab === "js" ? "JS Questions" : "DSA Questions"}
               </button>
             ))}
           </nav>
@@ -92,21 +94,17 @@ const DSASheet = () => {
 
   // Search component
   const SearchBar = () => (
-    <div className="flex w-2/6 justify-center items-center self-start relative mx-1 flex-col">
+    <div className="flex w-full justify-center items-center self-start relative mx-1 flex-col shadow shadow-zinc-700">
       <input
         type="text"
         spellCheck="false"
         defaultValue={searchText}
-        className="bg-zinc-700 outline-none w-full text-zinc-200 rounded-md py-2 pr-10 pl-12 tracking-wide text-sm"
+        placeholder="Search problems by title, tags and company"
+        className="bg-zinc-800 outline outline-1 outline-zinc-400 w-full text-zinc-200 rounded-md py-3 pr-10 pl-12 tracking-wide text-sm"
         onChange={debouncedHandleSearchQuestion}
       />
       <IconSearch className="absolute left-3 text-zinc-400 text-2xl" />
-      {searchText && (
-        <IconX 
-          className="absolute right-3 text-2xl text-zinc-400 cursor-pointer" 
-          onClick={clearSearch} 
-        />
-      )}
+      {searchText && <IconX className="absolute right-3 text-2xl text-zinc-400 cursor-pointer" onClick={clearSearch} />}
     </div>
   );
 
@@ -137,11 +135,22 @@ const DSASheet = () => {
     </div>
   );
 
+  const Caption = () => (
+    <div className="self-start mt-5">
+      <h1 className="text-2xl font-semibold tracking-wide text-zinc-200 mb-2">Problems</h1>
+      <p className="text-lg tracking-normal text-zinc-500">
+        Ready to crack the code? Sharpen your skills with our curated challenges.
+      </p>
+    </div>
+  );
+
   return (
-    <div className="py-10 flex flex-col items-center gap-10 min-h-[85vh]">
+    <div className="py-6 flex flex-col items-center gap-10 min-h-[85vh]">
+      <InterviewPrepPlans/>
+      <Caption />
       <SearchBar />
       <TabNavigation />
-      
+
       {filteredQuestions?.length > 0 ? (
         <Table data={filteredQuestions} key={filteredQuestions.length} />
       ) : (

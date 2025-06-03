@@ -3,14 +3,8 @@ import { DarkModeProvider } from "../../contexts/DarkModeContext";
 import { returnColor, returnDifficultyText } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
 
-/**
- * TableHeader component for rendering the table header row
- * @param {Object} props - Component props
- * @param {boolean} props.isDarkMode - Current theme mode
- * @returns {JSX.Element} The TableHeader component
- */
 const TableHeader = ({ isDarkMode }) => {
-  const headerCellClass = `whitespace-nowrap px-4 py-2 text-left font-medium tracking-wide text-lg ${
+  const headerCellClass = `whitespace-nowrap px-4 py-2 text-left font-medium tracking-wide text-lg bg-zinc-800 ${
     isDarkMode ? "text-zinc-900" : "text-white"
   }`;
 
@@ -29,14 +23,6 @@ const TableHeader = ({ isDarkMode }) => {
   );
 };
 
-/**
- * TagList component for rendering lists of tags
- * @param {Object} props - Component props
- * @param {Array} props.items - Array of tag strings
- * @param {boolean} props.isDarkMode - Current theme mode
- * @param {string} props.maxWidth - Max width class for the container
- * @returns {JSX.Element} The TagList component
- */
 const TagList = ({ items = [], isDarkMode, maxWidth = "max-w-[14rem]" }) => (
   <div className={`flex gap-2 flex-wrap ${maxWidth}`}>
     {items?.map((item, index) => (
@@ -52,14 +38,6 @@ const TagList = ({ items = [], isDarkMode, maxWidth = "max-w-[14rem]" }) => (
   </div>
 );
 
-/**
- * TableRow component for rendering a single question row
- * @param {Object} props - Component props
- * @param {Object} props.question - Question data
- * @param {boolean} props.isDarkMode - Current theme mode
- * @param {Function} props.onRowClick - Handler for row click
- * @returns {JSX.Element} The TableRow component
- */
 const TableRow = ({ question, isDarkMode, onRowClick }) => {
   const questionCellClass = `whitespace-nowrap px-4 py-2 font-light tracking-wide text-sm ${
     isDarkMode ? "text-zinc-900" : "text-white"
@@ -87,7 +65,7 @@ const TableRow = ({ question, isDarkMode, onRowClick }) => {
           isDarkMode={isDarkMode} 
         />
       </td>
-      <td className="whitespace-nowrap px-4 py-2">
+      <td className="whitespace-nowrap px-4 py-4">
         <TagList 
           items={question.topics} 
           isDarkMode={isDarkMode} 
@@ -98,22 +76,12 @@ const TableRow = ({ question, isDarkMode, onRowClick }) => {
   );
 };
 
-/**
- * EmptyState component for when there's no data
- * @returns {JSX.Element} The EmptyState component
- */
 const EmptyState = () => (
   <div className="p-6 text-center text-zinc-500">
     No questions available
   </div>
 );
 
-/**
- * Table component for displaying a list of questions with their details
- * @param {Object} props - Component props
- * @param {Array} props.data - Array of question objects
- * @returns {JSX.Element} The Table component
- */
 const Table = ({ data }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
   const navigate = useNavigate();

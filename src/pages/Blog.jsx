@@ -13,7 +13,7 @@ import SkeletonNewLatestPostCard from "../components/skeleton-loader-components/
 // SearchBar Component
 const SearchBar = ({ triggerSearch, handleClear, showClear, searchRef, isDarkMode }) => {
   return (
-    <div className="flex justify-center items-center relative">
+    <div className="flex justify-center items-center relative mt-3">
       <input
         type="text"
         ref={searchRef}
