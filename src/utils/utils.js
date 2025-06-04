@@ -59,9 +59,9 @@ export function arraysEqual(a, b) {
 }
 
 export const returnColor = (difficulty) => {
-  if (difficulty === 0) {
+  if (difficulty === 1) {
     return "text-green-600";
-  } else if (difficulty === 1) {
+  } else if (difficulty === 2) {
     return "text-yellow-600";
   } else {
     return "text-red-600";
@@ -69,9 +69,9 @@ export const returnColor = (difficulty) => {
 };
 
 export const returnDifficultyText = (difficulty) => {
-  if (difficulty === 0) {
+  if (difficulty === 1) {
     return "Easy";
-  } else if (difficulty === 1) {
+  } else if (difficulty === 2) {
     return "Medium";
   } else {
     return "Hard";

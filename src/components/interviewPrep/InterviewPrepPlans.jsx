@@ -2,7 +2,7 @@ import React from "react";
 
 const PlanIcon = ({ icon, isPopular }) => (
   <div
-    className={`w-8 h-8 flex items-center justify-center rounded-full ${isPopular ? "text-zinc-100" : "text-zinc-600"}`}
+    className={`w-8 h-8 flex items-center justify-center rounded-full ${isPopular ? "text-zinc-100" : "text-zinc-500"}`}
   >
     {icon}
   </div>
@@ -71,7 +71,7 @@ const PlanButton = ({ buttonText, buttonAction, isPopular }) => {
 const PrepPlan = ({ title, description, features, buttonText, buttonAction, icon, isPopular = false }) => {
   return (
     <article
-      className={`rounded-lg p-6 flex flex-col h-full ${
+      className={`rounded-lg p-6 flex flex-col h-full shadow-lg shadow-zinc-950 ${
         isPopular ? "border-2 border-zinc-300" : "border border-zinc-700"
       }`}
     >
@@ -143,7 +143,6 @@ const InterviewPrepPlans = () => {
       buttonAction: () => {},
       icon: PlanIcons.sprint,
       isPopular: false,
-      customClasses: "",
     },
     {
       id: "challenge",
@@ -154,7 +153,6 @@ const InterviewPrepPlans = () => {
       buttonAction: () => {},
       icon: PlanIcons.challenge,
       isPopular: true,
-      customClasses: "",
     },
     {
       id: "dive",
@@ -165,15 +163,14 @@ const InterviewPrepPlans = () => {
       buttonAction: () => {},
       icon: PlanIcons.dive,
       isPopular: false,
-      customClasses: "blue-accent",
     },
   ];
 
   return (
-    <section className="bg-zinc-900 py-12">
+    <section className="py-4">
       <div className="max-w-6xl mx-auto">
         <header className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Ace Your Next Interview</h2>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4">Ace Your Next Interview</h2>
           <p className="text-gray-400 max-w-2xl mx-auto">Tailored prep plans to match your timeline and goals.</p>
         </header>
 

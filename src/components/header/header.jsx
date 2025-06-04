@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PostDataProvider } from "../../contexts/PostDataContext";
-import { IconBrandJavascript, IconMoon, IconSun } from "@tabler/icons";
+import { IconBrandJavascript, IconMenu2, IconMoon, IconSun } from "@tabler/icons";
 
 const Brand = ({ isDarkMode, onClick }) => (
   <div className="flex items-center gap-2">
@@ -14,9 +14,7 @@ const Brand = ({ isDarkMode, onClick }) => (
     />
     <h2
       onClick={onClick}
-      className={`cursor-pointer font-bold text-2xl md:text-2xl ${
-        isDarkMode ? "text-zinc-800" : "text-zinc-200"
-      }`}
+      className={`cursor-pointer font-bold text-2xl md:text-2xl ${isDarkMode ? "text-zinc-800" : "text-zinc-200"}`}
     >
       YourJsCoach
     </h2>
@@ -31,7 +29,7 @@ const Navigation = ({ currentPath, navigate }) => {
     }
     return currentPath === path;
   };
-  
+
   const getNavLinkClass = (path) => `
     cursor-pointer 
     ${isActive(path) ? "text-zinc-200" : "text-zinc-600"}
@@ -41,15 +39,15 @@ const Navigation = ({ currentPath, navigate }) => {
 
   return (
     <div className="flex gap-7 text-base pr-4" role="navigation">
-      <button 
-        onClick={() => navigate("/blog")} 
+      <button
+        onClick={() => navigate("/blog")}
         className={getNavLinkClass("/blog")}
         aria-current={isActive("/blog") ? "page" : undefined}
       >
         Blog
       </button>
-      <button 
-        onClick={() => navigate("/questions")} 
+      <button
+        onClick={() => navigate("/questions")}
         className={getNavLinkClass("/questions")}
         aria-current={isActive("/questions") ? "page" : undefined}
       >
@@ -64,6 +62,10 @@ export const Header = () => {
   const location = useLocation();
   const { postData, setSearchData, setSearchFilter } = useContext(PostDataProvider);
   const navigate = useNavigate();
+  const isPracticePage = location.pathname === "/practice";
+  const containerClasses = isPracticePage
+    ? "py-3 px-4 gap-5 min-w-[950px]"
+    : "gap-10 py-[3vh] 2xl:px-[20vw] lg:px-[10vw] px-[7vw] min-w-[56vw]";
 
   const handleHomeRedirect = () => {
     navigate("/");
@@ -77,11 +79,14 @@ export const Header = () => {
 
   return (
     <header>
-      <nav 
-        className="flex justify-between text-xl items-center" 
+      <nav
+        className={`flex justify-between text-xl items-center bg-zinc-900 ${containerClasses}`}
         aria-label="Main navigation"
       >
-        <Brand isDarkMode={isDarkMode} onClick={handleHomeRedirect} />
+        <div className="flex items-center gap-5">
+          {isPracticePage && <IconMenu2 className="text-zinc-200 cursor-pointer" />}
+          <Brand isDarkMode={isDarkMode} onClick={handleHomeRedirect} />
+        </div>
         {/* <div className="flex gap-4 md:gap-8">
           <button className="text-2xl md:text-3xl" onClick={handleModeToggle}>
             {isDarkMode ? (
@@ -91,8 +96,9 @@ export const Header = () => {
             )}
           </button>
         </div> */}
-        <Navigation currentPath={location.pathname} navigate={navigate} />
+        {!isPracticePage && <Navigation currentPath={location.pathname} navigate={navigate} />}
       </nav>
+      <hr className="bg-zinc-700 h-0.5 outline-none border-none" />
     </header>
   );
 };

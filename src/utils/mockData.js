@@ -29,4 +29,5 @@ export const mockPractice = {
   test: [1, 2, 3, 4, 5, 6, 7, 8, 9],
   correctOutput: [5, 9],
   tags: ["array", "dp"],
+  askedIn: ["Google", "Adobe", "Microsoft", "Amazon"]
 };

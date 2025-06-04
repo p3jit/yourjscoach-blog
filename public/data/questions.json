@@ -1,34 +1,38 @@
 [
-    {
-      "questionName": "Contains Duplicate",
-      "difficulty": 0,
-      "askedIn": ["Google", "Adobe", "Microsoft", "Amazon"],
-      "id": "contains-duplicate",
-      "topics": ["Array", "DP", "Graph"],
-      "category": "dsa"
-    },
-    {
-      "questionName": "Concatanation of Array",
-      "difficulty": 1,
-      "askedIn": ["Ola", "Oracle", "Airbnb", "Amazon"],
-      "id": "concatanation-of-array",
-      "topics": ["Array", "DP", "Graph"],
-      "category": "dsa"
-    },
-    {
-      "questionName": "Second largest element in the array",
-      "difficulty": 0,
-      "askedIn": ["Google", "Adobe", "Microsoft", "Amazon"],
-      "id": "second-largest-element-in-the-array",
-      "topics": ["Array", "DP", "Graph"],
-      "category": "dsa"
-    },
-    {
-      "questionName": "Remove duplicates from an sorted array",
-      "difficulty": 0,
-      "askedIn": ["Google", "Adobe", "Microsoft", "Amazon"],
-      "id": "remove-duplicates-from-an-sorted-array",
-      "topics": ["Array", "DP", "Graph"],
-      "category": "dsa"
-    }
-  ]
+  {
+    "questionName": "Contains Duplicate",
+    "difficulty": 1,
+    "askedIn": ["Google", "Adobe", "Microsoft", "Amazon"],
+    "id": "contains-duplicate",
+    "topics": ["Array", "DP", "Graph"],
+    "category": "dsa",
+    "description": "From a given array of elemets check if there are any duplicates in the array or not. Return true if there are duplicates else return false."
+  },
+  {
+    "questionName": "Concatanation of Array",
+    "difficulty": 2,
+    "askedIn": ["Ola", "Oracle", "Airbnb", "Amazon"],
+    "id": "concatanation-of-array",
+    "topics": ["Array", "DP", "Graph"],
+    "category": "dsa",
+    "description": "From a given array of elemets check if there are any duplicates in the array or not. Return true if there are duplicates else return false."
+  },
+  {
+    "questionName": "Second largest element in the array",
+    "difficulty": 3,
+    "askedIn": ["Google", "Adobe", "Microsoft", "Amazon"],
+    "id": "second-largest-element-in-the-array",
+    "topics": ["Array", "DP", "Graph"],
+    "category": "dsa",
+    "description": "From a given array of elemets check if there are any duplicates in the array or not. Return true if there are duplicates else return false."
+  },
+  {
+    "questionName": "Remove duplicates from an sorted array",
+    "difficulty": 1,
+    "askedIn": ["Google", "Adobe", "Microsoft", "Amazon"],
+    "id": "remove-duplicates-from-an-sorted-array",
+    "topics": ["Array", "DP", "Graph"],
+    "category": "dsa",
+    "description": "From a given array of elemets check if there are any duplicates in the array or not. Return true if there are duplicates else return false."
+  }
+]

@@ -4,6 +4,8 @@ import { IconSearch, IconX } from "@tabler/icons";
 import useDebounce from "../hooks/useDebounce";
 import { useNavigate } from "react-router-dom";
 import InterviewPrepPlans from "../components/interviewPrep/InterviewPrepPlans";
+import FeatureCards from "../components/features/FeatureCards";
+import ProblemSet from "../components/ProblemSet/ProblemSet";
 
 const DSASheet = () => {
   const [questions, setQuestions] = useState([]);
@@ -137,25 +139,30 @@ const DSASheet = () => {
 
   const Caption = () => (
     <div className="self-start mt-5">
-      <h1 className="text-2xl font-semibold tracking-wide text-zinc-200 mb-2">Problems</h1>
-      <p className="text-lg tracking-normal text-zinc-500">
-        Ready to crack the code? Sharpen your skills with our curated challenges.
-      </p>
+      <h1 className="text-2xl font-semibold tracking-wide text-zinc-200 mb-2">Explore Problems</h1>
+      <p className="text-lg tracking-normal text-zinc-500">Find challenges by topic, difficulty or company</p>
     </div>
   );
 
   return (
     <div className="py-6 flex flex-col items-center gap-10 min-h-[85vh]">
-      <InterviewPrepPlans/>
-      <Caption />
-      <SearchBar />
-      <TabNavigation />
+      <InterviewPrepPlans />
+      <div className="flex flex-col w-full gap-7">
+        <Caption />
+        <SearchBar />
+      </div>
 
-      {filteredQuestions?.length > 0 ? (
-        <Table data={filteredQuestions} key={filteredQuestions.length} />
-      ) : (
-        <EmptyState />
-      )}
+      <div className="flex-col w-full flex gap-5 mt-3">
+        <TabNavigation />
+        {filteredQuestions?.length > 0 ? (
+          <Table data={filteredQuestions} key={filteredQuestions.length} />
+        ) : (
+          <EmptyState />
+        )}
+      </div>
+
+      <ProblemSet data={filteredQuestions} />
+      <FeatureCards />
     </div>
   );
 };
