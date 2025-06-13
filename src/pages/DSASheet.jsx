@@ -1,6 +1,6 @@
 import Table from "../components/table/Table";
 import React, { useEffect, useState } from "react";
-import { IconSearch, IconX } from "@tabler/icons";
+import { IconSearch, IconTable, IconX, IconLayoutGrid } from "@tabler/icons";
 import useDebounce from "../hooks/useDebounce";
 import { useNavigate } from "react-router-dom";
 import InterviewPrepPlans from "../components/interviewPrep/InterviewPrepPlans";
@@ -12,6 +12,9 @@ const DSASheet = () => {
   const [filteredQuestions, setFilteredQuestions] = useState([]);
   const [currentTab, setCurrentTab] = useState("all");
   const [searchText, setSearchText] = useState("");
+  const [isTableView, setIsTableView] = useState(true);
+
+  const isDev = false;
 
   const navigate = useNavigate();
 
@@ -25,9 +28,9 @@ const DSASheet = () => {
     if (searchValue.length > 0) {
       filtered = questions.filter(
         (question) =>
-          question.questionName.includes(searchValue) ||
+          question.problemTitle.includes(searchValue) ||
           question.askedIn.some((company) => company.toLowerCase().includes(searchValue)) ||
-          question.topics.some((topic) => topic.toLowerCase().includes(searchValue))
+          question.tags.some((tag) => tag.toLowerCase().includes(searchValue))
       );
     }
 
@@ -59,7 +62,7 @@ const DSASheet = () => {
 
   // Fetch questions data on component mount
   useEffect(() => {
-    fetch("/data/questions.json")
+    fetch(isDev ? "http://localhost:1337/api/problems" : "/data/questions.json")
       .then((response) => response.json())
       .then((data) => {
         setQuestions(data);
@@ -100,7 +103,6 @@ const DSASheet = () => {
       <input
         type="text"
         spellCheck="false"
-        defaultValue={searchText}
         placeholder="Search problems by title, tags and company"
         className="bg-zinc-800 outline outline-1 outline-zinc-400 w-full text-zinc-200 rounded-md py-3 pr-10 pl-12 tracking-wide text-sm"
         onChange={debouncedHandleSearchQuestion}
@@ -146,22 +148,74 @@ const DSASheet = () => {
 
   return (
     <div className="py-6 flex flex-col items-center gap-10 min-h-[85vh]">
-      <InterviewPrepPlans />
+      {/* <div className="w-full bg-[length:200%_100%] animate-gradient-x h-[60vh] bg-gradient-to-tr from-zinc-900 shadow-md from-5% to-zinc-600 to-85%   rounded-2xl mb-10 flex flex-col gap-10 items-center justify-center">
+        <h1 className="bg-gradient-to-tr from-zinc-300 to-zinc-100 bg-clip-text text-transparent text-4xl md:text-5xl lg:text-6xl text-wrap w-3/4 text-center">Code with Confidence: Ace Your Interviews</h1>
+        <button className="bg-zinc-100 text-zinc-950 px-3 py-2 rounded-2xl flex items-center justify-center gap-2">Get Started <span>→</span></button>
+      </div> */}
+      <div className="w-full ">
+        <div
+          className="bg-[length:200%_100%] animate-gradient-x h-[60vh] bg-gradient-to-tr from-zinc-900 shadow-md from-25% to-zinc-700 to-95% coding inverse-toggle px-1 text-gray-100 text-sm font-mono subpixel-antialiased 
+               pb-6 pt-4 rounded-lg leading-normal overflow-hidden"
+        >
+          <div className="top mb-2 flex pl-3">
+            <div className="h-3 w-3 bg-red-500 rounded-full"></div>
+            <div className="ml-2 h-3 w-3 bg-orange-300 rounded-full"></div>
+            <div class="ml-2 h-3 w-3 bg-green-500 rounded-full"></div>
+          </div>
+          <div className="mt-4 flex flex-col items-center justify-center gap-16 py-28 ">
+            <div className="flex flex-col gap-8 w-full px-9">
+              <h1 className="bg-gradient-to-tr from-zinc-300 to-zinc-100 bg-clip-text text-transparent text-4xl md:text-5xl lg:text-6xl text-wrap text-center">
+                Level Up Your UI Engineering Skills
+              </h1>
+              <h2 className="bg-gradient-to-tr from-zinc-300 to-zinc-100 bg-clip-text text-transparent text-xl md:text-2xl lg:text-3xl text-wrap text-center">
+                Your Complete Interview Preparation Toolkit
+              </h2>
+            </div>
+
+            <button className="w-1/4 bg-zinc-100 text-zinc-950 px-3 py-2 rounded-2xl flex items-center justify-center gap-2">
+              View Problems <span>→</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      {/* <InterviewPrepPlans /> */}
       <div className="flex flex-col w-full gap-7">
         <Caption />
         <SearchBar />
       </div>
-
-      <div className="flex-col w-full flex gap-5 mt-3">
+      <div className="flex w-full justify-between items-center">
         <TabNavigation />
-        {filteredQuestions?.length > 0 ? (
-          <Table data={filteredQuestions} key={filteredQuestions.length} />
-        ) : (
-          <EmptyState />
-        )}
+        <div className="flex gap-3 text-zinc-400 cursor-pointer">
+          <span
+            onClick={() => {
+              setIsTableView(false);
+            }}
+          >
+            <IconLayoutGrid />
+          </span>
+
+          <span>|</span>
+          <span
+            onClick={() => {
+              setIsTableView(true);
+            }}
+          >
+            <IconTable />
+          </span>
+        </div>
       </div>
 
-      <ProblemSet data={filteredQuestions} />
+      {isTableView ? (
+        <div className="flex-col w-full flex gap-5">
+          {filteredQuestions?.length > 0 ? (
+            <Table data={filteredQuestions} key={filteredQuestions.length} />
+          ) : (
+            <EmptyState />
+          )}
+        </div>
+      ) : (
+        <ProblemSet data={filteredQuestions} />
+      )}
       <FeatureCards />
     </div>
   );

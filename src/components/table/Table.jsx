@@ -47,10 +47,10 @@ const TableRow = ({ question, isDarkMode, onRowClick }) => {
     <tr 
       className="cursor-pointer" 
       onClick={onRowClick}
-      aria-label={`Question: ${question.questionName}`}
+      aria-label={`Question: ${question.problemTitle}`}
     >
       <td className={questionCellClass}>
-        {question.questionName}
+        {question.problemTitle}
       </td>
       <td
         className={`whitespace-nowrap px-4 py-2 font-medium text-sm ${returnColor(
@@ -67,7 +67,7 @@ const TableRow = ({ question, isDarkMode, onRowClick }) => {
       </td>
       <td className="whitespace-nowrap px-4 py-4">
         <TagList 
-          items={question.topics} 
+          items={question.tags} 
           isDarkMode={isDarkMode} 
           maxWidth="max-w-[10rem]" 
         />
@@ -86,8 +86,8 @@ const Table = ({ data }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
   const navigate = useNavigate();
 
-  const handleRowClick = () => {
-    navigate("/practice");
+  const handleRowClick = (id) => {
+    navigate(`/practice/${id}`);
   };
 
   const hasData = data && data.length > 0;
@@ -101,10 +101,10 @@ const Table = ({ data }) => {
             <tbody className="divide-y divide-zinc-700">
               {data.map((question, index) => (
                 <TableRow
-                  key={`question-${index}-${question.questionName}`}
+                  key={`question-${index}-${question.problemTitle}`}
                   question={question}
                   isDarkMode={isDarkMode}
-                  onRowClick={handleRowClick}
+                  onRowClick={() => {handleRowClick(question.documentId)}}
                 />
               ))}
             </tbody>

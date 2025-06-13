@@ -3,6 +3,7 @@ import { DarkModeProvider } from "../../contexts/DarkModeContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { PostDataProvider } from "../../contexts/PostDataContext";
 import { IconBrandJavascript, IconMenu2, IconMoon, IconSun } from "@tabler/icons";
+import { SidebarProvider } from "../../contexts/SidebarContext";
 
 const Brand = ({ isDarkMode, onClick }) => (
   <div className="flex items-center gap-2">
@@ -59,10 +60,11 @@ const Navigation = ({ currentPath, navigate }) => {
 
 export const Header = () => {
   const { isDarkMode, setIsDarkMode } = useContext(DarkModeProvider);
+  const { toggleSidebar } = useContext(SidebarProvider);
   const location = useLocation();
   const { postData, setSearchData, setSearchFilter } = useContext(PostDataProvider);
   const navigate = useNavigate();
-  const isPracticePage = location.pathname === "/practice";
+  const isPracticePage = (() => location.pathname.includes("/practice/"))();
   const containerClasses = isPracticePage
     ? "py-3 px-4 gap-5 min-w-[950px]"
     : "gap-10 py-[3vh] 2xl:px-[20vw] lg:px-[10vw] px-[7vw] min-w-[56vw]";
@@ -84,7 +86,11 @@ export const Header = () => {
         aria-label="Main navigation"
       >
         <div className="flex items-center gap-5">
-          {isPracticePage && <IconMenu2 className="text-zinc-200 cursor-pointer" />}
+          {isPracticePage && (
+            <button onClick={toggleSidebar}>
+              <IconMenu2 className="text-zinc-200 cursor-pointer" />
+            </button>
+          )}
           <Brand isDarkMode={isDarkMode} onClick={handleHomeRedirect} />
         </div>
         {/* <div className="flex gap-4 md:gap-8">

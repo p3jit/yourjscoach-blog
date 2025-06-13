@@ -2,17 +2,8 @@ import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useDebounce from "../hooks/useDebounce";
 
-/**
- * Context for managing blog post data across the application
- */
 export const PostDataProvider = createContext();
 
-/**
- * PostDataContext component that provides post data and search functionality
- * @param {Object} props - Component props
- * @param {React.ReactNode} props.children - Child components
- * @returns {JSX.Element} The PostDataProvider context provider
- */
 const PostDataContext = ({ children }) => {
   // State management
   const [postData, setPostData] = useState([]);
@@ -24,14 +15,9 @@ const PostDataContext = ({ children }) => {
 
   const navigate = useNavigate();
 
-  /**
-   * Filter posts by search query (title or tags)
-   * @param {string} query - Search query string
-   */
   const searchPostsByQuery = (query) => {
     const result = postData.filter((post) => post.title.toLowerCase().includes(query) || post.tags.includes(query));
 
-    // Sort by timestamp, newest first
     result.sort((a, b) => b.timeStamp - a.timeStamp);
 
     setSearchData(result);
@@ -41,10 +27,6 @@ const PostDataContext = ({ children }) => {
   // Debounce search for better performance
   const debouncedSearch = useDebounce(searchPostsByQuery, 1000);
 
-  /**
-   * Filter posts by selected tags
-   * @returns {Array} Filtered posts
-   */
   const filterPostsByTags = () => {
     if (!searchFilter.length) {
       return postData.slice().sort((a, b) => b.timeStamp - a.timeStamp);
@@ -53,9 +35,6 @@ const PostDataContext = ({ children }) => {
     return postData.filter((post) => post.tags.some((tag) => searchFilter.includes(tag)));
   };
 
-  /**
-   * Fetch posts and extract tags from the data
-   */
   const fetchPostsAndTags = async () => {
     try {
       const response = await fetch(`/data/blogs.json`);
