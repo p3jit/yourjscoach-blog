@@ -123,7 +123,6 @@ const createTestScript = (codeBlock, testBlock, data) => {
       ${codeBlock.iframeCode.split("\n").slice(1).join("\n")}
       ${testBlock.iframeCode.split("\n").slice(1).join("\n")}
       // warmup to check errors in code
-      ${data.functionName}(1,2);
       mocha.run();
     } catch (error) {
       console.log(error);
@@ -155,6 +154,7 @@ const postTestResults = (event) => {
   window.YJC_Result = [];
   window.YJC_Test_Results_Passed = [];
   window.YJC_Test_Results_Failed = [];
+  window.YJC_Error = null;
   startTime = null;
   setupMocha();
 };

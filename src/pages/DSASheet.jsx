@@ -14,7 +14,7 @@ const DSASheet = () => {
   const [searchText, setSearchText] = useState("");
   const [isTableView, setIsTableView] = useState(true);
 
-  const isDev = false;
+  const isDev = true;
 
   const navigate = useNavigate();
 
@@ -58,13 +58,14 @@ const DSASheet = () => {
     setFilteredQuestions(filterQuestions("", currentTab !== "all" ? currentTab : ""));
   };
 
-  const debouncedHandleSearchQuestion = useDebounce(handleSearchQuestion, 400);
+  const debouncedHandleSearchQuestion = useDebounce(handleSearchQuestion, 800);
 
   // Fetch questions data on component mount
   useEffect(() => {
     fetch(isDev ? "http://localhost:1337/api/problems" : "/data/questions.json")
       .then((response) => response.json())
       .then((data) => {
+        if (isDev) data = data.data;
         setQuestions(data);
         setFilteredQuestions(data);
       })
@@ -106,6 +107,7 @@ const DSASheet = () => {
         placeholder="Search problems by title, tags and company"
         className="bg-zinc-800 outline outline-1 outline-zinc-400 w-full text-zinc-200 rounded-md py-3 pr-10 pl-12 tracking-wide text-sm"
         onChange={debouncedHandleSearchQuestion}
+        defaultValue={searchText}
       />
       <IconSearch className="absolute left-3 text-zinc-400 text-2xl" />
       {searchText && <IconX className="absolute right-3 text-2xl text-zinc-400 cursor-pointer" onClick={clearSearch} />}
@@ -160,7 +162,7 @@ const DSASheet = () => {
           <div className="top mb-2 flex pl-3">
             <div className="h-3 w-3 bg-red-500 rounded-full"></div>
             <div className="ml-2 h-3 w-3 bg-orange-300 rounded-full"></div>
-            <div class="ml-2 h-3 w-3 bg-green-500 rounded-full"></div>
+            <div className="ml-2 h-3 w-3 bg-green-500 rounded-full"></div>
           </div>
           <div className="mt-4 flex flex-col items-center justify-center gap-16 py-28 ">
             <div className="flex flex-col gap-8 w-full px-9">
@@ -214,7 +216,9 @@ const DSASheet = () => {
           )}
         </div>
       ) : (
-        <ProblemSet data={filteredQuestions} />
+        <div className="flex-col w-full flex gap-5">
+          {filteredQuestions?.length > 0 ? <ProblemSet data={filteredQuestions} /> : <EmptyState />}
+        </div>
       )}
       <FeatureCards />
     </div>

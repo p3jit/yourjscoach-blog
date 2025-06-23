@@ -15,11 +15,11 @@ const ProblemCard = ({ problem }) => {
   return (
     <article className="bg-zinc-900 rounded-lg p-6 shadow-lg shadow-zinc-950 flex flex-col justify-between h-full border-2 border-zinc-700">
       <div>
-        <header className="flex justify-between items-center mb-3">
+        <header className="flex justify-between items-start mb-3">
           <h3 className="text-xl font-semibold text-zinc-300">{problemTitle}</h3>
           {difficulty && (
             <span
-              className={`px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap ${
+              className={`px-2.5 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap mt-1 ${
                 difficultyStyles[Number(difficulty - 1)] || "bg-zinc-500 text-zinc-100"
               }`}
             >
