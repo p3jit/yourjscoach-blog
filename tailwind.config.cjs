@@ -26,5 +26,14 @@ module.exports = {
       montserrat: ['Montserrat', 'sans-serif']
     }
   },
-  plugins: [require('tailwind-scrollbar')({ nocompatible: true })],
+  plugins: [
+    require('tailwind-scrollbar')({ 
+      nocompatible: true,
+      preferredStrategy: 'pseudoclasses',
+      scrollbarWidth: '6px',
+      scrollbarTrackColor: 'transparent',
+      scrollbarThumbColor: '#cbd5e1',
+      scrollbarButtonDisplay: 'none'
+    })
+  ],
 }

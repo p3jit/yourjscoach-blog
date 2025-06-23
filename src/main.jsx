@@ -4,14 +4,14 @@ import { BrowserRouter } from "react-router-dom";
 import App from "./App";
 import DarkModeContext from "./contexts/DarkModeContext";
 import ModalContext from "./contexts/ModalContext";
-import PostDataContext from "./contexts/PostDataContext";
+import BlogDataContext from "./contexts/BlogDataContext";
 import SidebarContext from "./contexts/SidebarContext";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      <PostDataContext>
+      <BlogDataContext>
         <DarkModeContext>
           <ModalContext>
             <SidebarContext>
@@ -19,7 +19,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             </SidebarContext>
           </ModalContext>
         </DarkModeContext>
-      </PostDataContext>
+      </BlogDataContext>
     </BrowserRouter>
   </React.StrictMode>
 );

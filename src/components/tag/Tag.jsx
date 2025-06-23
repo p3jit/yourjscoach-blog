@@ -1,11 +1,11 @@
 import { useContext, useState } from "react";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
-import { PostDataProvider } from "../../contexts/PostDataContext";
+import { BlogDataProvider } from "../../contexts/BlogDataContext";
 
 const Tag = ({ data, isClickable = false, showHash = true }) => {
   const [isActive, setIsActive] = useState(false);
   const { isDarkMode } = useContext(DarkModeProvider);
-  const { searchFilter, setSearchFilter } = useContext(PostDataProvider);
+  const { searchFilter, setSearchFilter } = useContext(BlogDataProvider);
 
   const handleActive = async () => {
     if (!isClickable) return;

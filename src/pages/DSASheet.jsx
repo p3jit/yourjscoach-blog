@@ -62,12 +62,14 @@ const DSASheet = () => {
 
   // Fetch questions data on component mount
   useEffect(() => {
-    fetch(isDev ? "http://localhost:1337/api/problems" : "/data/questions.json")
+    fetch(isDev ? "http://localhost:1337/api/problems" : "http://localhost:1337/api/problems")
       .then((response) => response.json())
       .then((data) => {
         if (isDev) data = data.data;
-        setQuestions(data);
-        setFilteredQuestions(data);
+        // Add sort function in future. Currently its sorterd my createdAt
+        const sortedQuestions = data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        setQuestions(sortedQuestions);
+        setFilteredQuestions(sortedQuestions);
       })
       .catch((err) => {
         console.error("Failed to fetch questions:", err);

@@ -2,9 +2,9 @@ import React, { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useDebounce from "../hooks/useDebounce";
 
-export const PostDataProvider = createContext();
+export const BlogDataProvider = createContext();
 
-const PostDataContext = ({ children }) => {
+const BlogDataContext = ({ children }) => {
   // State management
   const [postData, setPostData] = useState([]);
   const [latestPostData, setLatestPostData] = useState([]);
@@ -93,7 +93,7 @@ const PostDataContext = ({ children }) => {
     setIsSearching,
   };
 
-  return <PostDataProvider.Provider value={contextValue}>{children}</PostDataProvider.Provider>;
+  return <BlogDataProvider.Provider value={contextValue}>{children}</BlogDataProvider.Provider>;
 };
 
-export default PostDataContext;
+export default BlogDataContext;

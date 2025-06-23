@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
 import { useLocation, useNavigate } from "react-router-dom";
-import { PostDataProvider } from "../../contexts/PostDataContext";
+import { BlogDataProvider } from "../../contexts/BlogDataContext";
 import { IconBrandJavascript, IconMenu2, IconMoon, IconSun } from "@tabler/icons";
 import { SidebarProvider } from "../../contexts/SidebarContext";
 
@@ -62,7 +62,7 @@ export const Header = () => {
   const { isDarkMode, setIsDarkMode } = useContext(DarkModeProvider);
   const { toggleSidebar } = useContext(SidebarProvider);
   const location = useLocation();
-  const { postData, setSearchData, setSearchFilter } = useContext(PostDataProvider);
+  const { postData, setSearchData, setSearchFilter } = useContext(BlogDataProvider);
   const navigate = useNavigate();
   const isPracticePage = (() => location.pathname.includes("/practice/"))();
   const containerClasses = isPracticePage

@@ -10,3 +10,7 @@
   max-inline-size: 100%;
   block-size: auto;
 }
+
+*::-webkit-scrollbar-button {
+  display: none;
+}

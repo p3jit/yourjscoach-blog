@@ -1,6 +1,6 @@
 import React, { useContext, useRef, useState } from "react";
 import Title from "../components/title/Title";
-import { PostDataProvider } from "../contexts/PostDataContext";
+import { BlogDataProvider } from "../contexts/BlogDataContext";
 import { IconSearch, IconMoodCry, IconX } from "@tabler/icons";
 import { DarkModeProvider } from "../contexts/DarkModeContext";
 import NewPostCard from "../components/newPostCard/NewPostCard";
@@ -114,7 +114,7 @@ const Home = () => {
     fetchedTags,
     isSearching,
     setIsSearching,
-  } = useContext(PostDataProvider);
+  } = useContext(BlogDataProvider);
 
   const [showClear, setShowClear] = useState(false);
   const searchRef = useRef();
