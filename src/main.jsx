@@ -7,19 +7,22 @@ import ModalContext from "./contexts/ModalContext";
 import BlogDataContext from "./contexts/BlogDataContext";
 import SidebarContext from "./contexts/SidebarContext";
 import "./index.css";
+import ProblemDataContext from "./contexts/ProblemDataContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      <BlogDataContext>
-        <DarkModeContext>
-          <ModalContext>
-            <SidebarContext>
-              <App />
-            </SidebarContext>
-          </ModalContext>
-        </DarkModeContext>
-      </BlogDataContext>
+      <ProblemDataContext>
+        <BlogDataContext>
+          <DarkModeContext>
+            <ModalContext>
+              <SidebarContext>
+                <App />
+              </SidebarContext>
+            </ModalContext>
+          </DarkModeContext>
+        </BlogDataContext>
+      </ProblemDataContext>
     </BrowserRouter>
   </React.StrictMode>
 );

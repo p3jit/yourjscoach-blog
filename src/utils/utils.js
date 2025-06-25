@@ -1,3 +1,5 @@
+import Fuse from "fuse.js";
+
 // Returns the table data from parsed csv data
 export function generateTableDataFromCsv(tstArr) {
   tstArr = tstArr.slice(0, tstArr.length - 1);
@@ -76,4 +78,14 @@ export const returnDifficultyText = (difficulty) => {
   } else {
     return "Hard";
   }
+};
+
+export const fuzzySearchWithFuse = (obj, options, searchText) => {
+  const fuse = new Fuse(obj, options);
+  const fuseResult = fuse.search(searchText);
+  let searchResult = [];
+  if (fuseResult.length > 0) {
+    searchResult = fuseResult.map((singleResult, index) => singleResult.item);
+  }
+  return searchResult;
 };

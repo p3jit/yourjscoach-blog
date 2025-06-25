@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import useDebounce from "../hooks/useDebounce";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -7,35 +7,15 @@ import { useLocation, useNavigate } from "react-router-dom";
 import ProblemDescription from "../components/Practice/ProblemDescription";
 import EditorSection from "../components/Practice/EditorSection";
 import ResultsPanel from "../components/Practice/ResultsPanel";
-
-const isDev = false;
+import { ProblemDataProvider } from "../contexts/ProblemDataContext";
 
 // Custom hook for managing problem data
 const useProblemData = (location, navigate) => {
-  const [currentProblem, setCurrentProblem] = useState({});
-
-  const fetchProblemData = async () => {
-    try {
-      const documentId = location.pathname.split("/")[2];
-      const response = await fetch(isDev ? "/data/questions.json" : `http://localhost:1337/api/problems/${documentId}`, {
-        method: "GET",
-      });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      let jsonData = await response.json();
-      if (isDev) jsonData = jsonData.find((data) => data.documentId === documentId);
-      if (!isDev) jsonData = jsonData.data;
-      setCurrentProblem(jsonData);
-    } catch (err) {
-      navigate("/404");
-    }
-  };
+  const {currentProblem, setCurrentProblem, fetchProblemById} = useContext(ProblemDataProvider);
+  const documentId = location.pathname.split("/")[2];
 
   useEffect(() => {
-    fetchProblemData();
+    fetchProblemById(documentId);
   }, [location.pathname, navigate]);
 
   return { currentProblem, setCurrentProblem };

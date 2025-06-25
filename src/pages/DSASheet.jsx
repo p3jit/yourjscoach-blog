@@ -1,81 +1,46 @@
 import Table from "../components/table/Table";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { IconSearch, IconTable, IconX, IconLayoutGrid } from "@tabler/icons";
 import useDebounce from "../hooks/useDebounce";
 import { useNavigate } from "react-router-dom";
 import InterviewPrepPlans from "../components/interviewPrep/InterviewPrepPlans";
 import FeatureCards from "../components/features/FeatureCards";
 import ProblemSet from "../components/ProblemSet/ProblemSet";
+import { useContext } from "react";
+import { ProblemDataProvider } from "../contexts/ProblemDataContext";
+import { fuzzySearchWithFuse } from "../utils/utils";
 
 const DSASheet = () => {
-  const [questions, setQuestions] = useState([]);
-  const [filteredQuestions, setFilteredQuestions] = useState([]);
+  const { filteredProblems, setFilteredProblems, problems, setProblem, filterProblems } =
+    useContext(ProblemDataProvider);
   const [currentTab, setCurrentTab] = useState("all");
   const [searchText, setSearchText] = useState("");
   const [isTableView, setIsTableView] = useState(true);
 
-  const isDev = true;
-
   const navigate = useNavigate();
 
-  // Filter questions based on search text and selected category
-  const filterQuestions = (searchValue, category = "") => {
-    if (!questions.length) return [];
-
-    let filtered = questions;
-
-    // Apply search text filter
-    if (searchValue.length > 0) {
-      filtered = questions.filter(
-        (question) =>
-          question.problemTitle.includes(searchValue) ||
-          question.askedIn.some((company) => company.toLowerCase().includes(searchValue)) ||
-          question.tags.some((tag) => tag.toLowerCase().includes(searchValue))
-      );
-    }
-
-    // Apply category filter
-    if (category && category !== "all") {
-      filtered = filtered.filter((question) => question.category === category);
-    }
-
-    return filtered;
-  };
-
   const handleSearchQuestion = (e) => {
-    const value = e.target.value;
-    setSearchText(value);
-    setFilteredQuestions(filterQuestions(value, currentTab !== "all" ? currentTab : ""));
+    const searchValue = e.target.value;
+    const searchResult = fuzzySearchWithFuse(
+      problems,
+      { includeScore: true, keys: ["problemTitle", "askedIn", "tags"] },
+      searchValue
+    );
+    setSearchText(searchValue);
+    setFilteredProblems(searchResult);
   };
 
   const handleTabChange = (tab) => {
     setCurrentTab(tab);
-    setFilteredQuestions(filterQuestions(searchText, tab !== "all" ? tab : ""));
+    setFilteredProblems(filterProblems(searchText, tab !== "all" ? tab : ""));
   };
 
   const clearSearch = () => {
     setSearchText("");
-    setFilteredQuestions(filterQuestions("", currentTab !== "all" ? currentTab : ""));
+    setFilteredProblems(filterProblems("", currentTab !== "all" ? currentTab : ""));
   };
 
   const debouncedHandleSearchQuestion = useDebounce(handleSearchQuestion, 800);
-
-  // Fetch questions data on component mount
-  useEffect(() => {
-    fetch(isDev ? "http://localhost:1337/api/problems" : "http://localhost:1337/api/problems")
-      .then((response) => response.json())
-      .then((data) => {
-        if (isDev) data = data.data;
-        // Add sort function in future. Currently its sorterd my createdAt
-        const sortedQuestions = data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-        setQuestions(sortedQuestions);
-        setFilteredQuestions(sortedQuestions);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch questions:", err);
-        navigate("/404");
-      });
-  }, [navigate]);
 
   // Tab component
   const TabNavigation = () => (
@@ -91,7 +56,7 @@ const DSASheet = () => {
                   currentTab === tab ? "text-zinc-200 border-zinc-200 border-b-2" : "text-zinc-500 border-transparent"
                 }`}
               >
-                {tab === "all" ? "All Problems" : tab === "js" ? "JS Questions" : "DSA Questions"}
+                {tab === "all" ? "All Problems" : tab === "js" ? "JS problems" : "DSA problems"}
               </button>
             ))}
           </nav>
@@ -105,6 +70,7 @@ const DSASheet = () => {
     <div className="flex w-full justify-center items-center self-start relative mx-1 flex-col shadow shadow-zinc-700">
       <input
         type="text"
+        autoFocus={true}
         spellCheck="false"
         placeholder="Search problems by title, tags and company"
         className="bg-zinc-800 outline outline-1 outline-zinc-400 w-full text-zinc-200 rounded-md py-3 pr-10 pl-12 tracking-wide text-sm"
@@ -211,15 +177,15 @@ const DSASheet = () => {
 
       {isTableView ? (
         <div className="flex-col w-full flex gap-5">
-          {filteredQuestions?.length > 0 ? (
-            <Table data={filteredQuestions} key={filteredQuestions.length} />
+          {filteredProblems?.length > 0 ? (
+            <Table data={filteredProblems} key={filteredProblems.length} />
           ) : (
             <EmptyState />
           )}
         </div>
       ) : (
         <div className="flex-col w-full flex gap-5">
-          {filteredQuestions?.length > 0 ? <ProblemSet data={filteredQuestions} /> : <EmptyState />}
+          {filteredProblems?.length > 0 ? <ProblemSet data={filteredProblems} /> : <EmptyState />}
         </div>
       )}
       <FeatureCards />
