@@ -46,7 +46,7 @@ const ProblemDescription = ({ currentProblem, isSolved }) => {
           </div>
 
           {/* Problem Content */}
-          <div className="flex gap-4 flex-col h-[70vh]">
+          <div className="flex gap-4 flex-col h-[65vh]">
             <Markdown
               className="overflow-x-auto overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-zinc-900 pr-4"
               options={{

@@ -1,16 +1,20 @@
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Editor from "@monaco-editor/react";
+import useDebounce from "../../hooks/useDebounce";
 
-/**
- * Component for the code editor section with tabs for code and test cases
- */
 const EditorSection = ({
   currentProblem,
   currentEditorTabIndex,
   handleEditorValueChange,
   handleEditorTabClick,
   setErrorMsg,
+  middleBarTabs,
+  middleBarTabIndex,
 }) => {
+  const iframeRef = useRef(null);
+  const [htmlContent, setHtmlContent] = useState(``);
+  const [cssContent, setCssContent] = useState(``);
+  const [jsContent, setJsContent] = useState("");
 
   // Function to check for errors
   const checkForErrors = (markers) => {
@@ -24,9 +28,15 @@ const EditorSection = ({
         .join("\n");
       if (errorMessages === "\n") errorMessages = "";
       if (errorMessages.length > 0) {
-        setErrorMsg((prev) => {console.log(prev); return errorMessages});
+        setErrorMsg((prev) => {
+          console.log(prev);
+          return errorMessages;
+        });
       } else {
-        setErrorMsg((prev) => {console.log(prev); return ""});
+        setErrorMsg((prev) => {
+          console.log(prev);
+          return "";
+        });
       }
     }
   };
@@ -37,37 +47,114 @@ const EditorSection = ({
 
   const handleErrorCheck = (markers) => {
     // Check for errors after a short delay to allow Monaco to validate
-    setTimeout(() => {checkForErrors(markers)}, 100);
+    setTimeout(() => {
+      checkForErrors(markers);
+    }, 100);
   };
+
+  // Function to update iframe content
+  const updateIframe = useDebounce(() => {
+    if (currentEditorTabIndex === 0 && iframeRef.current && middleBarTabs && currentProblem.category !== "dsa") {
+      // Get the content from middleBarTabs
+      const htmlTab = middleBarTabs.find((tab) => tab.label.includes("html"));
+      const cssTab = middleBarTabs.find((tab) => tab.label.includes("css"));
+      const jsTab = middleBarTabs.find((tab) => tab.label.includes("js"));
+
+      const html = htmlTab ? htmlTab.editorValue : "";
+      const css = cssTab ? cssTab.editorValue : "";
+      const js = jsTab ? jsTab.editorValue : "";
+
+      setHtmlContent(html);
+      setCssContent(css);
+      setJsContent(js);
+
+      // Combine HTML, CSS, and JS for the iframe
+      const iframeContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>${css}</style>
+        </head>
+        <body>
+          ${html}
+          <script>${js}</script>
+        </body>
+        </html>
+      `;
+
+      // Update the iframe content
+      const iframe = iframeRef.current;
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+      iframeDoc.open();
+      iframeDoc.write(iframeContent);
+      iframeDoc.close();
+    }
+  }, 800); // 500ms debounce delay
+
+  // Update iframe content when code changes or tab changes
+  useEffect(() => {
+    updateIframe();
+  }, [currentEditorTabIndex, middleBarTabs, middleBarTabIndex, currentProblem.category, updateIframe]);
 
   return (
     <>
       <div className="flex gap-8 py-3 px-4 bg-zinc-800">
-        <button
-          className={`${
-            currentEditorTabIndex === 0 ? "text-zinc-200 " : "text-zinc-500"
-          } flex gap-1 cursor-pointer text-sm`}
-          onClick={() => handleEditorTabClick(0)}
-        >
-          <svg
-            className={`w-4 h-4 mt-px ${currentEditorTabIndex === 0 ? "text-zinc-200" : "text-zinc-500"}`}
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            fill="none"
-            viewBox="0 0 24 24"
+        {/* Only show Output tab for non-DSA problems */}
+        {currentProblem.category !== "dsa" && (
+          <button
+            className={`${
+              currentEditorTabIndex === 0 ? "text-zinc-200 " : "text-zinc-500"
+            } flex gap-1 cursor-pointer text-sm`}
+            onClick={() => handleEditorTabClick(0)}
           >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="m8 8-4 4 4 4m8 0 4-4-4-4m-2-3-4 14"
-            />
-          </svg>
-          Code
-        </button>
+            <svg
+              className={`w-4 h-4 mt-px ${currentEditorTabIndex === 0 ? "text-zinc-200" : "text-zinc-500"}`}
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fillRule="evenodd"
+                d="M14 7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7Zm2 0a4 4 0 0 1-4 4v2a4 4 0 0 1 4 4h4a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-4Z"
+                clipRule="evenodd"
+              />
+            </svg>
+            Output
+          </button>
+        )}
+
+        {/* Show Code tab for DSA problems */}
+        {currentProblem.category === "dsa" && (
+          <button
+            className={`${
+              currentEditorTabIndex === 0 ? "text-zinc-200 " : "text-zinc-500"
+            } flex gap-1 cursor-pointer text-sm`}
+            onClick={() => handleEditorTabClick(0)}
+          >
+            <svg
+              className={`w-4 h-4 mt-px ${currentEditorTabIndex === 0 ? "text-zinc-200" : "text-zinc-500"}`}
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="m8 8-4 4 4 4m8 0 4-4-4-4m-2-3-4 14"
+              />
+            </svg>
+            Code
+          </button>
+        )}
+
         <button
           className={`${
             currentEditorTabIndex === 1 ? "text-zinc-200 " : "text-zinc-500"
@@ -92,19 +179,33 @@ const EditorSection = ({
           Test Cases
         </button>
       </div>
-      <Editor
-        defaultLanguage="javascript"
-        value={currentEditorTabIndex === 0 ? currentProblem.editorValueCode : currentProblem.editorValueTests}
-        onChange={handleValueChange}
-        onValidate={handleErrorCheck}
-        theme="vs-dark"
-        options={{
-          minimap: {
-            enabled: false,
-          },
-          autoIndent: true,
-        }}
-      />
+
+      {/* Show iframe for Output tab only for non-DSA problems */}
+      {currentProblem.category !== "dsa" && currentEditorTabIndex === 0 ? (
+        <div className="w-full h-full bg-white">
+          <iframe ref={iframeRef} title="Output Preview" className="w-full h-full border-none"></iframe>
+        </div>
+      ) : (
+        <Editor
+          defaultLanguage="javascript"
+          value={
+            currentEditorTabIndex === 0 && currentProblem.category === "dsa"
+              ? currentProblem.editorValueCode
+              : currentEditorTabIndex === 1
+              ? currentProblem.editorValueTests
+              : ""
+          }
+          onChange={handleValueChange}
+          onValidate={handleErrorCheck}
+          theme="vs-dark"
+          options={{
+            minimap: {
+              enabled: false,
+            },
+            autoIndent: true,
+          }}
+        />
+      )}
     </>
   );
 };
