@@ -1,5 +1,5 @@
 import Table from "../components/table/Table";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { IconSearch, IconTable, IconX, IconLayoutGrid } from "@tabler/icons";
 import useDebounce from "../hooks/useDebounce";
 import { useNavigate } from "react-router-dom";
@@ -13,55 +13,211 @@ import { fuzzySearchWithFuse } from "../utils/utils";
 const DSASheet = () => {
   const { filteredProblems, setFilteredProblems, problems, setProblem, filterProblems } =
     useContext(ProblemDataProvider);
-  const [currentTab, setCurrentTab] = useState("all");
   const [searchText, setSearchText] = useState("");
   const [isTableView, setIsTableView] = useState(true);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedCompanies, setSelectedCompanies] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [uniqueTags, setUniqueTags] = useState([]);
+  const [uniqueCompanies, setUniqueCompanies] = useState([]);
+  const [uniqueCategories, setUniqueCategories] = useState([]);
 
   const navigate = useNavigate();
 
-  const handleSearchQuestion = (e) => {
-    const searchValue = e.target.value;
-    const searchResult = fuzzySearchWithFuse(
-      problems,
-      { includeScore: true, keys: ["problemTitle", "askedIn", "tags"] },
-      searchValue
-    );
-    setSearchText(searchValue);
-    setFilteredProblems(searchResult);
-  };
-
-  const handleTabChange = (tab) => {
-    setCurrentTab(tab);
-    setFilteredProblems(filterProblems(searchText, tab !== "all" ? tab : ""));
-  };
-
   const clearSearch = () => {
     setSearchText("");
-    setFilteredProblems(filterProblems("", currentTab !== "all" ? currentTab : ""));
+    applyFilters("", selectedCategories, selectedTags, selectedCompanies);
+  };
+
+  // Apply all filters and update filteredProblems
+  const applyFilters = (search, categories, tags, companies) => {
+    let filtered = problems;
+    
+    // Apply search text filter
+    if (search.length > 0) {
+      filtered = filtered.filter(
+        (problem) =>
+          problem.problemTitle.toLowerCase().includes(search.toLowerCase()) ||
+          problem.askedIn.some((comp) => comp.toLowerCase().includes(search.toLowerCase())) ||
+          problem.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()))
+      );
+    }
+    
+    // Apply categories filter
+    if (categories.length > 0) {
+      filtered = filtered.filter((problem) => 
+        categories.includes(problem.category)
+      );
+    }
+    
+    // Apply tags filter
+    if (tags.length > 0) {
+      filtered = filtered.filter((problem) => 
+        tags.some(tag => problem.tags.includes(tag))
+      );
+    }
+    
+    // Apply companies filter
+    if (companies.length > 0) {
+      filtered = filtered.filter((problem) => 
+        companies.some(company => problem.askedIn.includes(company))
+      );
+    }
+    
+    setFilteredProblems(filtered);
+  };
+
+  // Handle search input changes
+  const handleSearchQuestion = (e) => {
+    const searchValue = e.target.value;
+    setSearchText(searchValue);
+    applyFilters(searchValue, selectedCategories, selectedTags, selectedCompanies);
   };
 
   const debouncedHandleSearchQuestion = useDebounce(handleSearchQuestion, 800);
 
-  // Tab component
-  const TabNavigation = () => (
-    <div className="self-start">
-      <div className="hidden sm:block">
-        <div className="">
-          <nav className="-mb-px flex gap-6" aria-label="Tabs">
-            {["all", "js", "dsa"].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => handleTabChange(tab)}
-                className={`inline-flex shrink-0 items-center gap-2 px-1 pb-2 text-sm font-medium hover:border-gray-300 hover:text-zinc-200 ${
-                  currentTab === tab ? "text-zinc-200 border-zinc-200 border-b-2" : "text-zinc-500 border-transparent"
-                }`}
-              >
-                {tab === "all" ? "All Problems" : tab === "js" ? "JS problems" : "DSA problems"}
-              </button>
-            ))}
-          </nav>
+  // Handle tag selection
+  const handleTagSelect = (tag) => {
+    setSelectedTags(prev => {
+      if (prev.includes(tag)) {
+        return prev.filter(t => t !== tag);
+      } else {
+        return [...prev, tag];
+      }
+    });
+  };
+
+  // Handle company selection
+  const handleCompanySelect = (company) => {
+    setSelectedCompanies(prev => {
+      if (prev.includes(company)) {
+        return prev.filter(c => c !== company);
+      } else {
+        return [...prev, company];
+      }
+    });
+  };
+
+  // Handle category selection
+  const handleCategorySelect = (category) => {
+    setSelectedCategories(prev => {
+      if (prev.includes(category)) {
+        return prev.filter(c => c !== category);
+      } else {
+        return [...prev, category];
+      }
+    });
+  };
+
+  // Effect to apply filters when selections change
+  useEffect(() => {
+    applyFilters(searchText, selectedCategories, selectedTags, selectedCompanies);
+  }, [selectedCategories, selectedTags, selectedCompanies]);
+
+  // Extract unique tags, companies, and categories when problems change
+  useEffect(() => {
+    if (problems.length > 0) {
+      // Extract unique tags
+      const tags = new Set();
+      problems.forEach(problem => {
+        problem.tags.forEach(tag => tags.add(tag));
+      });
+      setUniqueTags(Array.from(tags).sort());
+      
+      // Extract unique companies
+      const companies = new Set();
+      problems.forEach(problem => {
+        problem.askedIn.forEach(company => companies.add(company));
+      });
+      setUniqueCompanies(Array.from(companies).sort());
+      
+      // Extract unique categories
+      const categories = new Set();
+      problems.forEach(problem => {
+        if (problem.category) {
+          categories.add(problem.category);
+        }
+      });
+      setUniqueCategories(Array.from(categories).sort());
+    }
+  }, [problems]);
+
+  // Filter component
+  const FilterComponent = () => (
+    <div className="flex flex-wrap gap-6 w-full mb-4">
+      <div className="flex flex-col gap-1 w-full">
+        <label className="text-sm text-zinc-400">Filter by Categories</label>
+        <div className="flex flex-wrap gap-2 mt-1">
+          {uniqueCategories.map((category) => (
+            <button
+              key={category}
+              onClick={() => handleCategorySelect(category)}
+              className={`px-3 py-1 text-sm rounded-full capitalize  ${
+                selectedCategories.includes(category)
+                  ? "bg-zinc-200 text-zinc-800"
+                  : "bg-zinc-800 text-zinc-300 border border-zinc-600"
+              }`}
+            >
+              {category === "dsa" ? "Data Structures and Algorithm Problems" : ""}
+              {category === "js" ? "UI Problems" : ""}
+            </button>
+          ))}
         </div>
       </div>
+
+      <div className="flex flex-col gap-1 w-full">
+        <label className="text-sm text-zinc-400">Filter by Tags</label>
+        <div className="flex flex-wrap gap-2 mt-1">
+          {uniqueTags.map((tag) => (
+            <button
+              key={tag}
+              onClick={() => handleTagSelect(tag)}
+              className={`px-3 py-1 text-sm rounded-full ${
+                selectedTags.includes(tag)
+                  ? "bg-zinc-200 text-zinc-800"
+                  : "bg-zinc-800 text-zinc-300 border border-zinc-600"
+              }`}
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+      </div>
+      
+      <div className="flex flex-col gap-1 w-full">
+        <label className="text-sm text-zinc-400">Filter by Companies</label>
+        <div className="flex flex-wrap gap-2 mt-1">
+          {uniqueCompanies.map((company) => (
+            <button
+              key={company}
+              onClick={() => handleCompanySelect(company)}
+              className={`px-3 py-1 text-sm rounded-full ${
+                selectedCompanies.includes(company)
+                  ? "bg-zinc-200 text-zinc-800"
+                  : "bg-zinc-800 text-zinc-300 border border-zinc-600"
+              }`}
+            >
+              {company}
+            </button>
+          ))}
+        </div>
+      </div>
+      
+      {(selectedCategories.length > 0 || selectedTags.length > 0 || selectedCompanies.length > 0) && (
+        <div className="flex items-start w-full">
+          <button 
+            className="bg-zinc-700 text-zinc-200 px-3 py-2 rounded-md text-sm flex items-center gap-1"
+            onClick={() => {
+              setSelectedCategories([]);
+              setSelectedTags([]);
+              setSelectedCompanies([]);
+              applyFilters(searchText, [], [], []);
+            }}
+          >
+            Clear Filters <IconX size={16} />
+          </button>
+        </div>
+      )}
     </div>
   );
 
@@ -153,27 +309,33 @@ const DSASheet = () => {
         <Caption />
         <SearchBar />
       </div>
-      <div className="flex w-full justify-between items-center">
-        <TabNavigation />
-        <div className="flex gap-3 text-zinc-400 cursor-pointer">
-          <span
-            onClick={() => {
-              setIsTableView(false);
-            }}
-          >
-            <IconLayoutGrid />
-          </span>
 
-          <span>|</span>
-          <span
-            onClick={() => {
-              setIsTableView(true);
-            }}
-          >
-            <IconTable />
-          </span>
+      {/* View Switch Component */}
+      {/* <div className="flex w-full justify-end items-center">
+        <div className="flex gap-3 text-zinc-400 cursor-pointer">
+          {isTableView ? (
+            <span
+              onClick={() => {
+                setIsTableView(false);
+              }}
+              title="Switch to Grid View"
+            >
+              <IconLayoutGrid />
+            </span>
+          ) : (
+            <span
+              onClick={() => {
+                setIsTableView(true);
+              }}
+              title="Switch to Table View"
+            >
+              <IconTable />
+            </span>
+          )}
         </div>
-      </div>
+      </div> */}
+
+      <FilterComponent />
 
       {isTableView ? (
         <div className="flex-col w-full flex gap-5">
