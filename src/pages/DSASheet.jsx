@@ -58,6 +58,7 @@ const DSASheet = () => {
   };
 
   const handleSearchQuestion = (e) => {
+    debugger;
     const searchValue = e.target.value;
     setSearchText(searchValue);
     applyFilters(searchValue, selectedCategories, selectedTags, selectedCompanies);
@@ -116,7 +117,8 @@ const DSASheet = () => {
                   : "bg-zinc-800 text-zinc-400"
               }`}
             >
-              {category}
+              {category === "dsa" ? "Data Structures and Algorithm Problem" : ""}
+              {category === "js" ? "UI Problems" : ""}
             </span>
           ))}
         </div>
@@ -184,7 +186,8 @@ const DSASheet = () => {
         type="text"
         className="block w-full p-4 pl-12 text-base rounded-lg bg-zinc-800 border-zinc-700 placeholder-zinc-400 text-white focus:outline-none focus:ring-1 focus:ring-zinc-500"
         placeholder="Search problems by title, tag, or company..."
-        value={searchText}
+        defaultValue={searchText}
+        autoFocus={true}
         onChange={debouncedHandleSearchQuestion}
       />
       {searchText && (
@@ -320,7 +323,7 @@ const DSASheet = () => {
 
   // Animations CSS
   const AnimationStyles = () => (
-    <style jsx>{`
+    <style jsx="true">{`
       .code-particles {
         background-image: radial-gradient(circle, rgba(113, 113, 122, 0.4) 1px, transparent 1px),
           radial-gradient(circle, rgba(113, 113, 122, 0.2) 1px, transparent 1px);

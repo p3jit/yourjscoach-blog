@@ -27,7 +27,6 @@ const ProblemDataContext = ({ children }) => {
       }
 
       let data = await response.json();
-      debugger;
       const sortedProblems = data.data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
       setProblems(sortedProblems || []);
       setFilteredProblems(sortedProblems || []);
@@ -58,8 +57,7 @@ const ProblemDataContext = ({ children }) => {
     if (category && category !== "all") {
       filtered = filtered.filter((problem) => problem.category === category);
     }
-
-    debugger;
+    
     return filtered;
   };
 
