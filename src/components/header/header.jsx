@@ -104,7 +104,7 @@ export const Header = () => {
         </div> */}
         {!isPracticePage && <Navigation currentPath={location.pathname} navigate={navigate} />}
       </nav>
-      <hr className="bg-zinc-700 h-0.5 outline-none border-none" />
+      { location.pathname.includes("/practice") &&  <hr className="bg-zinc-700 h-0.5 outline-none border-none" />}
     </header>
   );
 };

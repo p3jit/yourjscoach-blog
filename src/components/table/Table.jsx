@@ -3,7 +3,7 @@ import { returnColor, returnDifficultyText } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
 import { IconChevronLeft, IconChevronRight, IconMoodEmpty, IconSortAscending, IconSortDescending } from '@tabler/icons';
 
-const TableHeader = ({ onSort, sortConfig }) => {
+const TableHeader = (props) => {
   const headers = [
     { key: "problemTitle", label: "Problem" },
     { key: "difficulty", label: "Difficulty" },
@@ -12,8 +12,8 @@ const TableHeader = ({ onSort, sortConfig }) => {
   ];
 
   const getSortIcon = (name) => {
-    if (!sortConfig || sortConfig.key !== name) return null;
-    return sortConfig.direction === 'ascending' 
+    if (!props.sortConfig || props.sortConfig.key !== name) return null;
+    return props.sortConfig.direction === 'ascending' 
       ? <IconSortAscending size={18} className="inline ml-1 text-zinc-600" />
       : <IconSortDescending size={18} className="inline ml-1 text-zinc-600" />;
   };
@@ -27,7 +27,7 @@ const TableHeader = ({ onSort, sortConfig }) => {
           <th 
             key={header.key} 
             className={`${headerCellClass} cursor-pointer hover:bg-zinc-700 transition-colors`}
-            onClick={() => onSort(header.key)}
+            onClick={() => props.onSort(header.key)}
             scope="col"
           >
             <div className="flex items-center gap-1">
@@ -41,45 +41,47 @@ const TableHeader = ({ onSort, sortConfig }) => {
   );
 };
 
-const TagList = ({ items = [], maxWidth = "max-w-full" }) => (
-  <div className={`flex gap-2 flex-wrap ${maxWidth}`}>
-    {items?.map((item, index) => (
-      <span
-        key={`tag-${item}-${index}`}
-        className="w-fit px-3 py-1 rounded-full text-sm font-normal bg-zinc-700 text-zinc-300"
-      >
-        {item}
-      </span>
-    ))}
-  </div>
-);
+const TagList = (props) => {
+  return (
+    <div className={`flex gap-2 flex-wrap ${props.maxWidth}`}>
+      {props.items?.map((item, index) => (
+        <span
+          key={`tag-${item}-${index}`}
+          className="w-fit px-3 py-1 rounded-full text-sm font-normal bg-zinc-700 text-zinc-300"
+        >
+          {item}
+        </span>
+      ))}
+    </div>
+  );
+};
 
-const TableRow = ({ question, onRowClick }) => {
+const TableRow = (props) => {
   const cellClass = "px-4 py-4 text-zinc-300";
   
   return (
     <tr 
       className="border-b border-zinc-600 hover:bg-zinc-600 transition-colors cursor-pointer"
-      onClick={onRowClick}
-      aria-label={`Question: ${question.problemTitle}`}
+      onClick={props.onRowClick}
+      aria-label={`Question: ${props.question.problemTitle}`}
     >
       <td className={`${cellClass} `}>
-        {question.problemTitle}
+        {props.question.problemTitle}
       </td>
       <td className={`${cellClass} whitespace-nowrap`}>
-        <span className={`px-3 py-1 rounded-full text-sm font-medium ${returnColor(question.difficulty)}`}>
-          {returnDifficultyText(question.difficulty)}
+        <span className={`px-3 py-1 rounded-full text-sm font-medium ${returnColor(props.question.difficulty)}`}>
+          {returnDifficultyText(props.question.difficulty)}
         </span>
       </td>
       <td className={cellClass}>
         <TagList 
-          items={question.askedIn}
+          items={props.question.askedIn}
           maxWidth="max-w-xs"
         />
       </td>
       <td className={cellClass}>
         <TagList 
-          items={question.tags}
+          items={props.question.tags}
           maxWidth="max-w-xs"
         />
       </td>
@@ -104,37 +106,37 @@ const EmptyState = () => (
   </tr>
 );
 
-const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+const Pagination = (props) => {
   const buttonClass = "flex items-center justify-center w-10 h-10 rounded-full transition-colors hover:bg-zinc-200 text-zinc-600";
   const activeClass = "bg-zinc-300";
   
   return (
     <div className="flex items-center justify-center gap-2 mt-6">
       <button 
-        onClick={() => onPageChange(currentPage - 1)} 
-        disabled={currentPage === 1}
-        className={`${buttonClass} ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""} text-zinc-300`}
+        onClick={() => props.onPageChange(props.currentPage - 1)} 
+        disabled={props.currentPage === 1}
+        className={`${buttonClass} ${props.currentPage === 1 ? "opacity-50 cursor-not-allowed" : ""} text-zinc-300`}
         aria-label="Previous page"
       >
         <IconChevronLeft size={20} />
       </button>
       
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+      {Array.from({ length: props.totalPages }, (_, i) => i + 1).map(page => (
         <button
           key={page}
-          onClick={() => onPageChange(page)}
-          className={`${buttonClass} ${currentPage === page ? activeClass : ""}`}
+          onClick={() => props.onPageChange(page)}
+          className={`${buttonClass} ${props.currentPage === page ? activeClass : ""}`}
           aria-label={`Page ${page}`}
-          aria-current={currentPage === page ? "page" : undefined}
+          aria-current={props.currentPage === page ? "page" : undefined}
         >
           {page}
         </button>
       ))}
       
       <button 
-        onClick={() => onPageChange(currentPage + 1)} 
-        disabled={currentPage === totalPages}
-        className={`${buttonClass} ${currentPage === totalPages ? "opacity-50 cursor-not-allowed" : ""}`}
+        onClick={() => props.onPageChange(props.currentPage + 1)} 
+        disabled={props.currentPage === props.totalPages}
+        className={`${buttonClass} ${props.currentPage === props.totalPages ? "opacity-50 cursor-not-allowed" : ""}`}
         aria-label="Next page"
       >
         <IconChevronRight size={20} />
@@ -143,7 +145,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   );
 };
 
-const Table = ({ data }) => {
+const Table = (props) => {
   const navigate = useNavigate();
   const [sortConfig, setSortConfig] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -162,9 +164,9 @@ const Table = ({ data }) => {
   };
 
   const sortedData = React.useMemo(() => {
-    if (!sortConfig || !data) return data;
+    if (!sortConfig || !props.data) return props.data;
     
-    return [...data].sort((a, b) => {
+    return [...props.data].sort((a, b) => {
       if (a[sortConfig.key] < b[sortConfig.key]) {
         return sortConfig.direction === 'ascending' ? -1 : 1;
       }
@@ -173,7 +175,7 @@ const Table = ({ data }) => {
       }
       return 0;
     });
-  }, [data, sortConfig]);
+  }, [props.data, sortConfig]);
 
   const paginatedData = React.useMemo(() => {
     if (!sortedData) return [];
@@ -182,10 +184,10 @@ const Table = ({ data }) => {
   }, [sortedData, currentPage]);
 
   const totalPages = React.useMemo(() => {
-    return data ? Math.ceil(data.length / itemsPerPage) : 0;
-  }, [data]);
+    return props.data ? Math.ceil(props.data.length / itemsPerPage) : 0;
+  }, [props.data]);
 
-  const hasData = data && data.length > 0;
+  const hasData = props.data && props.data.length > 0;
 
   return (
     <section 

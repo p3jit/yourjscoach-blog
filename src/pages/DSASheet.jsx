@@ -1,20 +1,22 @@
 import Table from "../components/table/Table";
-import React, { useState, useEffect } from "react";
-import { IconSearch, IconTable, IconX, IconLayoutGrid } from "@tabler/icons";
+import React, { useState, useEffect, useContext } from "react";
+import { IconSearch, IconX } from "@tabler/icons";
 import useDebounce from "../hooks/useDebounce";
 import { useNavigate } from "react-router-dom";
-import InterviewPrepPlans from "../components/interviewPrep/InterviewPrepPlans";
 import FeatureCards from "../components/features/FeatureCards";
 import ProblemSet from "../components/ProblemSet/ProblemSet";
-import { useContext } from "react";
 import { ProblemDataProvider } from "../contexts/ProblemDataContext";
-import { fuzzySearchWithFuse } from "../utils/utils";
 
 const DSASheet = () => {
-  const { filteredProblems, setFilteredProblems, problems, setProblem, filterProblems } =
-    useContext(ProblemDataProvider);
+  // Context and state
+  const { filteredProblems, setFilteredProblems, problems } = useContext(ProblemDataProvider);
+  const navigate = useNavigate();
+  
+  // UI state
   const [searchText, setSearchText] = useState("");
   const [isTableView, setIsTableView] = useState(true);
+  
+  // Filter state
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -22,18 +24,15 @@ const DSASheet = () => {
   const [uniqueCompanies, setUniqueCompanies] = useState([]);
   const [uniqueCategories, setUniqueCategories] = useState([]);
 
-  const navigate = useNavigate();
-
+  // Filter functions
   const clearSearch = () => {
     setSearchText("");
     applyFilters("", selectedCategories, selectedTags, selectedCompanies);
   };
 
-  // Apply all filters and update filteredProblems
   const applyFilters = (search, categories, tags, companies) => {
     let filtered = problems;
-    
-    // Apply search text filter
+
     if (search.length > 0) {
       filtered = filtered.filter(
         (problem) =>
@@ -42,32 +41,22 @@ const DSASheet = () => {
           problem.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()))
       );
     }
-    
-    // Apply categories filter
+
     if (categories.length > 0) {
-      filtered = filtered.filter((problem) => 
-        categories.includes(problem.category)
-      );
+      filtered = filtered.filter((problem) => categories.includes(problem.category));
     }
-    
-    // Apply tags filter
+
     if (tags.length > 0) {
-      filtered = filtered.filter((problem) => 
-        tags.some(tag => problem.tags.includes(tag))
-      );
+      filtered = filtered.filter((problem) => tags.some((tag) => problem.tags.includes(tag)));
     }
-    
-    // Apply companies filter
+
     if (companies.length > 0) {
-      filtered = filtered.filter((problem) => 
-        companies.some(company => problem.askedIn.includes(company))
-      );
+      filtered = filtered.filter((problem) => companies.some((company) => problem.askedIn.includes(company)));
     }
-    
+
     setFilteredProblems(filtered);
   };
 
-  // Handle search input changes
   const handleSearchQuestion = (e) => {
     const searchValue = e.target.value;
     setSearchText(searchValue);
@@ -76,190 +65,144 @@ const DSASheet = () => {
 
   const debouncedHandleSearchQuestion = useDebounce(handleSearchQuestion, 800);
 
-  // Handle tag selection
   const handleTagSelect = (tag) => {
-    setSelectedTags(prev => {
-      if (prev.includes(tag)) {
-        return prev.filter(t => t !== tag);
-      } else {
-        return [...prev, tag];
-      }
-    });
+    setSelectedTags((prev) => prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]);
   };
 
-  // Handle company selection
   const handleCompanySelect = (company) => {
-    setSelectedCompanies(prev => {
-      if (prev.includes(company)) {
-        return prev.filter(c => c !== company);
-      } else {
-        return [...prev, company];
-      }
-    });
+    setSelectedCompanies((prev) => prev.includes(company) ? prev.filter((c) => c !== company) : [...prev, company]);
   };
 
-  // Handle category selection
   const handleCategorySelect = (category) => {
-    setSelectedCategories(prev => {
-      if (prev.includes(category)) {
-        return prev.filter(c => c !== category);
-      } else {
-        return [...prev, category];
-      }
-    });
+    setSelectedCategories((prev) => prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]);
   };
 
-  // Effect to apply filters when selections change
+  // Effects
   useEffect(() => {
     applyFilters(searchText, selectedCategories, selectedTags, selectedCompanies);
   }, [selectedCategories, selectedTags, selectedCompanies]);
 
-  // Extract unique tags, companies, and categories when problems change
   useEffect(() => {
     if (problems.length > 0) {
-      // Extract unique tags
       const tags = new Set();
-      problems.forEach(problem => {
-        problem.tags.forEach(tag => tags.add(tag));
-      });
-      setUniqueTags(Array.from(tags).sort());
-      
-      // Extract unique companies
       const companies = new Set();
-      problems.forEach(problem => {
-        problem.askedIn.forEach(company => companies.add(company));
-      });
-      setUniqueCompanies(Array.from(companies).sort());
-      
-      // Extract unique categories
       const categories = new Set();
-      problems.forEach(problem => {
-        if (problem.category) {
-          categories.add(problem.category);
-        }
+
+      problems.forEach((problem) => {
+        problem.tags.forEach((tag) => tags.add(tag));
+        problem.askedIn.forEach((company) => companies.add(company));
+        if (problem.category) categories.add(problem.category);
       });
+
+      setUniqueTags(Array.from(tags).sort());
+      setUniqueCompanies(Array.from(companies).sort());
       setUniqueCategories(Array.from(categories).sort());
     }
   }, [problems]);
 
-  // Filter component
+  // UI Components
   const FilterComponent = () => (
-    <div className="flex flex-wrap gap-6 w-full mb-4">
-      <div className="flex flex-col gap-1 w-full">
-        <label className="text-sm text-zinc-400">Filter by Categories</label>
-        <div className="flex flex-wrap gap-2 mt-1">
+    <div className="flex flex-col gap-5 w-full">
+      <div className="flex flex-col gap-1.5 w-full">
+        <label className="text-base font-medium text-zinc-300">Filter by Categories</label>
+        <div className="flex flex-wrap gap-2.5 mt-1.5">
           {uniqueCategories.map((category) => (
-            <button
+            <span
               key={category}
               onClick={() => handleCategorySelect(category)}
-              className={`px-3 py-1 text-sm rounded-full capitalize  ${
+              className={`px-3.5 py-1.5 text-sm rounded-md cursor-pointer ${
                 selectedCategories.includes(category)
-                  ? "bg-zinc-200 text-zinc-800"
-                  : "bg-zinc-800 text-zinc-300 border border-zinc-600"
+                  ? "bg-zinc-600 text-zinc-100"
+                  : "bg-zinc-800 text-zinc-400"
               }`}
             >
-              {category === "dsa" ? "Data Structures and Algorithm Problems" : ""}
-              {category === "js" ? "UI Problems" : ""}
-            </button>
+              {category}
+            </span>
           ))}
         </div>
       </div>
 
-      <div className="flex flex-col gap-1 w-full">
-        <label className="text-sm text-zinc-400">Filter by Tags</label>
-        <div className="flex flex-wrap gap-2 mt-1">
+      <div className="flex flex-col gap-1.5 w-full">
+        <label className="text-base font-medium text-zinc-300">Filter by Tags</label>
+        <div className="flex flex-wrap gap-2.5 mt-1.5">
           {uniqueTags.map((tag) => (
-            <button
+            <span
               key={tag}
               onClick={() => handleTagSelect(tag)}
-              className={`px-3 py-1 text-sm rounded-full ${
-                selectedTags.includes(tag)
-                  ? "bg-zinc-200 text-zinc-800"
-                  : "bg-zinc-800 text-zinc-300 border border-zinc-600"
+              className={`px-3.5 py-1.5 text-sm rounded-md cursor-pointer ${
+                selectedTags.includes(tag) ? "bg-zinc-600 text-zinc-100" : "bg-zinc-800 text-zinc-400"
               }`}
             >
               {tag}
-            </button>
+            </span>
           ))}
         </div>
       </div>
-      
-      <div className="flex flex-col gap-1 w-full">
-        <label className="text-sm text-zinc-400">Filter by Companies</label>
-        <div className="flex flex-wrap gap-2 mt-1">
+
+      <div className="flex flex-col gap-1.5 w-full">
+        <label className="text-base font-medium text-zinc-300">Filter by Companies</label>
+        <div className="flex flex-wrap gap-2.5 mt-1.5">
           {uniqueCompanies.map((company) => (
-            <button
+            <span
               key={company}
               onClick={() => handleCompanySelect(company)}
-              className={`px-3 py-1 text-sm rounded-full ${
+              className={`px-3.5 py-1.5 text-sm rounded-md cursor-pointer ${
                 selectedCompanies.includes(company)
-                  ? "bg-zinc-200 text-zinc-800"
-                  : "bg-zinc-800 text-zinc-300 border border-zinc-600"
+                  ? "bg-zinc-600 text-zinc-100"
+                  : "bg-zinc-800 text-zinc-400"
               }`}
             >
               {company}
-            </button>
+            </span>
           ))}
         </div>
       </div>
-      
+
       {(selectedCategories.length > 0 || selectedTags.length > 0 || selectedCompanies.length > 0) && (
-        <div className="flex items-start w-full">
-          <button 
-            className="bg-zinc-700 text-zinc-200 px-3 py-2 rounded-md text-sm flex items-center gap-1"
+        <div className="flex items-start w-full mt-1.5">
+          <button
+            className="bg-zinc-700 text-zinc-200 px-5 py-2.5 rounded-md text-sm flex items-center gap-1.5"
             onClick={() => {
               setSelectedCategories([]);
               setSelectedTags([]);
               setSelectedCompanies([]);
-              applyFilters(searchText, [], [], []);
             }}
           >
-            Clear Filters <IconX size={16} />
+            Clear Filters <IconX size={18} />
           </button>
         </div>
       )}
     </div>
   );
 
-  // Search component
   const SearchBar = () => (
-    <div className="flex w-full justify-center items-center self-start relative mx-1 flex-col shadow shadow-zinc-700">
+    <div className="relative w-full">
+      <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+        <IconSearch className="text-zinc-400" size={24} />
+      </div>
       <input
         type="text"
-        autoFocus={true}
-        spellCheck="false"
-        placeholder="Search problems by title, tags and company"
-        className="bg-zinc-800 outline outline-1 outline-zinc-400 w-full text-zinc-200 rounded-md py-3 pr-10 pl-12 tracking-wide text-sm"
+        className="block w-full p-4 pl-12 text-base rounded-lg bg-zinc-800 border-zinc-700 placeholder-zinc-400 text-white focus:outline-none focus:ring-1 focus:ring-zinc-500"
+        placeholder="Search problems by title, tag, or company..."
+        value={searchText}
         onChange={debouncedHandleSearchQuestion}
-        defaultValue={searchText}
       />
-      <IconSearch className="absolute left-3 text-zinc-400 text-2xl" />
-      {searchText && <IconX className="absolute right-3 text-2xl text-zinc-400 cursor-pointer" onClick={clearSearch} />}
+      {searchText && (
+        <button
+          onClick={clearSearch}
+          className="absolute inset-y-0 right-0 flex items-center pr-4 text-zinc-400 hover:text-white"
+        >
+          <IconX size={24} />
+        </button>
+      )}
     </div>
   );
 
-  // Empty state component
   const EmptyState = () => (
-    <div className="w-full h-96 border-2 border-zinc-700 rounded-md">
-      <div className="flex flex-col gap-3 w-full h-full justify-center items-center">
-        <svg
-          className="w-10 h-10 text-zinc-500 dark:text-white"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          fill="none"
-          viewBox="0 0 24 24"
-        >
-          <path
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="m15 9-6 6m0-6 6 6m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-          />
-        </svg>
-        <span className="font-medium text-zinc-300 tracking-wide">Not found</span>
+    <div className="w-full flex flex-col items-center justify-center py-20 text-center">
+      <div className="flex flex-col items-center gap-4">
+        <div className="text-zinc-600 text-6xl">¯\_(ツ)_/¯</div>
+        <h3 className="text-2xl font-semibold text-zinc-300">No problems found</h3>
         <span className="font-normal tracking-wide text-zinc-400">Try searching something different</span>
       </div>
     </div>
@@ -272,84 +215,252 @@ const DSASheet = () => {
     </div>
   );
 
-  return (
-    <div className="py-6 flex flex-col items-center gap-10 min-h-[85vh]">
-      {/* <div className="w-full bg-[length:200%_100%] animate-gradient-x h-[60vh] bg-gradient-to-tr from-zinc-900 shadow-md from-5% to-zinc-600 to-85%   rounded-2xl mb-10 flex flex-col gap-10 items-center justify-center">
-        <h1 className="bg-gradient-to-tr from-zinc-300 to-zinc-100 bg-clip-text text-transparent text-4xl md:text-5xl lg:text-6xl text-wrap w-3/4 text-center">Code with Confidence: Ace Your Interviews</h1>
-        <button className="bg-zinc-100 text-zinc-950 px-3 py-2 rounded-2xl flex items-center justify-center gap-2">Get Started <span>→</span></button>
-      </div> */}
-      <div className="w-full ">
-        <div
-          className="bg-[length:200%_100%] animate-gradient-x h-[60vh] bg-gradient-to-tr from-zinc-900 shadow-md from-25% to-zinc-700 to-95% coding inverse-toggle px-1 text-gray-100 text-sm font-mono subpixel-antialiased 
-               pb-6 pt-4 rounded-lg leading-normal overflow-hidden"
-        >
-          <div className="top mb-2 flex pl-3">
-            <div className="h-3 w-3 bg-red-500 rounded-full"></div>
-            <div className="ml-2 h-3 w-3 bg-orange-300 rounded-full"></div>
-            <div className="ml-2 h-3 w-3 bg-green-500 rounded-full"></div>
+  const HeroSection = () => (
+    <div className="w-full">
+      <div className="relative h-[70vh] bg-zinc-900 shadow-lg rounded-lg overflow-hidden">
+        {/* Animated background with code particles */}
+        <div className="absolute inset-0">
+          <div className="code-particles"></div>
+        </div>
+
+        {/* Code editor header */}
+        <div className="relative z-10 flex items-center px-4 py-2 bg-zinc-800 border-b border-zinc-700">
+          <div className="flex space-x-2">
+            <div className="h-3 w-3 bg-zinc-500 rounded-full"></div>
+            <div className="h-3 w-3 bg-zinc-400 rounded-full"></div>
+            <div className="h-3 w-3 bg-zinc-300 rounded-full"></div>
           </div>
-          <div className="mt-4 flex flex-col items-center justify-center gap-16 py-28 ">
-            <div className="flex flex-col gap-8 w-full px-9">
-              <h1 className="bg-gradient-to-tr from-zinc-300 to-zinc-100 bg-clip-text text-transparent text-4xl md:text-5xl lg:text-6xl text-wrap text-center">
-                Level Up Your UI Engineering Skills
+          <div className="ml-4 text-sm text-zinc-400 font-mono">interview-prep.js</div>
+          <div className="flex-1"></div>
+          <div className="text-xs text-zinc-500 font-mono">JavaScript</div>
+        </div>
+
+        {/* Main content area with typing animation and floating elements */}
+        <div className="relative z-10 h-full flex flex-col items-center justify-center px-6">
+          {/* Animated typing code in background */}
+          <div className="absolute left-0 top-1/4 w-full h-1/2 opacity-20 overflow-hidden">
+            <pre className="typing-code font-mono text-sm text-zinc-300 whitespace-pre-wrap">
+              <code className="language-javascript">
+                {`function prepareForInterview() {
+  const skills = ['JavaScript', 'React', 'CSS', 'System Design'];
+  const practice = skills.map(skill => master(skill));
+  
+  return practice.reduce((confidence, skill) => {
+    return confidence + skill.proficiency;
+  }, initialConfidence);
+}`}
+              </code>
+            </pre>
+          </div>
+
+          {/* Floating code symbols */}
+          <div className="floating-elements absolute inset-0 pointer-events-none">
+            <span className="floating-item text-zinc-400">{`{}`}</span>
+            <span className="floating-item text-zinc-300">{`()`}</span>
+            <span className="floating-item text-zinc-400">{`=>`}</span>
+            <span className="floating-item text-zinc-300">{`</>`}</span>
+            <span className="floating-item text-zinc-400">{`[]`}</span>
+            <span className="floating-item text-zinc-300">{`$`}</span>
+          </div>
+
+          {/* Main content */}
+          <div className="flex flex-col items-center justify-center gap-8 w-full max-w-4xl z-20">
+            <div className="space-y-6 text-center">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">
+                <span className="bg-gradient-to-r from-zinc-300 via-zinc-200 to-zinc-100 bg-clip-text text-transparent">
+                  Master UI Engineering
+                </span>
               </h1>
-              <h2 className="bg-gradient-to-tr from-zinc-300 to-zinc-100 bg-clip-text text-transparent text-xl md:text-2xl lg:text-3xl text-wrap text-center">
-                Your Complete Interview Preparation Toolkit
+              <h2 className="text-xl md:text-2xl lg:text-3xl text-zinc-400">
+                Interactive problems to sharpen your coding skills
               </h2>
             </div>
 
-            <button className="w-1/4 bg-zinc-100 text-zinc-950 px-3 py-2 rounded-2xl flex items-center justify-center gap-2">
-              View Problems <span>→</span>
-            </button>
+            <div className="flex flex-wrap gap-6 justify-center">
+              <button className="group relative px-6 py-3 bg-gradient-to-r from-zinc-700 to-zinc-600 rounded-lg overflow-hidden transition-all hover:shadow-[0_0_25px_rgba(113,113,122,0.5)]">
+                <span className="relative z-10 flex items-center justify-center gap-2 text-zinc-100 font-medium">
+                  Start Coding <span className="transition-transform group-hover:translate-x-1">→</span>
+                </span>
+                <span className="absolute inset-0 bg-zinc-500/20 translate-y-full group-hover:translate-y-0 transition-transform"></span>
+              </button>
+
+              <button className="px-6 py-3 border border-zinc-600 text-zinc-300 rounded-lg hover:bg-zinc-800 transition-colors">
+                View Curriculum
+              </button>
+            </div>
+
+            {/* Stats */}
+            <div className="flex gap-8 mt-8">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-zinc-300 counter-animate">100+</div>
+                <div className="text-sm text-zinc-500">Coding Problems</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-zinc-300 counter-animate">15+</div>
+                <div className="text-sm text-zinc-500">Companies</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-zinc-300 counter-animate">8+</div>
+                <div className="text-sm text-zinc-500">Categories</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom terminal line */}
+        <div className="absolute bottom-0 left-0 right-0 bg-zinc-800 border-t border-zinc-700 px-4 py-2 z-10">
+          <div className="flex items-center">
+            <span className="text-zinc-300 font-mono text-xs">$</span>
+            <span className="typing-cursor ml-2 text-zinc-400 font-mono text-xs">npm run start-interview-prep</span>
           </div>
         </div>
       </div>
-      {/* <InterviewPrepPlans /> */}
+    </div>
+  );
+
+  // Animations CSS
+  const AnimationStyles = () => (
+    <style jsx>{`
+      .code-particles {
+        background-image: radial-gradient(circle, rgba(113, 113, 122, 0.4) 1px, transparent 1px),
+          radial-gradient(circle, rgba(113, 113, 122, 0.2) 1px, transparent 1px);
+        background-size: 20px 20px, 40px 40px;
+        background-position: 0 0, 20px 20px;
+        animation: particleShift 8s linear infinite;
+      }
+
+      @keyframes particleShift {
+        0% { background-position: 0 0, 20px 20px; }
+        100% { background-position: 20px 20px, 40px 40px; }
+      }
+
+      .typing-code {
+        display: inline-block;
+        animation: typing 10s steps(40) infinite;
+        overflow: hidden;
+        white-space: nowrap;
+        max-width: 100%;
+      }
+
+      @keyframes typing {
+        0% { width: 0; }
+        50% { width: 100%; }
+        90% { width: 100%; }
+        100% { width: 0; }
+      }
+
+      .typing-cursor::after {
+        content: "|";
+        animation: blink 1s step-end infinite;
+      }
+
+      @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+      }
+
+      .floating-elements {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+      }
+
+      .floating-item {
+        position: absolute;
+        font-size: 1.5rem;
+        font-family: monospace;
+        opacity: 0.6;
+        animation-name: float, fade;
+        animation-duration: 10s, 10s;
+        animation-timing-function: ease-in-out, ease-in-out;
+        animation-iteration-count: infinite, infinite;
+        animation-direction: normal, normal;
+      }
+
+      .floating-item:nth-child(1) {
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s, 0s;
+      }
+
+      .floating-item:nth-child(2) {
+        top: 30%;
+        left: 80%;
+        animation-delay: 1s, 1s;
+      }
+
+      .floating-item:nth-child(3) {
+        top: 70%;
+        left: 20%;
+        animation-delay: 2s, 2s;
+      }
+
+      .floating-item:nth-child(4) {
+        top: 40%;
+        left: 60%;
+        animation-delay: 3s, 3s;
+      }
+
+      .floating-item:nth-child(5) {
+        top: 80%;
+        left: 70%;
+        animation-delay: 4s, 4s;
+      }
+
+      .floating-item:nth-child(6) {
+        top: 60%;
+        left: 30%;
+        animation-delay: 5s, 5s;
+      }
+
+      @keyframes float {
+        0% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+        100% { transform: translateY(0px); }
+      }
+
+      @keyframes fade {
+        0%, 100% { opacity: 0.2; }
+        50% { opacity: 0.8; }
+      }
+
+      .counter-animate {
+        animation: countUp 2s ease-out forwards;
+        opacity: 0;
+      }
+
+      @keyframes countUp {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+      }
+    `}</style>
+  );
+
+  // Main render
+  return (
+    <div className="py-6 flex flex-col items-center gap-10 min-h-[85vh]">
+      <HeroSection />
+      <AnimationStyles />
+
       <div className="flex flex-col w-full gap-7">
         <Caption />
         <SearchBar />
       </div>
 
-      {/* View Switch Component */}
-      {/* <div className="flex w-full justify-end items-center">
-        <div className="flex gap-3 text-zinc-400 cursor-pointer">
-          {isTableView ? (
-            <span
-              onClick={() => {
-                setIsTableView(false);
-              }}
-              title="Switch to Grid View"
-            >
-              <IconLayoutGrid />
-            </span>
-          ) : (
-            <span
-              onClick={() => {
-                setIsTableView(true);
-              }}
-              title="Switch to Table View"
-            >
-              <IconTable />
-            </span>
-          )}
-        </div>
-      </div> */}
-
       <FilterComponent />
 
-      {isTableView ? (
-        <div className="flex-col w-full flex gap-5">
-          {filteredProblems?.length > 0 ? (
+      <div className="flex-col w-full flex gap-5">
+        {filteredProblems?.length > 0 ? (
+          isTableView ? (
             <Table data={filteredProblems} key={filteredProblems.length} />
           ) : (
-            <EmptyState />
-          )}
-        </div>
-      ) : (
-        <div className="flex-col w-full flex gap-5">
-          {filteredProblems?.length > 0 ? <ProblemSet data={filteredProblems} /> : <EmptyState />}
-        </div>
-      )}
+            <ProblemSet data={filteredProblems} />
+          )
+        ) : (
+          <EmptyState />
+        )}
+      </div>
+      
       <FeatureCards />
     </div>
   );

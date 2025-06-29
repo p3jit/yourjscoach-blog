@@ -29,7 +29,7 @@ module.exports = {
   plugins: [
     require('tailwind-scrollbar')({ 
       nocompatible: true,
-      preferredStrategy: 'pseudoclasses',
+      preferredStrategy: 'standard',
       scrollbarWidth: '6px',
       scrollbarTrackColor: 'transparent',
       scrollbarThumbColor: '#cbd5e1',
