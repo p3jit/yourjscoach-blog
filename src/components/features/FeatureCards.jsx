@@ -123,7 +123,7 @@ const FeatureCards = () => {
   return (
     <section className="py-16 px-4" aria-labelledby="features-heading">
       <div className="max-w-6xl mx-auto">
-        <SectionHeader title="Why CodePlatform?" subtitle="We provide the tools and community to help you succeed." />
+        <SectionHeader title="Why YourJsCoach?" subtitle="We provide the tools and community to help you succeed." />
         <FeatureGrid features={features} />
       </div>
     </section>
