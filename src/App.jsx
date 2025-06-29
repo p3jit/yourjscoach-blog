@@ -3,9 +3,11 @@ import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Header } from "./components/header/header.jsx";
 import Loader from "./components/loader/Loader.jsx";
 import Modal from "./components/modal/Modal.jsx";
+import Sidebar from "./components/sidebar/Sidebar.jsx";
 import { DarkModeProvider } from "./contexts/DarkModeContext.jsx";
 import { ModalProvider } from "./contexts/ModalContext.jsx";
 import { SidebarProvider } from "./contexts/SidebarContext.jsx";
+import Footer from "./components/footer/Footer.jsx";
 
 const LazyPages = {
   Error: lazy(() => import("./pages/Error")),
@@ -62,14 +64,7 @@ const App = () => {
 
   return (
     <div className="w-full flex h-[100vh] relative">
-      {isSidebarOpen && (
-        <div className="flex w-full absolute z-50 h-full">
-          <div className="bg-zinc-800 h-full w-3/12">sidebar</div>
-          <div onClick={toggleSidebar} className="h-full w-9/12 relative right-0.5">
-            backdrop
-          </div>
-        </div>
-      )}
+      <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
       <div className="flex flex-col z-0 w-full">
         <Header />
         <AppLayout isDarkMode={isDarkMode} pathname={location.pathname}>
@@ -78,7 +73,9 @@ const App = () => {
           </Suspense>
 
           {isModalOpen && <ModalContainer setIsModalOpen={setIsModalOpen} />}
+          { !location.pathname.includes("/practice") && <Footer/>}
         </AppLayout>
+        
       </div>
     </div>
   );

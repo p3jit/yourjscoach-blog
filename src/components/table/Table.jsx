@@ -14,8 +14,8 @@ const TableHeader = (props) => {
   const getSortIcon = (name) => {
     if (!props.sortConfig || props.sortConfig.key !== name) return null;
     return props.sortConfig.direction === 'ascending' 
-      ? <IconSortAscending size={18} className="inline ml-1 text-zinc-600" />
-      : <IconSortDescending size={18} className="inline ml-1 text-zinc-600" />;
+      ? <IconSortAscending size={18} className="inline ml-1 text-zinc-300" />
+      : <IconSortDescending size={18} className="inline ml-1 text-zinc-300" />;
   };
 
   const headerCellClass = "px-4 py-3 text-left font-medium tracking-normal text-lg bg-zinc-800 text-zinc-300";

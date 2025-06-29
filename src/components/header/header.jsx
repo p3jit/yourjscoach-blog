@@ -2,25 +2,9 @@ import { useContext } from "react";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BlogDataProvider } from "../../contexts/BlogDataContext";
-import { IconBrandJavascript, IconMenu2, IconMoon, IconSun } from "@tabler/icons";
+import { IconMenu2, IconMoon, IconSun } from "@tabler/icons";
 import { SidebarProvider } from "../../contexts/SidebarContext";
-
-const Brand = ({ isDarkMode, onClick }) => (
-  <div className="flex items-center gap-2">
-    <IconBrandJavascript
-      size={"1.8em"}
-      stroke={"2"}
-      className={isDarkMode ? "text-zinc-700" : "text-zinc-200"}
-      aria-hidden="true"
-    />
-    <h2
-      onClick={onClick}
-      className={`cursor-pointer font-bold text-2xl md:text-2xl ${isDarkMode ? "text-zinc-800" : "text-zinc-200"}`}
-    >
-      YourJsCoach
-    </h2>
-  </div>
-);
+import Brand from "../brand/Brand";
 
 const Navigation = ({ currentPath, navigate }) => {
   const isActive = (path) => {
