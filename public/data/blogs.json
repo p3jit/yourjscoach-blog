@@ -22,6 +22,7 @@
       "minRead": "8",
       "identifier": "performance",
       "tags": ["performance", "web.dev", "vitals"],
+      "solved": true,
       "description": "Performance optimization is very critical skill to have for an Frontend Developer. With the rise of different new tech stack choices we often keep jumping from one framework to another framework but we skip this most valuable thing which can make you standout from other developers in an organization or in an interview. We know that slow page loads drive people away. In recent years users expect web pages to load in 3 seconds or less - even on mobile devices. Speed is considered the most important feature by some. In this blog we will talk about how I managed to increase the performance of my blog website by more than 20%."
     }
   ]

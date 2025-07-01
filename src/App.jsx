@@ -19,15 +19,24 @@ const LazyPages = {
 };
 
 const AppLayout = ({ children, isDarkMode, pathname }) => {
-  const isPracticePage = (() => location.pathname.includes("/practice/"))();
-  const containerClasses = isPracticePage
-    ? "gap-5 min-w-[950px] overflow-hidden justify-center 2xl:items-center"
-    : "gap-10 py-[3vh] 2xl:px-[20vw] lg:px-[10vw] px-[7vw] min-w-[56vw]";
+  const isPracticePage = (() => pathname.includes("/practice/"))();
+  const isPostPage = (() => pathname.includes("/blog/") || pathname.includes("/sd/"))();
+  const containerClasses = returnContainerClasses();
+
+  function returnContainerClasses() {
+    if (isPracticePage) {
+      return "gap-5 min-w-[950px] overflow-hidden justify-center 2xl:items-center";
+    }
+    if (isPostPage) {
+      return "gap-10 py-[5vh] 2xl:px-[26vw] lg:px-[20vw] px-[7vw] min-w-[56vw]";
+    }
+    return "gap-10 py-[3vh] 2xl:px-[19vw] lg:px-[10vw] px-[7vw] min-w-[56vw]";
+  }
 
   const themeClasses = isDarkMode ? "bg-white" : "bg-zinc-900";
 
   return (
-    <div className={`w-full flex flex-col ${themeClasses} flex-1`}>
+    <div className={`w-full flex flex-col ${themeClasses} flex-1 h-full`}>
       <div
         className={`font-roboto h-full flex flex-col relative tracking-tight w-full ${containerClasses} ${themeClasses}`}
       >
@@ -65,17 +74,16 @@ const App = () => {
   return (
     <div className="w-full flex h-[100vh] relative">
       <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
-      <div className="flex flex-col z-0 w-full">
+      <div className="flex flex-col z-0 w-full overflow-hidden">
         <Header />
-        <AppLayout isDarkMode={isDarkMode} pathname={location.pathname}>
-          <Suspense fallback={<Loader />}>
-            <AppRoutes />
-          </Suspense>
-
-          {isModalOpen && <ModalContainer setIsModalOpen={setIsModalOpen} />}
-          { !location.pathname.includes("/practice") && <Footer/>}
-        </AppLayout>
-        
+        <div className="overflow-y-auto bg-zinc-900 flex-grow scrollbar scrollbar-thumb-zinc-800 scrollbar-track-zinc-900">
+          <AppLayout isDarkMode={isDarkMode} pathname={location.pathname}>
+            <Suspense fallback={<Loader />}>
+              <AppRoutes />
+            </Suspense>
+            {isModalOpen && <ModalContainer setIsModalOpen={setIsModalOpen} />}
+          </AppLayout>
+        </div>
       </div>
     </div>
   );

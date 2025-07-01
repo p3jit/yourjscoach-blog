@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import FeatureCards from "../components/features/FeatureCards";
 import ProblemSet from "../components/ProblemSet/ProblemSet";
 import { ProblemDataProvider } from "../contexts/ProblemDataContext";
+import Footer from "../components/footer/Footer";
 
 // Memoized HeroSection to prevent unnecessary re-renders
 const HeroSection = memo(() => (
@@ -123,8 +124,12 @@ const AnimationStyles = () => (
     }
 
     @keyframes particleShift {
-      0% { background-position: 0 0, 20px 20px; }
-      100% { background-position: 20px 20px, 40px 40px; }
+      0% {
+        background-position: 0 0, 20px 20px;
+      }
+      100% {
+        background-position: 20px 20px, 40px 40px;
+      }
     }
 
     .typing-code {
@@ -136,10 +141,18 @@ const AnimationStyles = () => (
     }
 
     @keyframes typing {
-      0% { width: 0; }
-      50% { width: 100%; }
-      90% { width: 100%; }
-      100% { width: 0; }
+      0% {
+        width: 0;
+      }
+      50% {
+        width: 100%;
+      }
+      90% {
+        width: 100%;
+      }
+      100% {
+        width: 0;
+      }
     }
 
     .typing-cursor::after {
@@ -148,8 +161,13 @@ const AnimationStyles = () => (
     }
 
     @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
+      0%,
+      100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0;
+      }
     }
 
     .floating-elements {
@@ -207,14 +225,25 @@ const AnimationStyles = () => (
     }
 
     @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-20px); }
-      100% { transform: translateY(0px); }
+      0% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-20px);
+      }
+      100% {
+        transform: translateY(0px);
+      }
     }
 
     @keyframes fade {
-      0%, 100% { opacity: 0.2; }
-      50% { opacity: 0.8; }
+      0%,
+      100% {
+        opacity: 0.2;
+      }
+      50% {
+        opacity: 0.8;
+      }
     }
 
     .counter-animate {
@@ -223,8 +252,14 @@ const AnimationStyles = () => (
     }
 
     @keyframes countUp {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   `}</style>
 );
@@ -288,15 +323,17 @@ const DSASheet = () => {
   const debouncedHandleSearchQuestion = useDebounce(handleSearchQuestion, 800);
 
   const handleTagSelect = (tag) => {
-    setSelectedTags((prev) => prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]);
+    setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
   };
 
   const handleCompanySelect = (company) => {
-    setSelectedCompanies((prev) => prev.includes(company) ? prev.filter((c) => c !== company) : [...prev, company]);
+    setSelectedCompanies((prev) => (prev.includes(company) ? prev.filter((c) => c !== company) : [...prev, company]));
   };
 
   const handleCategorySelect = (category) => {
-    setSelectedCategories((prev) => prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]);
+    setSelectedCategories((prev) =>
+      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
+    );
   };
 
   // Effects
@@ -333,9 +370,7 @@ const DSASheet = () => {
               key={category}
               onClick={() => handleCategorySelect(category)}
               className={`px-3.5 py-1.5 text-sm rounded-md cursor-pointer ${
-                selectedCategories.includes(category)
-                  ? "bg-zinc-600 text-zinc-100"
-                  : "bg-zinc-800 text-zinc-400"
+                selectedCategories.includes(category) ? "bg-zinc-600 text-zinc-100" : "bg-zinc-800 text-zinc-400"
               }`}
             >
               {category === "dsa" ? "Data Structures and Algorithm Problem" : ""}
@@ -370,9 +405,7 @@ const DSASheet = () => {
               key={company}
               onClick={() => handleCompanySelect(company)}
               className={`px-3.5 py-1.5 text-sm rounded-md cursor-pointer ${
-                selectedCompanies.includes(company)
-                  ? "bg-zinc-600 text-zinc-100"
-                  : "bg-zinc-800 text-zinc-400"
+                selectedCompanies.includes(company) ? "bg-zinc-600 text-zinc-100" : "bg-zinc-800 text-zinc-400"
               }`}
             >
               {company}
@@ -462,8 +495,9 @@ const DSASheet = () => {
           <EmptyState />
         )}
       </div>
-      
+
       <FeatureCards />
+      <div className="w-full">{!location.pathname.includes("/practice") && <Footer />}</div>
     </div>
   );
 };

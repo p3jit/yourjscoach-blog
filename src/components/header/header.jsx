@@ -49,9 +49,18 @@ export const Header = () => {
   const { postData, setSearchData, setSearchFilter } = useContext(BlogDataProvider);
   const navigate = useNavigate();
   const isPracticePage = (() => location.pathname.includes("/practice/"))();
-  const containerClasses = isPracticePage
-    ? "py-3 px-4 gap-5 min-w-[950px]"
-    : "gap-10 py-[3vh] 2xl:px-[20vw] lg:px-[10vw] px-[7vw] min-w-[56vw]";
+  const isPostPage = (() => location.pathname.includes("/blog/") || location.pathname.includes("/sd/"))();
+  const containerClasses = returnContainerClasses();
+
+  function returnContainerClasses() {
+    if (isPracticePage) {
+      return "py-3 px-4 gap-5 min-w-[950px]";
+    }
+    if (isPostPage) {
+      return "py-3 px-4 gap-5 min-w-[950px]";
+    }
+    return "gap-10 py-[3vh] 2xl:px-[20vw] lg:px-[10vw] px-[7vw] min-w-[56vw]";
+  }
 
   const handleHomeRedirect = () => {
     navigate("/");
@@ -64,13 +73,13 @@ export const Header = () => {
   };
 
   return (
-    <header>
+    <header className="sticky top-0 z-50 w-full shadow-md">
       <nav
         className={`flex justify-between text-xl items-center bg-zinc-900 ${containerClasses}`}
         aria-label="Main navigation"
       >
         <div className="flex items-center gap-5">
-          {isPracticePage && (
+          {(isPracticePage || isPostPage) && (
             <button onClick={toggleSidebar}>
               <IconMenu2 className="text-zinc-200 cursor-pointer" />
             </button>
@@ -86,9 +95,9 @@ export const Header = () => {
             )}
           </button>
         </div> */}
-        {!isPracticePage && <Navigation currentPath={location.pathname} navigate={navigate} />}
+        {!(isPracticePage || isPostPage) && <Navigation currentPath={location.pathname} navigate={navigate} />}
       </nav>
-      { location.pathname.includes("/practice") &&  <hr className="bg-zinc-700 h-0.5 outline-none border-none" />}
+      {(isPracticePage || isPostPage) && <hr className="bg-zinc-700 h-0.5 outline-none border-none" />}
     </header>
   );
 };

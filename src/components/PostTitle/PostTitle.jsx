@@ -4,12 +4,10 @@ import { DarkModeProvider } from "../../contexts/DarkModeContext";
 const PostTitle = ({ data }) => {
   const { isDarkMode } = useContext(DarkModeProvider);
   return (
-    <div
-      className={`font-semibold capitalize tracking-wide ${
-        isDarkMode ? "text-zinc-800" : "text-white"
-      } text-4xl md:text-6xl pb-2 md:pb-1 text-center`}
-    >
-      {data}
+    <div className="flex flex-col gap-1">
+      <div className={`font-semibold capitalize text-zinc-200 text-4xl md:text-5xl pb-2 md:pb-1 text-start`}>
+        {data}
+      </div>
     </div>
   );
 };

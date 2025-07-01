@@ -211,7 +211,8 @@ const Practice = () => {
     resetExecutionState,
   } = useExecutionState();
 
-  const { middleBarTabIndex, middleBarTabs, setMiddleBarTabs, handleMiddleBarTabClick } = useMiddleBarTabs(currentProblem);
+  const { middleBarTabIndex, middleBarTabs, setMiddleBarTabs, handleMiddleBarTabClick } =
+    useMiddleBarTabs(currentProblem);
 
   // State for UI
   const [showConsoleOutput, setShowConsoleOutput] = useState(false);
@@ -333,7 +334,7 @@ const Practice = () => {
   }
 
   return (
-    <PanelGroup direction="horizontal" className="flex">
+    <PanelGroup direction="horizontal" className="flex h-full">
       <Panel minSize={30}>
         <ProblemDescription currentProblem={currentProblem} isSolved={isSolved} />
       </Panel>

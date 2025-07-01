@@ -3,13 +3,13 @@
 <Heading>Frontend Metrics</Heading>
 <NormalText>Before we begin we need to have a basic knowledge some of the metrics that we use to measure the Frontend performence. There are a lot of metrics but we will discuss only couple of them. </NormalText>
 <br/>
-<NormalText><strong><span>•</span>  TTFB (Time To First Byte)</strong></NormalText>
+<NormalText><strong>• TTFB (Time To First Byte)</strong></NormalText>
 <NormalText>TTFB is a metric that measures the time between the request for a resource and when the first byte of a response begins to arrive. Reducing latency in connection setup time and on the backend will contribute to a lower TTFB.</NormalText>
 <br/>
-<NormalText><strong><span>•</span>  FCP (First Contentful Paint)</strong></NormalText>
+<NormalText><strong>• FCP (First Contentful Paint)</strong></NormalText>
 <NormalText>The First Contentful Paint (FCP) metric measures the time from when the page starts loading to when any part of the page's content is rendered on the screen. For this metric, "content" refers to text, images (including background images), svg elements, or non-white canvas elements.</NormalText>
 <br/>
-<NormalText><strong><span>•</span>  LCP (Largest Contentful Paint)</strong></NormalText>
+<NormalText><strong>• LCP (Largest Contentful Paint)</strong></NormalText>
 <NormalText>The Largest Contentful Paint (LCP) metric reports the render time of the largest image or text block visible within the viewport, relative to when the page first started loading. To provide a good user experience, sites should strive to have Largest Contentful Paint of 2.5 seconds or less. To ensure you're hitting this target for most of your users, a good threshold to measure is the 75th percentile of page loads, segmented across mobile and desktop devices.</NormalText>
 <br/>
 <NormalText>Like these there are couple of more metrics that are important.I will leave down a picture as a summary of all the important metrics.</NormalText>
@@ -36,7 +36,7 @@
 <br/>
 <NormalText>WOW! thats a lot of improvement. Lets break down the things that made the high scores.</NormalText>
 <br/>
-<Heading><span>1</span>. Asset Minification</Heading>
+<Heading>1. Asset Minification</Heading>
 <NormalText>Whenever you are serving a HTML page you are also sending assets with the response. These assets may include text,css or js files. Minification of these assets plays a vital role when it comes to optimization. Now whenever you are going to make a web application or a web page you are most likely going to use a web framework like React or Angular. Most of these web framework starter packs comes with a bundler in them like - <RoundedText>Webpack in Create-React-App</RoundedText> or <RoundedText>Rollup in Vite</RoundedText></NormalText>
 <br/>
 <NormalText>These bundles most of the times do the hardwork for you and does the minification in the production builds.</NormalText>
@@ -57,14 +57,14 @@ npm run preview // for running in preview mode
 <br/>
 <NormalText>After running the command you will see something like the above. You can see the bundles which the bundler has made after spliting the code and minification. You might see some yellow warning message which is something we will talk and improve later in this post.</NormalText>
 <br/>
-<Heading><span>2</span>. Image Compression</Heading>
+<Heading>2. Image Compression</Heading>
 <NormalText>Serving uncompressed images can sometimes cause performance issue when the image size is too big. I made sure all the images that I used in this blog website are somewhat compressed. You can do the samething using any compression software or website of your choice. But one thing to note is that dont compress the image to a extent where it is not understanable anymore.</NormalText>
 <br/>
 <ImageTag index="6" identifier="performance"></ImageTag>
 <br/>
 <NormalText>In the above picture you can see the differnce is size with different compression algorithm used.</NormalText>
 <br/>
-<Heading><span>3</span>. Lazy Loading React Components and Router</Heading>
+<Heading>3. Lazy Loading React Components and Router</Heading>
 <NormalText>Lazy Loading is a technique where we dont load all the required assets at first but only when it is needed. It can improve <RoundedText>TTFB</RoundedText> and <RoundedText>TTI</RoundedText> a lot. Lets take an example of the app.jsx of the blog app</NormalText>
 <br/>
 <Syntax language="jsx">
@@ -166,7 +166,7 @@ export default App;
 <br/>
 <NormalText>The Suspense component accepts one fallback attribute where you can add a placeholder component such as a <RoundedText>Loading Spinner</RoundedText> or a <RoundedText>Skeleton Loader</RoundedText>. I might add another tutorial about that in the future.</NormalText>
 <br/>
-<Heading><span>4</span>. Replace Big Bundle Size Libraries</Heading>
+<Heading>4. Replace Big Bundle Size Libraries</Heading>
 <NormalText>Even after doing all this things Lighthouse scores were not satisfactory to me. At that time I was using firebase as my backend and I saw that even after lazy loading firebase components it was still not performent enough. I used <RoundedText>Vite Bundle Visualizer</RoundedText> to check the bundle sizes and found that firebase exports were not tree shakeable and was causing issues.</NormalText>
 <br/>
 <ImageTag index="9" identifier="performance"></ImageTag>
