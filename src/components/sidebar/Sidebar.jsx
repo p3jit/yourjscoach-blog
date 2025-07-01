@@ -1,21 +1,41 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { ProblemDataProvider } from "../../contexts/ProblemDataContext";
 import { IconChevronDown, IconChevronUp, IconCircleCheck, IconCircle, IconX } from "@tabler/icons";
 import { returnColor, returnDifficultyText } from "../../utils/utils";
 import Brand from "../brand/Brand";
+import { useLocation } from "react-router-dom";
 
 const Sidebar = ({ isOpen, onClose }) => {
-  const { problems } = useContext(ProblemDataProvider);
+  const { problems, currentProblem } = useContext(ProblemDataProvider);
+  const location = useLocation();
   const [expandedSections, setExpandedSections] = useState({
     dsa: false,
     js: false,
-    systemDesign: false,
+    sd: false,
   });
 
   // Filter problems by category
   const dsaProblems = problems.filter((problem) => problem?.category === "dsa");
   const jsProblems = problems.filter((problem) => problem?.category === "js");
   const systemDesignProblems = problems.filter((problem) => problem?.category === "System Design");
+
+  // Update expanded sections based on current problem
+  useEffect(() => {
+    // Get current path
+    const currentPath = location.pathname;
+    
+    // Check if we're viewing a specific problem
+    if (currentProblem && Object.keys(currentProblem).length > 0) {
+      // Expand the section based on the current problem's category
+      if (currentProblem.category === "dsa") {
+        setExpandedSections(prev => ({ ...prev, dsa: true }));
+      } else if (currentProblem.category === "js") {
+        setExpandedSections(prev => ({ ...prev, js: true }));
+      } else if (currentProblem.category === "sd") {
+        setExpandedSections(prev => ({ ...prev, systemDesign: true }));
+      }
+    }
+  }, [location.pathname, currentProblem]);
 
   const toggleSection = (section) => {
     setExpandedSections((prev) => ({
@@ -60,26 +80,42 @@ const Sidebar = ({ isOpen, onClose }) => {
         <div className="bg-zinc-800/50">
           {items.length > 0 ? (
             <ul className="max-h-72 overflow-y-auto py-2 scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-zinc-800 my-2 mr-2">
-              {items.map((item) => (
-                <li 
-                  key={item.id} 
-                  className="px-5 py-2.5 hover:bg-zinc-700/30 border-l-2 border-transparent hover:border-zinc-500 transition-all cursor-pointer"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      {item.solved ? (
-                        <IconCircleCheck size={16} className="text-green-400 flex-shrink-0" />
-                      ) : (
-                        <IconCircle size={16} className="text-zinc-500 flex-shrink-0" />
-                      )}
-                      <span className="text-zinc-300 text-sm line-clamp-1">
-                        {item.problemTitle}
-                      </span>
+              {items.map((item) => {
+                // Check if this is the current problem
+                const isCurrentProblem = currentProblem && currentProblem.id === item.id;
+                
+                return (
+                  <li 
+                    key={item.id} 
+                    className={`px-5 py-2.5 hover:bg-zinc-700/30 border-l-2 transition-all cursor-pointer ${
+                      isCurrentProblem 
+                        ? "border-zinc-400 bg-zinc-700/50" 
+                        : "border-transparent hover:border-zinc-500"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        {item.solved ? (
+                          <IconCircleCheck size={16} className="text-green-400 flex-shrink-0" />
+                        ) : (
+                          <IconCircle size={16} className="text-zinc-500 flex-shrink-0" />
+                        )}
+                        <div className="flex items-center gap-2">
+                          <span className={`text-sm line-clamp-1 ${isCurrentProblem ? "text-zinc-100 font-medium" : "text-zinc-300"}`}>
+                            {item.problemTitle}
+                          </span>
+                          {isCurrentProblem && (
+                            <span className="bg-zinc-600 text-zinc-200 text-xs px-2 py-0.5 rounded-full">
+                              Current
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <DifficultyBadge difficulty={item.difficulty} />
                     </div>
-                    <DifficultyBadge difficulty={item.difficulty} />
-                  </div>
-                </li>
-              ))}
+                  </li>
+                );
+              })}
             </ul>
           ) : (
             <div className="px-5 py-4 text-zinc-500 text-sm flex items-center justify-center">

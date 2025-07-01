@@ -9,26 +9,45 @@ import SearchCard from "../components/searchCard/SearchCard";
 import Tag from "../components/tag/Tag";
 import SkeletonLoaderLatestPost from "../components/skeleton-loader-components/skeletonLoaderLatestPost/SkeletonLoaderLatestPost";
 import SkeletonNewLatestPostCard from "../components/skeleton-loader-components/skeletonNewLatestPostCard/SkeletonNewLatestPostCard";
+import Footer from "../components/footer/Footer";
 
 // SearchBar Component
 const SearchBar = ({ triggerSearch, handleClear, showClear, searchRef, isDarkMode }) => {
+  const containerClass = !isDarkMode
+    ? "bg-zinc-800 border border-zinc-700 focus-within:border-zinc-500"
+    : "bg-white border border-zinc-200 focus-within:border-zinc-400";
+
+  const inputClass = !isDarkMode
+    ? "bg-zinc-800 text-zinc-200 placeholder-zinc-500"
+    : "bg-white text-zinc-800 placeholder-zinc-400";
+
   return (
-    <div className="flex justify-center items-center relative mt-3">
+    <div
+      className={`flex items-center relative my-5 rounded-xl px-4 py-3 transition-all duration-300 shadow-sm focus-within:shadow-md ${containerClass}`}
+    >
+      <IconSearch size={20} className={`flex-shrink-0 ${!isDarkMode ? "text-zinc-500" : "text-zinc-400"}`} />
+
       <input
         type="text"
         ref={searchRef}
         spellCheck="false"
-        className={`bg-zinc-100 outline outline-3 w-full outline-zinc-200 rounded-md py-2 pr-10 pl-10 font-medium ${
-          isDarkMode ? "outline-zinc-200" : "outline-none"
-        }`}
+        placeholder="Search articles, topics, or keywords..."
+        className={`w-full outline-none px-3 text-base ${inputClass}`}
         onChange={triggerSearch}
       />
-      <IconSearch className="absolute left-3 text-zinc-400 text-2xl" />
+
       {showClear && (
-        <IconX
-          className="absolute right-3 text-2xl text-zinc-400 cursor-pointer"
+        <button
+          className={`flex items-center justify-center p-1.5 rounded-full transition-colors ${
+            !isDarkMode
+              ? "hover:bg-zinc-700 text-zinc-500 hover:text-zinc-300"
+              : "hover:bg-zinc-100 text-zinc-400 hover:text-zinc-600"
+          }`}
           onClick={handleClear}
-        />
+          aria-label="Clear search"
+        >
+          <IconX size={18} />
+        </button>
       )}
     </div>
   );
@@ -45,7 +64,7 @@ const TagList = ({ fetchedTags }) => {
       </div>
     );
   }
-  
+
   return (
     <div className="flex gap-2 flex-wrap">
       <div className="flex flex-wrap gap-3">
@@ -68,7 +87,7 @@ const LatestPosts = ({ latestPostData }) => {
       </div>
     );
   }
-  
+
   return (
     <div className="grid grid-rows-1 gap-10 mt-2 md:grid-cols-2">
       <SkeletonNewLatestPostCard />
@@ -79,42 +98,58 @@ const LatestPosts = ({ latestPostData }) => {
 
 // SearchResults Component
 const SearchResults = ({ searchData, isSearching }) => {
+  const { isDarkMode } = useContext(DarkModeProvider);
+
   if (searchData.length && !isSearching) {
     return (
-      <div className="flex flex-col gap-7 pt-5 relative">
-        {searchData.map((singleData) => (
-          <SearchCard data={singleData} key={singleData.id} />
-        ))}
+      <div className="mt-7">
+        <div className="flex items-center mb-4">
+          <h2 className={` pl-2 textlg font-bold ${!isDarkMode ? "text-zinc-200" : "text-zinc-800"}`}>
+            Results <span className="text-sm font-normal text-zinc-500 ml-2">({searchData.length} found)</span>
+          </h2>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {searchData.map((singleData) => (
+            <SearchCard data={singleData} key={singleData.id} />
+          ))}
+        </div>
       </div>
     );
   }
-  
+
   if (isSearching) {
     return (
-      <div className="flex flex-col gap-5 mt-4">
-        <SkeletonLoaderLatestPost />
-        <SkeletonLoaderLatestPost />
+      <div className="mt-8">
+        <div className="flex items-center mb-6">
+          <h2 className={`text-xl font-bold ${!isDarkMode ? "text-zinc-200" : "text-zinc-800"}`}>
+            Searching<span className="animate-pulse">...</span>
+          </h2>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <SkeletonLoaderLatestPost />
+          <SkeletonLoaderLatestPost />
+        </div>
       </div>
     );
   }
-  
+
   return (
-    <div className="flex flex-col gap-5 justify-center items-center pt-32">
-      <IconMoodCry className="text-zinc-400" size={"3em"} />
-      <h3 className="font-medium text-2xl text-zinc-400">Not found</h3>
+    <div className="flex flex-col gap-5 justify-center items-center py-16 my-8 rounded-xl border border-dashed border-zinc-700/30">
+      <IconMoodCry className={`${!isDarkMode ? "text-zinc-600" : "text-zinc-400"}`} size={48} />
+      <div className="text-center">
+        <h3 className={`font-medium text-xl ${!isDarkMode ? "text-zinc-300" : "text-zinc-600"}`}>No results found</h3>
+        <p className={`mt-2 text-sm ${!isDarkMode ? "text-zinc-500" : "text-zinc-500"}`}>
+          Try adjusting your search or filter to find what you're looking for
+        </p>
+      </div>
     </div>
   );
 };
 
 const Home = () => {
-  const {
-    latestPostData,
-    searchData,
-    debouncedSearch,
-    fetchedTags,
-    isSearching,
-    setIsSearching,
-  } = useContext(BlogDataProvider);
+  const { latestPostData, searchData, debouncedSearch, fetchedTags, isSearching, setIsSearching } =
+    useContext(BlogDataProvider);
 
   const [showClear, setShowClear] = useState(false);
   const searchRef = useRef();
@@ -135,28 +170,29 @@ const Home = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 md:px-2 min-h-[2000px]">
-      <ReactSVG src="/creative-writing-animate.svg" className="w-96 mx-auto" />
-      
+    <div className="flex flex-col  md:px-2 ">
+      {/* <ReactSVG src="/creative-writing-animate.svg" className="w-96 mx-auto" /> */}
+
       <section aria-labelledby="latest-posts-title">
         <Title data={"Latest Posts"} />
         <LatestPosts latestPostData={latestPostData} />
       </section>
-      
+
       <br />
-      
+
       <section aria-labelledby="search-title">
         <Title data={"Search"} />
-        <SearchBar 
-          triggerSearch={triggerSearch} 
-          handleClear={handleClear} 
-          showClear={showClear} 
+        <SearchBar
+          triggerSearch={triggerSearch}
+          handleClear={handleClear}
+          showClear={showClear}
           searchRef={searchRef}
           isDarkMode={isDarkMode}
         />
         <TagList fetchedTags={fetchedTags} />
         <SearchResults searchData={searchData} isSearching={isSearching} />
       </section>
+      <div className="w-full pt-28">{!location.pathname.includes("/practice") && <Footer />}</div>
     </div>
   );
 };

@@ -43,7 +43,7 @@ const Avatar = ({ userName = "Prithijit Das", userDesignation = "Software Engine
 
 const PostHeader = ({ data }) => (
   <div>
-    <div className="flex flex-col gap-6 bg-zinc-800 p-10 rounded-2xl shadow-xl border border-zinc-700">
+    <div className="flex flex-col gap-6 bg-zinc-800 p-10 mb-16 rounded-2xl shadow-xl border border-zinc-700">
       <div className="flex justify-between">
         <h5 className="text-zinc-400  font-medium">System Design & Architecture</h5>
         <span className="flex gap-2 justify-center items-center text-center">

@@ -20,7 +20,7 @@ const LazyPages = {
 
 const AppLayout = ({ children, isDarkMode, pathname }) => {
   const isPracticePage = (() => pathname.includes("/practice/"))();
-  const isPostPage = (() => pathname.includes("/blog/") || pathname.includes("/sd/"))();
+  const isPostPage = (() => pathname.includes("/blog") || pathname.includes("/sd"))();
   const containerClasses = returnContainerClasses();
 
   function returnContainerClasses() {
