@@ -9,6 +9,7 @@ import ProblemDescription from "../components/Practice/ProblemDescription";
 import EditorSection from "../components/Practice/EditorSection";
 import ResultsPanel from "../components/Practice/ResultsPanel";
 import { ProblemDataProvider } from "../contexts/ProblemDataContext";
+import { LocalStorageProvider } from "../contexts/localStorageContext";
 
 // Custom hook for managing problem data
 const useProblemData = (location, navigate) => {
@@ -156,31 +157,33 @@ const CodeEditorMiddleBar = ({ middleBarTabs, middleBarTabIndex, handleMiddleBar
         ))}
       </div>
       <div className="h-[calc(100%-5vh)] bg-zinc-900">
-        <Editor
-          defaultLanguage={middleBarTabs[middleBarTabIndex].language}
-          language={middleBarTabs[middleBarTabIndex].language}
-          value={middleBarTabs[middleBarTabIndex].editorValue}
-          theme="vs-dark"
-          options={{
-            scrollBeyondLastLine: false,
-            fontSize: 14,
-            wordWrap: "on",
-            minimap: {
-              enabled: false,
-            },
-          }}
-          onChange={(value) => {
-            // Update the editor content in the middleBarTabs state
-            const updatedTabs = middleBarTabs.map((tab) => {
-              if (tab.id === middleBarTabIndex) {
-                return { ...tab, editorValue: value };
-              }
-              return tab;
-            });
-            setMiddleBarTabs(updatedTabs);
-          }}
-          key={middleBarTabIndex} // Important: This forces re-render when tab changes
-        />
+        {middleBarTabs[middleBarTabIndex] && (
+          <Editor
+            defaultLanguage={middleBarTabs[middleBarTabIndex].language}
+            language={middleBarTabs[middleBarTabIndex].language}
+            value={middleBarTabs[middleBarTabIndex].editorValue}
+            theme="vs-dark"
+            options={{
+              scrollBeyondLastLine: false,
+              fontSize: 14,
+              wordWrap: "on",
+              minimap: {
+                enabled: false,
+              },
+            }}
+            onChange={(value) => {
+              // Update the editor content in the middleBarTabs state
+              const updatedTabs = middleBarTabs.map((tab) => {
+                if (tab.id === middleBarTabIndex) {
+                  return { ...tab, editorValue: value };
+                }
+                return tab;
+              });
+              setMiddleBarTabs(updatedTabs);
+            }}
+            key={middleBarTabIndex} // Important: This forces re-render when tab changes
+          />
+        )}
       </div>
     </div>
   );
@@ -194,6 +197,7 @@ const Practice = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { currentProblem, setCurrentProblem } = useProblemData(location, navigate);
+  const { setSolvedProblems, solvedProblems, updateLocalStorage } = useContext(LocalStorageProvider);
   const {
     didExecute,
     setDidExecute,
@@ -221,6 +225,17 @@ const Practice = () => {
 
   // State for code
   const [defaultTestCode, setDefaultTestCode] = useState("");
+
+  const markSolved = () => {
+    const currentId = currentProblem.documentId || currentProblem.displayId;
+    const isSolved = solvedProblems.includes(currentId);
+    let updatedSolvedProblems = [];
+    if (!isSolved) {
+      updatedSolvedProblems = [...solvedProblems, currentId];
+      setSolvedProblems(updatedSolvedProblems);
+      updateLocalStorage(JSON.stringify({ solvedProblems: [...updatedSolvedProblems] }));
+    }
+  };
 
   // Message handler for iframe communication
   useEffect(() => {
@@ -326,6 +341,7 @@ const Practice = () => {
     handleShowResults();
     setIsRunning(true);
     debouncedSendMessageToIframe("submit");
+    markSolved();
   };
 
   // If problem is not loaded yet, don't render anything

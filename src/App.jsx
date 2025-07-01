@@ -28,7 +28,7 @@ const AppLayout = ({ children, isDarkMode, pathname }) => {
       return "gap-5 min-w-[950px] overflow-hidden justify-center 2xl:items-center";
     }
     if (isPostPage) {
-      return "gap-10 py-[5vh] 2xl:px-[26vw] lg:px-[20vw] px-[7vw] min-w-[56vw]";
+      return "gap-10 py-[5vh] 2xl:px-[23vw] lg:px-[20vw] px-[7vw] min-w-[56vw]";
     }
     return "gap-10 py-[3vh] 2xl:px-[19vw] lg:px-[10vw] px-[7vw] min-w-[56vw]";
   }
@@ -76,7 +76,7 @@ const App = () => {
       <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
       <div className="flex flex-col z-0 w-full overflow-hidden">
         <Header />
-        <div className="overflow-y-auto bg-zinc-900 flex-grow scrollbar scrollbar-thumb-zinc-800 scrollbar-track-zinc-900">
+        <div className="overflow-y-auto min-w-[400px] bg-zinc-900 flex-grow scrollbar scrollbar-thumb-zinc-800 scrollbar-track-zinc-900">
           <AppLayout isDarkMode={isDarkMode} pathname={location.pathname}>
             <Suspense fallback={<Loader />}>
               <AppRoutes />

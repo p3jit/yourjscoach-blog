@@ -89,3 +89,19 @@ export const fuzzySearchWithFuse = (obj, options, searchText) => {
   }
   return searchResult;
 };
+
+export const isNewProblem = (timestamp) => {
+  if (!timestamp) return false;
+  
+  const problemDate = new Date(timestamp);
+  const currentDate = new Date();
+  
+  // Calculate the difference in milliseconds
+  const diffTime = currentDate - problemDate;
+  
+  // Convert to days
+  const diffDays = diffTime / (1000 * 60 * 60 * 24);
+  
+  // Return true if less than 3 days old
+  return diffDays < 3;
+};

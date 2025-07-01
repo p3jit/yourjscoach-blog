@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { isNewProblem } from "../utils/utils";
 
 export const ProblemDataProvider = createContext();
 
@@ -10,6 +11,9 @@ const ProblemDataContext = ({ children }) => {
   const [currentProblem, setCurrentProblem] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  // New state for storing newly added problems
+  const [newProblems, setNewProblems] = useState([]);
 
   const navigate = useNavigate();
 
@@ -30,6 +34,10 @@ const ProblemDataContext = ({ children }) => {
       const sortedProblems = data.data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
       setProblems(sortedProblems || []);
       setFilteredProblems(sortedProblems || []);
+
+      // Identify and store newly added problems
+      const newProblems = sortedProblems.filter(problem => isNewProblem(problem.timestamp || problem.createdAt) ? problem : null);
+      setNewProblems(newProblems);
     } catch (err) {
       console.error("Error fetching problems:", err);
       setError(err.message);
@@ -95,6 +103,7 @@ const ProblemDataContext = ({ children }) => {
     problems,
     currentProblem,
     filteredProblems,
+    newProblems,  // Include the new state in the context
     isLoading,
     error,
     fetchAllProblems,

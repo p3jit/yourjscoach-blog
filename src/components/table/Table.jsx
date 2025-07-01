@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { returnColor, returnDifficultyText } from "../../utils/utils";
+import { isNewProblem, returnColor, returnDifficultyText } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
 import { IconChevronLeft, IconChevronRight, IconMoodEmpty, IconSortAscending, IconSortDescending } from '@tabler/icons';
+import NewBadge from "../new-badge/NewBadge";
 
 const TableHeader = (props) => {
   const headers = [
@@ -58,6 +59,7 @@ const TagList = (props) => {
 
 const TableRow = (props) => {
   const cellClass = "px-4 py-4 text-zinc-300";
+  const isNew = isNewProblem(props.question.timestamp || props.question.createdAt);
   
   return (
     <tr 
@@ -65,8 +67,11 @@ const TableRow = (props) => {
       onClick={props.onRowClick}
       aria-label={`Question: ${props.question.problemTitle}`}
     >
-      <td className={`${cellClass} `}>
-        {props.question.problemTitle}
+      <td className={`${cellClass} relative`}>
+        <div className="flex items-center gap-2">
+          {props.question.problemTitle}
+          {isNew && <NewBadge />}
+        </div>
       </td>
       <td className={`${cellClass} whitespace-nowrap`}>
         <span className={`px-3 py-1 rounded-full text-sm font-medium ${returnColor(props.question.difficulty)}`}>

@@ -1,16 +1,20 @@
-import React from "react";
+import React, { useContext } from "react";
 import Markdown from "markdown-to-jsx";
 import Tag from "../tag/Tag";
 import { IconCircleCheck, IconFlame, IconUserCheck } from "@tabler/icons";
 import { returnColor, returnDifficultyText } from "../../utils/utils";
 import NormalText from "../markdown-components/normalText/NormalText";
 import ExampleBlock from "../markdown-components/example-block/ExampleBlock";
+import { LocalStorageProvider } from "../../contexts/localStorageContext";
 
 /**
  * Component to display the problem description, difficulty, tags, and other metadata
  */
-const ProblemDescription = ({ currentProblem, isSolved }) => {
+const ProblemDescription = ({ currentProblem }) => {
   if (!currentProblem) return null;
+  const {solvedProblems} = useContext(LocalStorageProvider);
+  const currentId = currentProblem.displayId || currentProblem.documentId;
+  const isSolved = solvedProblems.includes(currentId);
 
   return (
     <div className="w-full border-r-2 h-full border-r-zinc-700 justify-between p-5 flex flex-col gap-3 overflow-y-auto">

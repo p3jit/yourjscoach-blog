@@ -29,12 +29,10 @@ const EditorSection = ({
       if (errorMessages === "\n") errorMessages = "";
       if (errorMessages.length > 0) {
         setErrorMsg((prev) => {
-          console.log(prev);
           return errorMessages;
         });
       } else {
         setErrorMsg((prev) => {
-          console.log(prev);
           return "";
         });
       }

@@ -266,8 +266,7 @@ const AnimationStyles = () => (
 
 const DSASheet = () => {
   // Context and state
-  const { filteredProblems, setFilteredProblems, problems } = useContext(ProblemDataProvider);
-  const navigate = useNavigate();
+  const { filteredProblems, setFilteredProblems, problems, newProblems } = useContext(ProblemDataProvider);
 
   // UI state
   const [searchText, setSearchText] = useState("");
@@ -471,13 +470,65 @@ const DSASheet = () => {
     </div>
   );
 
+  const navigate = useNavigate();
+
   // Main render
   return (
     <div className="py-6 flex flex-col items-center gap-10 min-h-[85vh]">
       <HeroSection />
       <AnimationStyles />
 
-      <div className="flex flex-col w-full gap-7">
+      {/* Newly added problems section */}
+      {newProblems.length > 0 && (
+        <div className="flex flex-col gap-2 w-full">
+          <h2 className="text-2xl font-semibold text-zinc-300 mb-3 flex items-center">Newly Added Problems</h2>
+          {newProblems.length > 0 && (
+            <div className="flex gap-5 w-full">
+              {newProblems.map((problem, index) => (
+                <div
+                  key={index}
+                  onClick={() => navigate(`/practice/${problem.documentId}`)}
+                  className="bg-gradient-to-br from-zinc-800 to-zinc-900 p-5 rounded-lg shadow-lg hover:shadow-xl border border-zinc-700/50 hover:border-zinc-600 transition-all duration-300 cursor-pointer group relative overflow-hidden flex flex-col w-6/12"
+                >
+                  <div className="absolute top-0 right-0 w-16 h-16">
+                    <div className="absolute transform rotate-45 bg-zinc-700 text-xs font-medium text-zinc-200 text-center py-1 right-[-35px] top-[12px] w-[120px]">
+                      New
+                    </div>
+                  </div>
+                  <h3 className="text-sm font-semibold text-zinc-500 group-hover:text-zinc-200 pr-6 mb-3">
+                    {problem.category === "dsa" && "Data Structure and Algorithm Problem"}
+                    {problem.category === "js" && "Javascript Problem"}
+                    {problem.category === "sd" && "System Design & Architecture Problem"}
+                  </h3>
+                  <h3 className="text-xl font-semibold text-white group-hover:text-zinc-200 pr-6 mb-3">
+                    {problem.problemTitle}
+                  </h3>
+                  <p className="text-zinc-400 line-clamp-3 mb-4 flex-grow">{problem.description}</p>
+                  <div className="flex justify-between items-center mt-auto pt-4">
+                    <div className="flex flex-wrap gap-2">
+                      {problem.tags?.slice(0, 2).map((tag, idx) => (
+                        <span key={idx} className="px-2 py-1 text-xs rounded-md bg-zinc-700/50 text-zinc-300">
+                          {tag}
+                        </span>
+                      ))}
+                      {problem.tags?.length > 2 && (
+                        <span className="px-2 py-1 text-xs rounded-md bg-zinc-700/50 text-zinc-300">
+                          +{problem.tags.length - 2}
+                        </span>
+                      )}
+                    </div>
+                    <span className="text-zinc-400 group-hover:text-zinc-300 flex items-center">
+                      Solve <span className="ml-1 transform group-hover:translate-x-1 transition-transform">→</span>
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
+      <div id="problems" className="flex flex-col w-full gap-7">
         <Caption />
         <SearchBar />
       </div>
