@@ -13,11 +13,16 @@ import { LocalStorageProvider } from "../contexts/localStorageContext";
 
 // Custom hook for managing problem data
 const useProblemData = (location, navigate) => {
-  const { currentProblem, fetchProblemById, setCurrentProblem } = useContext(ProblemDataProvider);
+  const { currentProblem, fetchProblemById, setCurrentProblem, problems, setCurrentProblemIndex } =
+    useContext(ProblemDataProvider);
   const documentId = location.pathname.split("/")[2];
 
   useEffect(() => {
     fetchProblemById(documentId);
+    const problemIndex = problems.findIndex((prblm) => prblm.documentId === documentId);
+    if (problemIndex) {
+      setCurrentProblemIndex(problemIndex);
+    }
   }, [location.pathname, navigate]);
 
   return { currentProblem, setCurrentProblem };
@@ -233,7 +238,7 @@ const Practice = () => {
     if (!isSolved) {
       updatedSolvedProblems = [...solvedProblems, currentId];
       setSolvedProblems(updatedSolvedProblems);
-      updateLocalStorage(JSON.stringify({ solvedProblems: [...updatedSolvedProblems] }));
+      updateLocalStorage({ solvedProblems: [...updatedSolvedProblems] } );
     }
   };
 
@@ -244,7 +249,7 @@ const Practice = () => {
       if (event.data && !event.data.vscodeScheduleAsyncWork) {
         const { stack, name, error, testResultsPassed, testResultsFailed, consoleLogList } = event.data;
         if (error || stack || name) {
-          setErrorMsg(error || stack || name);
+          setErrorMsg(JSON.stringify(error || stack || name));
           setSuccess(false);
         } else {
           // Fixed bug in the condition check

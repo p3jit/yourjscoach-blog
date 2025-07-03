@@ -11,21 +11,19 @@ import ProblemDataContext from "./contexts/ProblemDataContext";
 import LocalStorageContext from "./contexts/localStorageContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <ProblemDataContext>
-        <LocalStorageContext>
-          <BlogDataContext>
-            <DarkModeContext>
-              <ModalContext>
-                <SidebarContext>
-                  <App />
-                </SidebarContext>
-              </ModalContext>
-            </DarkModeContext>
-          </BlogDataContext>
-        </LocalStorageContext>
-      </ProblemDataContext>
-    </BrowserRouter>
-  </React.StrictMode>
+  <BrowserRouter>
+    <ProblemDataContext>
+      <LocalStorageContext>
+        <BlogDataContext>
+          <DarkModeContext>
+            <ModalContext>
+              <SidebarContext>
+                <App />
+              </SidebarContext>
+            </ModalContext>
+          </DarkModeContext>
+        </BlogDataContext>
+      </LocalStorageContext>
+    </ProblemDataContext>
+  </BrowserRouter>
 );

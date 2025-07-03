@@ -64,8 +64,6 @@ const EditorSection = ({
       const css = cssTab ? cssTab.editorValue : "";
       const js = jsTab ? jsTab.editorValue : "";
 
-      debugger;
-
       setHtmlContent(html);
       setCssContent(css);
       setJsContent(js);
@@ -95,7 +93,7 @@ const EditorSection = ({
       iframeDoc.write(iframeContent);
       iframeDoc.close();
     }
-  }, 800); // 500ms debounce delay
+  }, 500); // 500ms debounce delay
 
   // Update iframe content when code changes or tab changes
   useEffect(() => {
@@ -161,7 +159,7 @@ const EditorSection = ({
           </button>
         )}
 
-        {!currentProblem.cateogry === "js" && (
+        {currentProblem.category == "dsa" && (
           <button
             className={`${
               currentEditorTabIndex === 1 ? "text-zinc-200 " : "text-zinc-500"

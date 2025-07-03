@@ -223,7 +223,7 @@ const ResultsPanel = ({
               </svg>
               Console
             </button>
-            {!currentProblem.category === "js" && (
+            {currentProblem.category == "dsa" && (
               <button
                 className={`${
                   showResults ? "text-zinc-300" : "text-zinc-500"
@@ -251,7 +251,7 @@ const ResultsPanel = ({
           </div>
 
           {/* Action buttons */}
-          <div className="flex gap-2">
+          { currentProblem.category == "dsa" && <div className="flex gap-2">
             <button
               className="text-lime-500 text-sm tracking-wide flex gap-2 items-center h-fit w-fit self-center px-3 py-1 rounded-lg"
               onClick={handleRunCode}
@@ -264,7 +264,7 @@ const ResultsPanel = ({
             >
               Submit
             </button>
-          </div>
+          </div>}
         </div>
 
         {/* Console output panel */}

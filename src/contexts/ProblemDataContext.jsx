@@ -11,6 +11,7 @@ const ProblemDataContext = ({ children }) => {
   const [currentProblem, setCurrentProblem] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
 
   // New state for storing newly added problems
   const [newProblems, setNewProblems] = useState([]);
@@ -36,7 +37,9 @@ const ProblemDataContext = ({ children }) => {
       setFilteredProblems(sortedProblems || []);
 
       // Identify and store newly added problems
-      const newProblems = sortedProblems.filter(problem => isNewProblem(problem.timestamp || problem.createdAt) ? problem : null);
+      const newProblems = sortedProblems.filter((problem) =>
+        isNewProblem(problem.timestamp || problem.createdAt) ? problem : null
+      );
       setNewProblems(newProblems);
     } catch (err) {
       console.error("Error fetching problems:", err);
@@ -65,7 +68,7 @@ const ProblemDataContext = ({ children }) => {
     if (category && category !== "all") {
       filtered = filtered.filter((problem) => problem.category === category);
     }
-    
+
     return filtered;
   };
 
@@ -103,7 +106,7 @@ const ProblemDataContext = ({ children }) => {
     problems,
     currentProblem,
     filteredProblems,
-    newProblems,  // Include the new state in the context
+    newProblems, // Include the new state in the context
     isLoading,
     error,
     fetchAllProblems,
@@ -111,7 +114,9 @@ const ProblemDataContext = ({ children }) => {
     setProblems,
     setFilteredProblems,
     filterProblems,
-    setCurrentProblem
+    setCurrentProblem,
+    currentProblemIndex,
+    setCurrentProblemIndex,
   };
 
   return <ProblemDataProvider.Provider value={contextValue}>{children}</ProblemDataProvider.Provider>;

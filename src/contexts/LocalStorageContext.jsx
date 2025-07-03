@@ -10,6 +10,7 @@ const LocalStorageContext = ({ children }) => {
   const updateLocalStorage = (data) => {
     localStorage.setItem('yjsUser', JSON.stringify(data));
   }
+
   
   useEffect(() => {
     let storedData = localStorage.getItem("yjsUser");

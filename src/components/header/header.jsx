@@ -2,9 +2,11 @@ import { useContext } from "react";
 import { DarkModeProvider } from "../../contexts/DarkModeContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { BlogDataProvider } from "../../contexts/BlogDataContext";
-import { IconMenu2, IconMoon, IconSun } from "@tabler/icons";
+import { IconCircle, IconCircleCheck, IconMenu2, IconMoon, IconSun } from "@tabler/icons";
 import { SidebarProvider } from "../../contexts/SidebarContext";
 import Brand from "../brand/Brand";
+import { ProblemDataProvider } from "../../contexts/ProblemDataContext";
+import { LocalStorageProvider } from "../../contexts/localStorageContext";
 
 const Navigation = ({ currentPath, navigate }) => {
   const isActive = (path) => {
@@ -45,11 +47,30 @@ const Navigation = ({ currentPath, navigate }) => {
 export const Header = () => {
   const { isDarkMode, setIsDarkMode } = useContext(DarkModeProvider);
   const { toggleSidebar } = useContext(SidebarProvider);
-  const location = useLocation();
   const { postData, setSearchData, setSearchFilter } = useContext(BlogDataProvider);
+  const { problems, currentProblemIndex, currentProblem } = useContext(ProblemDataProvider);
+  const { solvedProblems, setSolvedProblems, updateLocalStorage } = useContext(LocalStorageProvider);
+
+  const location = useLocation();
   const navigate = useNavigate();
   const isPracticePage = (() => location.pathname.includes("/practice/"))();
   const isPostPage = (() => location.pathname.includes("/blog/") || location.pathname.includes("/sd/"))();
+  const currentId = currentProblem.documentId || currentProblem.displayId;
+  const isSolved = solvedProblems.includes(currentId);
+
+  const markSolved = () => {
+    let updatedSolvedProblems = [];
+    if (!isSolved) {
+      updatedSolvedProblems = [...solvedProblems, currentId];
+      setSolvedProblems(updatedSolvedProblems);
+      updateLocalStorage({ solvedProblems: [...updatedSolvedProblems] });
+    } else {
+      updatedSolvedProblems = solvedProblems.filter((id) => id !== currentId);
+      setSolvedProblems(updatedSolvedProblems);
+      updateLocalStorage({ solvedProblems: [...updatedSolvedProblems] });
+    }
+  };
+
   const containerClasses = returnContainerClasses();
 
   function returnContainerClasses() {
@@ -70,6 +91,16 @@ export const Header = () => {
 
   const handleModeToggle = () => {
     setIsDarkMode(!isDarkMode);
+  };
+
+  const handleProblemNavigation = (type) => {
+    if (type === "prev") {
+      if (problems[currentProblemIndex - 1]) {
+        navigate(`/practice/${problems[currentProblemIndex - 1].documentId}`);
+      }
+    } else {
+      navigate(`/practice/${problems[currentProblemIndex + 1].documentId}`);
+    }
   };
 
   return (
@@ -95,6 +126,50 @@ export const Header = () => {
             )}
           </button>
         </div> */}
+        {isPracticePage && (
+          <div className="text-sm text-zinc-300 gap-3 flex">
+            {currentProblem.category == "js" && (
+              <button
+                type="button"
+                onClick={markSolved}
+                className={
+                  "px-3 py-2 rounded-md font-medium transition-all duration-50 flex gap-2 justify-center items-center " +
+                  `${
+                    isSolved
+                      ? "hover:bg-emerald-700 active:bg-emerald-800 bg-emerald-800"
+                      : "hover:bg-zinc-700 active:bg-zinc-800 bg-zinc-800"
+                  } text-zinc-100  ` +
+                  "shadow-sm hover:shadow-lg active:shadow-md "
+                }
+              >
+                {isSolved ? <IconCircleCheck className="w-5 h-5" /> : <IconCircle className="w-5 h-5" />}
+                Mark Complete
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => handleProblemNavigation("prev")}
+              className={
+                "px-3 py-2 rounded-md font-medium transition-all duration-50 " +
+                "bg-zinc-800 text-zinc-100 hover:bg-zinc-700 active:bg-zinc-800 " +
+                "shadow-sm hover:shadow-lg active:shadow-md "
+              }
+            >
+              Previous
+            </button>
+            <button
+              type="button"
+              onClick={() => handleProblemNavigation("next")}
+              className={
+                "px-3 py-2 rounded-lg font-medium transition-all duration-50 " +
+                "bg-zinc-800 text-zinc-100 hover:bg-zinc-700 active:bg-zinc-800 " +
+                "shadow-sm hover:shadow-md active:shadow-md "
+              }
+            >
+              Next
+            </button>
+          </div>
+        )}
         {!(isPracticePage || isPostPage) && <Navigation currentPath={location.pathname} navigate={navigate} />}
       </nav>
       {(isPracticePage || isPostPage) && <hr className="bg-zinc-700 h-0.5 outline-none border-none" />}
