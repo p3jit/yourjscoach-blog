@@ -243,7 +243,6 @@ const Practice = () => {
       // this check is needed for local development
       if (event.data && !event.data.vscodeScheduleAsyncWork) {
         const { stack, name, error, testResultsPassed, testResultsFailed, consoleLogList } = event.data;
-
         if (error || stack || name) {
           setErrorMsg(error || stack || name);
           setSuccess(false);
@@ -340,6 +339,7 @@ const Practice = () => {
     handleShowResults();
     setIsRunning(true);
     setConsoleLogMap({});
+    setErrorMsg("");
     debouncedSendMessageToIframe();
   };
 
@@ -347,6 +347,7 @@ const Practice = () => {
     setDidExecute(false);
     handleShowResults();
     setIsRunning(true);
+    setErrorMsg("");
     debouncedSendMessageToIframe("submit");
     markSolved();
   };

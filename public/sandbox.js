@@ -19,8 +19,7 @@ const initGlobals = () => {
 };
 
 // Helper function to replace content in a string using regex
-const replace = (string, regex, value = "") => 
-  string.toString().replace(regex, value).trim();
+const replace = (string, regex, value = "") => string.toString().replace(regex, value).trim();
 
 // Function to set up Mocha testing environment
 const setupMocha = () => {
@@ -62,10 +61,10 @@ const setupMocha = () => {
       },
     };
 
-    mocha.setup({ 
-      ui: "bdd", 
-      rootHooks: customRootHooks, 
-      cleanReferencesAfterRun: true 
+    mocha.setup({
+      ui: "bdd",
+      rootHooks: customRootHooks,
+      cleanReferencesAfterRun: true,
     });
     mocha.checkLeaks();
   };
@@ -94,10 +93,7 @@ const transpileCode = (code) => {
 
 // Validate the origin of the message event
 const validateOrigin = (event) => {
-  if (
-    !LOCAL_HOSTS.includes(location.hostname) &&
-    !VALID_ORIGINS.includes(event.origin)
-  ) {
+  if (!LOCAL_HOSTS.includes(location.hostname) && !VALID_ORIGINS.includes(event.origin)) {
     console.warn("Origin mismatch:", event.origin);
     return false;
   }
@@ -166,12 +162,10 @@ const postMessages = (event) => {
   const { data } = event;
   if (typeof data === "object" && data.code && data.testCode) {
     let codeBlock, testBlock;
-    debugger;
     try {
       codeBlock = transpileCode(data.code);
       testBlock = transpileCode(data.testCode);
     } catch (error) {
-      window.YJC_Error = error;
       event.source.postMessage(error, event.origin);
       return;
     }
@@ -191,7 +185,7 @@ const postMessages = (event) => {
 const init = () => {
   initGlobals();
   setupMocha();
-  
+
   // Add event listener for message events
   window.addEventListener("message", (event) => {
     const handleMessage = () => postMessages(event);

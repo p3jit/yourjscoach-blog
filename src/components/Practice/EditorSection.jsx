@@ -36,6 +36,8 @@ const EditorSection = ({
           return "";
         });
       }
+    } else {
+      setErrorMsg("");
     }
   };
 
@@ -47,7 +49,7 @@ const EditorSection = ({
     // Check for errors after a short delay to allow Monaco to validate
     setTimeout(() => {
       checkForErrors(markers);
-    }, 500);
+    }, 100);
   };
 
   // Function to update iframe content
