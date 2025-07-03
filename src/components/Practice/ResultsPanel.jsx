@@ -1,3 +1,4 @@
+import { IconTerminal2 } from "@tabler/icons";
 import React from "react";
 
 /**
@@ -18,6 +19,7 @@ const ResultsPanel = ({
   handleRunCode,
   handleSubmitCode,
   handleEditorTabClick,
+  currentProblem,
 }) => {
   // Loading spinner component
   const LoadingSpinner = () => (
@@ -44,8 +46,16 @@ const ResultsPanel = ({
     </div>
   );
 
-  // Empty state component
-  const EmptyState = ({ message = "Please run your code to see the result" }) => (
+  // Empty state component for console output
+  const EmptyStateOutput = ({ message = "console.log() statements show here" }) => (
+    <div className="w-full h-full flex flex-col justify-center items-center gap-5">
+      <IconTerminal2 className="text-zinc-300" />
+      <h1 className="text-zinc-400">{message}</h1>
+    </div>
+  );
+
+  // Empty state component for result output
+  const EmptyStateResult = ({ message = "Please run your code to see the result" }) => (
     <div className="w-full h-full flex flex-col justify-center items-center gap-5">
       <svg
         stroke="currentColor"
@@ -82,7 +92,7 @@ const ResultsPanel = ({
         : ""}
       {errorMsg && <p className="text-red-500 p-5 whitespace-pre-wrap text-sm tracking-wide">{`${errorMsg}`}</p>}
     </div>
-  );  
+  );
 
   // Test results component
   const TestResults = () => (
@@ -213,29 +223,31 @@ const ResultsPanel = ({
               </svg>
               Console
             </button>
-            <button
-              className={`${
-                showResults ? "text-zinc-300" : "text-zinc-500"
-              } text-sm flex gap-1 items-center w-fit h-fit self-center px-2 py-1 rounded-lg`}
-              onClick={handleShowResults}
-            >
-              <svg
-                className={`${showResults ? "text-zinc-300" : "text-zinc-500"} h-4 w-4`}
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="currentColor"
-                viewBox="0 0 24 24"
+            {!currentProblem.category === "js" && (
+              <button
+                className={`${
+                  showResults ? "text-zinc-300" : "text-zinc-500"
+                } text-sm flex gap-1 items-center w-fit h-fit self-center px-2 py-1 rounded-lg`}
+                onClick={handleShowResults}
               >
-                <path
-                  fillRule="evenodd"
-                  d="M8.6 5.2A1 1 0 0 0 7 6v12a1 1 0 0 0 1.6.8l8-6a1 1 0 0 0 0-1.6l-8-6Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Result
-            </button>
+                <svg
+                  className={`${showResults ? "text-zinc-300" : "text-zinc-500"} h-4 w-4`}
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M8.6 5.2A1 1 0 0 0 7 6v12a1 1 0 0 0 1.6.8l8-6a1 1 0 0 0 0-1.6l-8-6Z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                Result
+              </button>
+            )}
           </div>
 
           {/* Action buttons */}
@@ -259,7 +271,7 @@ const ResultsPanel = ({
         {showConsoleOutput && (
           <div className="w-full h-full flex flex-col justify-between relative">
             {didExecute && !isRunning ? <ConsoleOutput /> : null}
-            {!didExecute && !isRunning ? <EmptyState /> : null}
+            {!didExecute && !isRunning ? <EmptyStateOutput /> : null}
             {isRunning ? <LoadingSpinner /> : null}
           </div>
         )}
@@ -268,7 +280,7 @@ const ResultsPanel = ({
         {showResults && (
           <div className="w-full h-full flex flex-col justify-between relative">
             {didExecute && !isRunning ? <TestResults /> : null}
-            {!didExecute && !isRunning ? <EmptyState /> : null}
+            {!didExecute && !isRunning ? <EmptyStateResult /> : null}
             {isRunning ? <LoadingSpinner /> : null}
           </div>
         )}

@@ -219,8 +219,8 @@ const Practice = () => {
     useMiddleBarTabs(currentProblem);
 
   // State for UI
-  const [showConsoleOutput, setShowConsoleOutput] = useState(false);
-  const [showResults, setShowResults] = useState(true);
+  const [showConsoleOutput, setShowConsoleOutput] = useState(true);
+  const [showResults, setShowResults] = useState(false);
   const [currentEditorTabIndex, setCurrentEditorTabIndex] = useState(0);
 
   // State for code
@@ -408,6 +408,7 @@ const Practice = () => {
               handleRunCode={handleRunCode}
               handleSubmitCode={handleSubmitCode}
               handleEditorTabClick={handleEditorTabClick}
+              currentProblem={currentProblem}
             />
           </Panel>
         </PanelGroup>
