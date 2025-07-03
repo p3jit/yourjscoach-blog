@@ -22,7 +22,7 @@ const ProblemDataContext = ({ children }) => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch("http://localhost:1338/api/problems", {
+      const response = await fetch("http://localhost:1339/api/problems", {
         method: "GET",
       });
 
@@ -74,7 +74,7 @@ const ProblemDataContext = ({ children }) => {
     setIsLoading(true);
     setError(null);
     try {
-      const response = await fetch(`http://localhost:1338/api/problems/${documentId}`, {
+      const response = await fetch(`http://localhost:1339/api/problems/${documentId}`, {
         method: "GET",
       });
 
