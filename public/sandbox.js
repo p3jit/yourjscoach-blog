@@ -166,7 +166,7 @@ const postMessages = (event) => {
   const { data } = event;
   if (typeof data === "object" && data.code && data.testCode) {
     let codeBlock, testBlock;
-
+    debugger;
     try {
       codeBlock = transpileCode(data.code);
       testBlock = transpileCode(data.testCode);

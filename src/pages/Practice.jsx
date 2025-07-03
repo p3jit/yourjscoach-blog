@@ -13,7 +13,7 @@ import { LocalStorageProvider } from "../contexts/localStorageContext";
 
 // Custom hook for managing problem data
 const useProblemData = (location, navigate) => {
-  const { currentProblem, setCurrentProblem, fetchProblemById } = useContext(ProblemDataProvider);
+  const { currentProblem, fetchProblemById, setCurrentProblem } = useContext(ProblemDataProvider);
   const documentId = location.pathname.split("/")[2];
 
   useEffect(() => {
@@ -289,12 +289,19 @@ const Practice = () => {
     setTestResults,
   ]);
 
+  const debouncedSetCurrentProblem = useDebounce(
+    (value) => {
+      setCurrentProblem((oldValue) => {
+        return currentEditorTabIndex === 0
+          ? { ...oldValue, editorValueCode: value }
+          : { ...oldValue, editorValueTests: value };
+      });
+    },
+    300 // debounce delay in ms, adjust as needed
+  );
+
   const handleEditorValueChange = (value) => {
-    setCurrentProblem((oldValue) => {
-      return currentEditorTabIndex === 0 // Adjusted for new tab order
-        ? { ...oldValue, editorValueCode: value }
-        : { ...oldValue, editorValueTests: value };
-    });
+    debouncedSetCurrentProblem(value);
   };
 
   const handleShowTestCases = () => {

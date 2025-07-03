@@ -47,7 +47,7 @@ const EditorSection = ({
     // Check for errors after a short delay to allow Monaco to validate
     setTimeout(() => {
       checkForErrors(markers);
-    }, 100);
+    }, 500);
   };
 
   // Function to update iframe content
