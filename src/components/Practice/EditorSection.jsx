@@ -2,6 +2,8 @@ import React, { useRef, useState, useEffect, useContext } from "react";
 import Editor from "@monaco-editor/react";
 import useDebounce from "../../hooks/useDebounce";
 import { LocalStorageProvider } from "../../contexts/localStorageContext";
+import ResetButton from "../ResetButton";
+import { ProblemDataProvider } from "../../contexts/ProblemDataContext";
 
 const EditorSection = ({
   currentProblem,
@@ -17,6 +19,7 @@ const EditorSection = ({
   const [cssContent, setCssContent] = useState(``);
   const [jsContent, setJsContent] = useState("");
   const { progressMap } = useContext(LocalStorageProvider);
+  const { handleReset } = useContext(ProblemDataProvider);;
 
   // Function to check for errors
   const checkForErrors = (markers) => {
@@ -111,117 +114,123 @@ const EditorSection = ({
 
   return (
     <>
-      <div className="flex gap-8 py-3 px-4 bg-zinc-800">
+      <div className="flex py-3 px-4 bg-zinc-800 justify-between items-center relative w-full">
         {/* Only show Output tab for non-DSA problems */}
-        {currentProblem.category !== "dsa" && (
-          <button
-            className={`${
-              currentEditorTabIndex === 0 ? "text-zinc-200 " : "text-zinc-500"
-            } flex gap-1 cursor-pointer text-sm`}
-            onClick={() => handleEditorTabClick(0)}
-          >
-            <svg
-              className={`w-4 h-4 mt-px ${currentEditorTabIndex === 0 ? "text-zinc-200" : "text-zinc-500"}`}
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill="currentColor"
-              viewBox="0 0 24 24"
+        <div className="flex gap-7">
+          {currentProblem.category !== "dsa" && (
+            <button
+              className={`${
+                currentEditorTabIndex === 0 ? "text-zinc-200 " : "text-zinc-500"
+              } flex gap-1 cursor-pointer text-sm`}
+              onClick={() => handleEditorTabClick(0)}
             >
-              <path
-                fillRule="evenodd"
-                d="M14 7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7Zm2 0a4 4 0 0 1-4 4v2a4 4 0 0 1 4 4h4a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-4Z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Output
-          </button>
-        )}
+              <svg
+                className={`w-4 h-4 mt-px ${currentEditorTabIndex === 0 ? "text-zinc-200" : "text-zinc-500"}`}
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M14 7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7Zm2 0a4 4 0 0 1-4 4v2a4 4 0 0 1 4 4h4a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-4Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Output
+            </button>
+          )}
 
-        {/* Show Code tab for DSA problems */}
-        {currentProblem.category === "dsa" && (
-          <button
-            className={`${
-              currentEditorTabIndex === 0 ? "text-zinc-200 " : "text-zinc-500"
-            } flex gap-1 cursor-pointer text-sm`}
-            onClick={() => handleEditorTabClick(0)}
-          >
-            <svg
-              className={`w-4 h-4 mt-px ${currentEditorTabIndex === 0 ? "text-zinc-200" : "text-zinc-500"}`}
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill="none"
-              viewBox="0 0 24 24"
+          {/* Show Code tab for DSA problems */}
+          {currentProblem.category === "dsa" && (
+            <button
+              className={`${
+                currentEditorTabIndex === 0 ? "text-zinc-200 " : "text-zinc-500"
+              } flex gap-1 cursor-pointer text-sm`}
+              onClick={() => handleEditorTabClick(0)}
             >
-              <path
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="m8 8-4 4 4 4m8 0 4-4-4-4m-2-3-4 14"
-              />
-            </svg>
-            Code
-          </button>
-        )}
+              <svg
+                className={`w-4 h-4 mt-px ${currentEditorTabIndex === 0 ? "text-zinc-200" : "text-zinc-500"}`}
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="m8 8-4 4 4 4m8 0 4-4-4-4m-2-3-4 14"
+                />
+              </svg>
+              Code
+            </button>
+          )}
+
+          {currentProblem.category == "dsa" && (
+            <button
+              className={`${
+                currentEditorTabIndex === 1 ? "text-zinc-200 " : "text-zinc-500"
+              } flex gap-1 cursor-pointer text-sm justify-end`}
+              onClick={() => handleEditorTabClick(1)}
+            >
+              <svg
+                className={`w-4 h-4 mt-px ${currentEditorTabIndex === 1 ? "text-zinc-200" : "text-zinc-500"}`}
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-7Zm-.293 9.293a1 1 0 0 1 0 1.414L9.414 14l1.293 1.293a1 1 0 0 1-1.414 1.414l-2-2a1 1 0 0 1 0-1.414l2-2a1 1 0 0 1 1.414 0Zm2.586 1.414a1 1 0 0 1 1.414-1.414l2 2a1 1 0 0 1 0 1.414l-2 2a1 1 0 0 1-1.414-1.414L14.586 14l-1.293-1.293Z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Test Cases
+            </button>
+          )}
+        </div>
 
         {currentProblem.category == "dsa" && (
-          <button
-            className={`${
-              currentEditorTabIndex === 1 ? "text-zinc-200 " : "text-zinc-500"
-            } flex gap-1 cursor-pointer text-sm`}
-            onClick={() => handleEditorTabClick(1)}
-          >
-            <svg
-              className={`w-4 h-4 mt-px ${currentEditorTabIndex === 1 ? "text-zinc-200" : "text-zinc-500"}`}
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fillRule="evenodd"
-                d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-7Zm-.293 9.293a1 1 0 0 1 0 1.414L9.414 14l1.293 1.293a1 1 0 0 1-1.414 1.414l-2-2a1 1 0 0 1 0-1.414l2-2a1 1 0 0 1 1.414 0Zm2.586 1.414a1 1 0 0 1 1.414-1.414l2 2a1 1 0 0 1 0 1.414l-2 2a1 1 0 0 1-1.414-1.414L14.586 14l-1.293-1.293Z"
-                clipRule="evenodd"
-              />
-            </svg>
-            Test Cases
-          </button>
+          <div className="relative left-1">
+            <ResetButton onClick={handleReset}/>
+          </div>
         )}
       </div>
 
       {/* Show iframe for Output tab only for non-DSA problems */}
-      {(currentProblem.category !== "dsa" && currentEditorTabIndex === 0) ? (
+      {currentProblem.category !== "dsa" && currentEditorTabIndex === 0 ? (
         <div className="w-full h-full bg-white">
           <iframe ref={iframeRef} title="Output Preview" className="w-full h-full border-none"></iframe>
         </div>
       ) : (
-        
-          <Editor
-            defaultLanguage="javascript"
-            value={
-              currentEditorTabIndex === 0 && currentProblem.category === "dsa"
-                ? getDefaultEditorValue()
-                : currentEditorTabIndex === 1
-                ? currentProblem.editorValueTests
-                : ""
-            }
-            onChange={handleValueChange}
-            onValidate={handleErrorCheck}
-            theme="vs-dark"
-            options={{
-              minimap: {
-                enabled: false,
-              },
-              autoIndent: true,
-            }}
-          />
-        
+        <Editor
+          defaultLanguage="javascript"
+          value={
+            currentEditorTabIndex === 0 && currentProblem.category === "dsa"
+              ? getDefaultEditorValue()
+              : currentEditorTabIndex === 1
+              ? currentProblem.editorValueTests
+              : ""
+          }
+          onChange={handleValueChange}
+          onValidate={handleErrorCheck}
+          theme="vs-dark"
+          options={{
+            minimap: {
+              enabled: false,
+            },
+            autoIndent: true,
+          }}
+        />
       )}
     </>
   );

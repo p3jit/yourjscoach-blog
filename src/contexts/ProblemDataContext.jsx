@@ -9,6 +9,7 @@ const ProblemDataContext = ({ children }) => {
   const [problems, setProblems] = useState([]);
   const [filteredProblems, setFilteredProblems] = useState([]);
   const [currentProblem, setCurrentProblem] = useState({});
+  const [originalProblem, setOriginalProblem] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
@@ -87,6 +88,7 @@ const ProblemDataContext = ({ children }) => {
 
       const data = await response.json();
       setCurrentProblem(data.data || {});
+      setOriginalProblem(data.data || {});
     } catch (err) {
       console.error(`Error fetching problem ${documentId}:`, err);
       setError(err.message);
@@ -100,6 +102,17 @@ const ProblemDataContext = ({ children }) => {
   useEffect(() => {
     fetchAllProblems();
   }, []);
+
+  const handleReset = () => {
+    debugger;
+    if (currentProblem.category == "js") {
+      currentProblem.editorHtmlCode = originalProblem.editorHtmlCode;
+      currentProblem.editorJsCode = originalProblem.editorJsCode;
+      currentProblem.editorCssCode = originalProblem.editorCssCode;
+    } else if (currentProblem.category == "dsa") {
+      currentProblem.editorValueCode = originalProblem.editorValueCode;
+    }
+  };
 
   // Context value with all data and functions
   const contextValue = {
@@ -117,6 +130,9 @@ const ProblemDataContext = ({ children }) => {
     setCurrentProblem,
     currentProblemIndex,
     setCurrentProblemIndex,
+    originalProblem,
+    setOriginalProblem,
+    handleReset,
   };
 
   return <ProblemDataProvider.Provider value={contextValue}>{children}</ProblemDataProvider.Provider>;
