@@ -35,7 +35,7 @@ const Navigation = () => (
       to={`/dsa`}
       className="inline-block rounded bg-zinc-300 hover:bg-zinc-400 text-zinc-900 px-4 py-2 text-sm font-bold w-fit"
     >
-      Dsa Questions
+      Dsa Problems
     </Link>
   </div>
 );
@@ -47,7 +47,7 @@ const Content = ({ isDarkMode }) => (
 
     <h2 className="text-xl font-bold text-zinc-400">
       Your one stop solution for cracking interviews and practice javascript
-      questions
+      problems
     </h2>
     <h2 className="text-lg font-bold text-zinc-400 pt-6">Explore:</h2>
     <Navigation />

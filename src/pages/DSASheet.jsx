@@ -11,101 +11,104 @@ import Footer from "../components/footer/Footer";
 // Memoized HeroSection to prevent unnecessary re-renders
 const HeroSection = memo(() => (
   <div className="w-full">
-    <div className="relative h-[70vh] bg-zinc-900 shadow-lg rounded-lg overflow-hidden">
-      {/* Animated background with code particles */}
-      <div className="absolute inset-0">
-        <div className="code-particles"></div>
+    <div className="relative h-[70vh] bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 shadow-lg rounded-lg overflow-hidden">
+      {/* Geometric background pattern */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="geometric-grid"></div>
       </div>
 
-      {/* Code editor header */}
-      <div className="relative z-10 flex items-center px-4 py-2 bg-zinc-800 border-b border-zinc-700">
-        <div className="flex space-x-2">
-          <div className="h-3 w-3 bg-zinc-500 rounded-full"></div>
-          <div className="h-3 w-3 bg-zinc-400 rounded-full"></div>
-          <div className="h-3 w-3 bg-zinc-300 rounded-full"></div>
-        </div>
-        <div className="ml-4 text-sm text-zinc-400 font-mono">interview-prep.js</div>
-        <div className="flex-1"></div>
-        <div className="text-xs text-zinc-500 font-mono">JavaScript</div>
+      {/* Floating 3D shapes */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="floating-shapes"></div>
       </div>
 
-      {/* Main content area with typing animation and floating elements */}
+      {/* Main content area with spotlight effect */}
       <div className="relative z-10 h-full flex flex-col items-center justify-center px-6">
-        {/* Animated typing code in background */}
-        <div className="absolute left-0 top-1/4 w-full h-1/2 opacity-20 overflow-hidden">
-          <pre className="typing-code font-mono text-sm text-zinc-300 whitespace-pre-wrap">
-            <code className="language-javascript">
-              {`function prepareForInterview() {
-const skills = ['JavaScript', 'React', 'CSS', 'System Design'];
-const practice = skills.map(skill => master(skill));
-
-return practice.reduce((confidence, skill) => {
-  return confidence + skill.proficiency;
-}, initialConfidence);
-}`}
-            </code>
-          </pre>
-        </div>
-
-        {/* Floating code symbols */}
-        <div className="floating-elements absolute inset-0 pointer-events-none">
-          <span className="floating-item text-zinc-400/40">{`{}`}</span>
-          <span className="floating-item text-purple-600/40">{`()`}</span>
-          <span className="floating-item text-zinc-400/40">{`=>`}</span>
-          <span className="floating-item text-emerald-300/40">{`var`}</span>
-          <span className="floating-item text-red-400/40">{`const`}</span>
-          <span className="floating-item text-yellow-500/40">{`function`}</span>
-        </div>
+        {/* Spotlight effect */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[70%] h-[70%] bg-gradient-to-b from-zinc-300/10 to-transparent rounded-full blur-3xl"></div>
 
         {/* Main content */}
-        <div className="flex flex-col items-center justify-center gap-8 w-full max-w-4xl z-20">
-          <div className="space-y-6 text-center">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8 w-full max-w-6xl z-20">
+          {/* Left side: Text content */}
+          <div className="space-y-6 text-center md:text-left md:w-1/2">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold">
-              <span className="bg-gradient-to-r from-zinc-300 via-zinc-200 to-zinc-100 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 bg-clip-text text-transparent">
                 Master UI Engineering
               </span>
             </h1>
-            <h2 className="text-xl md:text-2xl lg:text-3xl text-zinc-400">
-              Interactive problems to sharpen your coding skills
-            </h2>
+            <h2 className="text-xl md:text-2xl text-zinc-400">Interactive problems to sharpen your coding skills</h2>
+
+            <div className="flex flex-wrap gap-4 justify-center md:justify-start mt-6">
+              <button className="group relative px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg overflow-hidden transition-all hover:shadow-[0_0_25px_rgba(129,140,248,0.5)]">
+                <span className="relative z-10 flex items-center justify-center gap-2 text-zinc-100 font-medium">
+                  Start Coding <span className="transition-transform group-hover:translate-x-1">→</span>
+                </span>
+              </button>
+
+              {/* <button className="px-6 py-3 border border-zinc-600 text-zinc-300 rounded-lg hover:bg-zinc-800/50 transition-colors">
+                View Curriculum
+              </button> */}
+            </div>
           </div>
 
-          <div className="flex flex-wrap gap-6 justify-center">
-            <button className="group relative px-6 py-3 bg-gradient-to-r from-zinc-700 to-zinc-600 rounded-lg overflow-hidden transition-all hover:shadow-[0_0_25px_rgba(113,113,122,0.5)]">
-              <span className="relative z-10 flex items-center justify-center gap-2 text-zinc-100 font-medium">
-                Start Coding <span className="transition-transform group-hover:translate-x-1">→</span>
-              </span>
-              <span className="absolute inset-0 bg-zinc-500/20 translate-y-full group-hover:translate-y-0 transition-transform"></span>
-            </button>
+          {/* Right side: Interactive elements */}
+          <div className="md:w-1/2 relative">
+            {/* Code card with 3D effect */}
+            <div className="perspective-card bg-zinc-800/80 backdrop-blur-sm p-5 rounded-lg border border-zinc-700/50 shadow-xl transform hover:rotate-y-5 transition-transform duration-300">
+              <div className="flex items-center mb-3">
+                <div className="flex space-x-2">
+                  <div className="h-3 w-3 bg-red-400 rounded-full"></div>
+                  <div className="h-3 w-3 bg-yellow-400 rounded-full"></div>
+                  <div className="h-3 w-3 bg-green-400 rounded-full"></div>
+                </div>
+                <div className="ml-4 text-sm text-zinc-400 font-mono">problem-solving.js</div>
+              </div>
 
-            {/* <button className="px-6 py-3 border border-zinc-600 text-zinc-300 rounded-lg hover:bg-zinc-800 transition-colors">
-              View Curriculum
-            </button> */}
+              <pre className="font-mono text-sm text-zinc-300 whitespace-pre-wrap">
+                <code className="language-javascript">
+                  {`function solveProblem(problem) {
+  // Break it down into smaller steps
+  const steps = decompose(problem);
+  
+  // Apply the right patterns
+  const solution = steps.map(step => 
+    applyPattern(step)
+  );
+  
+  return solution.join();
+}`}
+                </code>
+              </pre>
+
+              {/* Interactive skill badges */}
+              <div className="flex flex-wrap gap-2 mt-4">
+                {["JavaScript", "React", "CSS", "System Design"].map((skill, i) => (
+                  <span
+                    key={i}
+                    className="px-3 py-1 text-xs bg-zinc-700/70 text-zinc-300 rounded-full hover:bg-indigo-600/70 hover:text-white transition-colors cursor-pointer"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Stats with counters */}
+            <div className="flex justify-around mt-6 bg-zinc-800/50 backdrop-blur-sm p-4 rounded-lg border border-zinc-700/30">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-indigo-300 counter-animate">50+</div>
+                <div className="text-sm text-zinc-500">Problems</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-purple-300 counter-animate">10+</div>
+                <div className="text-sm text-zinc-500">Companies</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-pink-300 counter-animate">8+</div>
+                <div className="text-sm text-zinc-500">Topics</div>
+              </div>
+            </div>
           </div>
-
-          {/* Stats */}
-          {/* <div className="flex gap-8 mt-8">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-zinc-300 counter-animate">100+</div>
-              <div className="text-sm text-zinc-500">Coding Problems</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-zinc-300 counter-animate">15+</div>
-              <div className="text-sm text-zinc-500">Companies</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-zinc-300 counter-animate">8+</div>
-              <div className="text-sm text-zinc-500">Categories</div>
-            </div>
-          </div> */}
-        </div>
-      </div>
-
-      {/* Bottom terminal line */}
-      <div className="absolute bottom-0 left-0 right-0 bg-zinc-800 border-t border-zinc-700 px-4 py-2 z-10">
-        <div className="flex items-center">
-          <span className="text-zinc-300 font-mono text-xs">$</span>
-          <span className="typing-cursor ml-2 text-zinc-400 font-mono text-xs">npm run start-interview-prep</span>
         </div>
       </div>
     </div>
@@ -260,6 +263,100 @@ const AnimationStyles = () => (
         opacity: 1;
         transform: translateY(0);
       }
+    }
+
+    /* Geometric grid background */
+    .geometric-grid {
+      background-image: linear-gradient(rgba(161, 161, 170, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(161, 161, 170, 0.1) 1px, transparent 1px);
+      background-size: 40px 40px;
+      width: 100%;
+      height: 100%;
+      animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: 40px 40px;
+      }
+    }
+
+    /* Floating 3D shapes */
+    .floating-shapes {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    .floating-shapes::before,
+    .floating-shapes::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.2;
+    }
+
+    .floating-shapes::before {
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(135deg, #6366f1, #a855f7);
+      top: 20%;
+      left: 15%;
+      animation: float1 15s ease-in-out infinite;
+    }
+
+    .floating-shapes::after {
+      width: 200px;
+      height: 200px;
+      background: linear-gradient(135deg, #a855f7, #ec4899);
+      bottom: 10%;
+      right: 10%;
+      animation: float2 18s ease-in-out infinite;
+    }
+
+    @keyframes float1 {
+      0%,
+      100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      25% {
+        transform: translate(20px, -30px) rotate(90deg);
+      }
+      50% {
+        transform: translate(-20px, 20px) rotate(180deg);
+      }
+      75% {
+        transform: translate(-30px, -20px) rotate(270deg);
+      }
+    }
+
+    @keyframes float2 {
+      0%,
+      100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+      25% {
+        transform: translate(-30px, 20px) rotate(-90deg);
+      }
+      50% {
+        transform: translate(20px, -20px) rotate(-180deg);
+      }
+      75% {
+        transform: translate(30px, 30px) rotate(-270deg);
+      }
+    }
+
+    /* 3D card effect */
+    .perspective-card {
+      transform-style: preserve-3d;
+      transition: transform 0.5s ease;
+    }
+
+    .perspective-card:hover {
+      transform: rotateY(5deg) rotateX(5deg);
     }
   `}</style>
 );

@@ -34,11 +34,11 @@ const Navigation = ({ currentPath, navigate }) => {
         Blog
       </button>
       <button
-        onClick={() => navigate("/questions")}
-        className={getNavLinkClass("/questions")}
-        aria-current={isActive("/questions") ? "page" : undefined}
+        onClick={() => navigate("/problems")}
+        className={getNavLinkClass("/problems")}
+        aria-current={isActive("/problems") ? "page" : undefined}
       >
-        Questions
+        Problems
       </button>
     </div>
   );

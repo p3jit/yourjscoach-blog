@@ -20,7 +20,8 @@ const LazyComponents = {
 };
 
 // Environment variable for API URL
-const ENV_VITE_API_URL = import.meta.env.VITE_API_URL;
+// const ENV_VITE_API_URL = import.meta.env.VITE_API_URL;
+const ENV_VITE_API_URL = false;
 
 const formatDate = (value) => {
   const date = value;

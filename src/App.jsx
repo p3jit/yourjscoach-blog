@@ -48,12 +48,12 @@ const AppLayout = ({ children, isDarkMode, pathname }) => {
 
 const AppRoutes = () => (
   <Routes>
-    <Route path="/" element={<Navigate to="/questions" />} />
+    <Route path="/" element={<Navigate to="/problems" />} />
     <Route path="/blog" element={<LazyPages.Blog />} />
     <Route path="/blog/:id" element={<LazyPages.SinglePost />} />
     <Route path="/editor" element={<LazyPages.Editor />} />
     <Route path="/practice/:id" element={<LazyPages.Practice />} />
-    <Route path="/questions" element={<LazyPages.DSASheet />} />
+    <Route path="/problems" element={<LazyPages.DSASheet />} />
     <Route path="/404" element={<LazyPages.Error />} />
     <Route path="*" element={<LazyPages.Error />} />
   </Routes>
