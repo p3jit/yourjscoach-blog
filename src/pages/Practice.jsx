@@ -132,8 +132,42 @@ const useMiddleBarTabs = (currentProblem) => {
   };
 };
 
-// Middle bar component for code editors
 const CodeEditorMiddleBar = ({ middleBarTabs, middleBarTabIndex, handleMiddleBarTabClick, setMiddleBarTabs }) => {
+  const { progressMap, setProgressMap, updateLocalStorage } = useContext(LocalStorageProvider);
+  const { currentProblem } = useContext(ProblemDataProvider);
+  
+  const handleEditorChange = (value) => {
+    const updatedTabs = middleBarTabs.map((tab) => {
+      if (tab.id === middleBarTabIndex) {
+        return { ...tab, editorValue: value };
+      }
+      return tab;
+    });
+    setMiddleBarTabs(updatedTabs);
+    const clonedMap = progressMap ? structuredClone(progressMap) : {};
+    const currentId = currentProblem.documentId;
+    if (clonedMap[currentId]) {
+      clonedMap[currentId] = {
+        jsCode: updatedTabs[2].editorValue,
+        cssCode: updatedTabs[1].editorValue,
+        htmlCode: updatedTabs[0].editorValue,
+      };
+    } else {
+      clonedMap[currentId] = "";
+      clonedMap[currentId] = {
+        jsCode: updatedTabs[2].editorValue,
+        cssCode: updatedTabs[1].editorValue,
+        htmlCode: updatedTabs[0].editorValue,
+      };
+    }
+    // Update current progressMap and localStorage progressMap
+    updateLocalStorage({ progressMap: { ...clonedMap } });
+    setProgressMap({ ...clonedMap });
+  };
+
+  // Debounce the editor change handler to prevent excessive updates
+  const debouncedHandleEditorChange = useDebounce(handleEditorChange, 300);
+
   return (
     <div className="h-full border-r-2 border-r-zinc-700">
       <div className="flex gap-8 py-3 px-4 bg-zinc-800">
@@ -183,16 +217,7 @@ const CodeEditorMiddleBar = ({ middleBarTabs, middleBarTabIndex, handleMiddleBar
                 enabled: false,
               },
             }}
-            onChange={(value) => {
-              // Update the editor content in the middleBarTabs state
-              const updatedTabs = middleBarTabs.map((tab) => {
-                if (tab.id === middleBarTabIndex) {
-                  return { ...tab, editorValue: value };
-                }
-                return tab;
-              });
-              setMiddleBarTabs(updatedTabs);
-            }}
+            onChange={debouncedHandleEditorChange}
             key={middleBarTabIndex} // Important: This forces re-render when tab changes
           />
         )}
