@@ -12,7 +12,7 @@ import { ProblemDataProvider } from "../contexts/ProblemDataContext";
 import { LocalStorageProvider } from "../contexts/localStorageContext";
 
 // Custom hook for managing problem data
-const useProblemData = (location, navigate) => {
+const useProblemData = (location, navigate, resetExecutionState) => {
   const { currentProblem, fetchProblemById, setCurrentProblem, problems, setCurrentProblemIndex } =
     useContext(ProblemDataProvider);
   const documentId = location.pathname.split("/")[2];
@@ -23,6 +23,7 @@ const useProblemData = (location, navigate) => {
     if (problemIndex) {
       setCurrentProblemIndex(problemIndex);
     }
+    resetExecutionState();
   }, [location.pathname, navigate]);
 
   return { currentProblem, setCurrentProblem };
@@ -43,6 +44,7 @@ const useExecutionState = () => {
     setErrorMsg("");
     setSuccess(false);
     setTestResults({});
+    setDidExecute(false);
   };
 
   return {
@@ -135,7 +137,7 @@ const useMiddleBarTabs = (currentProblem) => {
 const CodeEditorMiddleBar = ({ middleBarTabs, middleBarTabIndex, handleMiddleBarTabClick, setMiddleBarTabs }) => {
   const { progressMap, setProgressMap, updateLocalStorage } = useContext(LocalStorageProvider);
   const { currentProblem } = useContext(ProblemDataProvider);
-  
+
   const handleEditorChange = (value) => {
     const updatedTabs = middleBarTabs.map((tab) => {
       if (tab.id === middleBarTabIndex) {
@@ -233,7 +235,6 @@ const Practice = () => {
   // Custom hooks
   const location = useLocation();
   const navigate = useNavigate();
-  const { currentProblem, setCurrentProblem } = useProblemData(location, navigate);
   const { setSolvedProblems, solvedProblems, updateLocalStorage, progressMap, setProgressMap } =
     useContext(LocalStorageProvider);
   const {
@@ -252,6 +253,12 @@ const Practice = () => {
     setConsoleLogMap,
     resetExecutionState,
   } = useExecutionState();
+
+  const { currentProblem, setCurrentProblem } = useProblemData(
+    location,
+    navigate,
+    resetExecutionState
+  );
 
   const { middleBarTabIndex, middleBarTabs, setMiddleBarTabs, handleMiddleBarTabClick } =
     useMiddleBarTabs(currentProblem);
@@ -282,7 +289,7 @@ const Practice = () => {
       if (event.data && !event.data.vscodeScheduleAsyncWork) {
         const { stack, name, error, testResultsPassed, testResultsFailed, consoleLogList } = event.data;
         if (error || stack || name) {
-          setErrorMsg(JSON.stringify(error || stack || name));
+          setErrorMsg(error || stack || name);
           setSuccess(false);
         } else {
           // Fixed bug in the condition check
@@ -333,6 +340,7 @@ const Practice = () => {
           ? { ...oldValue, editorValueCode: value }
           : { ...oldValue, editorValueTests: value };
       });
+      if (currentEditorTabIndex != 0) return false;
       const clonedMap = progressMap ? structuredClone(progressMap) : {};
       const currentId = currentProblem.documentId;
       if (clonedMap[currentId]) {
@@ -398,7 +406,7 @@ const Practice = () => {
     setIsRunning(true);
     setErrorMsg("");
     debouncedSendMessageToIframe("submit");
-    markSolved();
+    //markSolved();
   };
 
   // If problem is not loaded yet, don't render anything
@@ -407,7 +415,7 @@ const Practice = () => {
   }
 
   return (
-    <PanelGroup direction="horizontal" className="flex h-full">
+    <PanelGroup key={currentProblem.documentId} direction="horizontal" className="flex h-full">
       <Panel minSize={30}>
         <ProblemDescription currentProblem={currentProblem} isSolved={isSolved} />
       </Panel>

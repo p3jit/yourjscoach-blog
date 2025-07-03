@@ -75,109 +75,149 @@ const ResultsPanel = ({
   );
 
   // Console output component
-  const ConsoleOutput = () => (
-    <div className="bg-zinc-900 test-case-container min-h-[150px] max-h-[300px] overflow-y-auto flex flex-col w-full h-full scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-zinc-900 scrollbar-track-zinc-800">
-      {consoleLogMap && Object.keys(consoleLogMap).length > 0
-        ? Object.keys(consoleLogMap).map((singleLog, singleCount) => (
-            <div key={singleCount}>
-              <span
-                className={`test-case pl-4 py-2 flex relative border-b-2 border-zinc-700 ${
-                  singleCount === 0 ? "mt-4 border-t-2" : ""
-                } gap-4 items-center text-xs text-zinc-300`}
-              >
-                {consoleLogMap[singleLog]}
-              </span>
+  const ConsoleOutput = () => {
+    // Helper function to determine log type and apply appropriate styling
+    const getLogTypeStyle = (logContent) => {
+      if (typeof logContent === "string") {
+        if (logContent.includes("[ERROR]")) return "text-red-400";
+        if (logContent.includes("[WARN]")) return "text-yellow-400";
+        if (logContent.includes("[INFO]")) return "text-blue-400";
+      }
+      return "text-green-400";
+    };
+
+    // Format timestamp
+    const getTimestamp = () => {
+      const now = new Date();
+      return `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}:${now
+        .getSeconds()
+        .toString()
+        .padStart(2, "0")}`;
+    };
+
+    return (
+      <div className="bg-zinc-900 flex flex-col w-full h-full flex-1 font-mono">
+        {/* Console content */}
+        <div className="flex-1 overflow-y-auto px-2 py-3 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-zinc-700 scrollbar-track-zinc-800">
+          {consoleLogMap && Object.keys(consoleLogMap).length > 0
+            ? Object.keys(consoleLogMap).map((singleLog, singleCount) => {
+                const logStyle = getLogTypeStyle(consoleLogMap[singleLog]);
+
+                return (
+                  <div
+                    key={singleCount}
+                    className={`group border-b border-zinc-800/50 hover:bg-zinc-900 transition-colors`}
+                  >
+                    <div className="flex items-start px-3 py-2">
+                      {/* Terminal prompt */}
+                      <span className="text-sm text-green-500 mr-2 select-none">$</span>
+
+                      {/* Log content */}
+                      <div className={`text-sm ${logStyle} text-zinc-300 break-words flex-1 leading-relaxed`}>
+                        {consoleLogMap[singleLog]}
+                      </div>
+
+                      {/* Timestamp */}
+                      <span className="text-xs text-zinc-600 ml-3 mt-1 hidden group-hover:block">{getTimestamp()}</span>
+                    </div>
+                  </div>
+                );
+              })
+            : !errorMsg && (
+                <div className="flex flex-col items-center justify-center h-full p-4">
+                  <div className="flex items-center text-zinc-600 mb-2">
+                    <span className="text-md text-zinc-500 mr-2">$</span>
+                    <span className="text-md font-mono">_</span>
+                  </div>
+                  <div className="text-zinc-500 text-md">No console output</div>
+                  <div className="text-zinc-600 text-md mt-2 max-w-md text-center">
+                    Use console.log() statements in your code to see output here
+                  </div>
+                </div>
+              )}
+
+          {/* Error message */}
+          {errorMsg && (
+            <div className="mt-4 ml-2 font-mono">
+              <div className="px-3 py-2 border-l-2 border-red-500">
+                <div className="text-red-400 text-xs mb-2">Error</div>
+                <pre className="text-zinc-300 whitespace-pre-wrap text-sm overflow-x-auto leading-relaxed">
+                  {errorMsg}
+                </pre>
+              </div>
             </div>
-          ))
-        : ""}
-      {errorMsg && <p className="text-red-500 p-5 whitespace-pre-wrap text-sm tracking-wide">{`${errorMsg}`}</p>}
-    </div>
-  );
+          )}
+        </div>
+      </div>
+    );
+  };
 
   // Test results component
-  const TestResults = () => (
-    <>
-      <div className="min-h-[150px] max-h-[250px] overflow-y-auto flex flex-col scrollbar-thin scrollbar-thumb-zinc-900 scrollbar-track-zinc-800 pr-2 mr-1 pb-14">
-        {Array.isArray(testResults.passed) && Array.isArray(testResults.failed)
-          ? [...testResults.passed, ...testResults.failed].map((singleCase, index) => (
-              <div
-                key={index}
-                className={`pl-6 relative py-2 justify-between flex border-b-2 border-zinc-700 ${
-                  index === 0 ? "mt-4 border-t-2" : ""
-                } gap-1 items-center text-sm text-zinc-300`}
-              >
-                <div className="flex gap-3">
-                  {singleCase.status === "passed" ? (
-                    <svg
-                      className="w-5 h-5 text-lime-500"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 11.917 9.724 16.5 19 7.5"
-                      />
-                    </svg>
-                  ) : (
-                    <svg
-                      className="w-5 h-5 text-red-600"
-                      aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M6 18 17.94 6M18 18 6.06 6"
-                      />
-                    </svg>
-                  )}
-                  <span>{singleCase.parentTitle}</span>
-                  {">"}
-                  <span>{singleCase.title}</span>
+  const TestResults = () => {
+    return (
+      <div className="bg-zinc-900 flex flex-col w-full h-full flex-1 font-mono">
+        {/* Results content */}
+        <div className="flex-1 overflow-y-auto p-2 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-zinc-700 scrollbar-track-zinc-800">
+          {Array.isArray(testResults.passed) && Array.isArray(testResults.failed) ? (
+            [...testResults.passed, ...testResults.failed].map((singleCase, index) => (
+              <div key={index} className={`group border-b border-zinc-800/50 hover:bg-zinc-900 transition-colors`}>
+                <div className="flex items-start px-3 py-2 justify-between">
+                  <div className="flex items-center gap-3">
+                    {singleCase.status === "passed" ? (
+                      <span className="text-lime-500 text-sm">✓</span>
+                    ) : (
+                      <span className="text-red-500 text-sm">✗</span>
+                    )}
+                    <div className="text-sm text-zinc-300">
+                      <span>{singleCase.parentTitle}</span>
+                      <span className="mx-1 text-zinc-600">→</span>
+                      <span className={singleCase.status === "passed" ? "text-lime-400" : "text-red-400"}>
+                        {singleCase.title}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="text-xs text-zinc-600 bg-zinc-900/50 px-2 py-1 rounded">
+                    {singleCase.timeTaken} ms
+                  </div>
                 </div>
-                <div className="flex text-zinc-500 justify-end mr-6">{singleCase.timeTaken} ms</div>
               </div>
             ))
-          : null}
-      </div>
-      <div>
-        <hr className="h-px pt-0.5 bg-zinc-700 border-0 relative bottom-14"></hr>
-        <div className="mx-3 mb-1 relative bottom-12 gap-2 flex">
+          ) : (
+            <div className="flex items-center justify-center h-full p-4">
+              <div className="text-zinc-500 text-sm flex flex-col items-center">
+                <span className="text-green-500 text-lg mb-2">[?]</span>
+                <span>No test results</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Results footer */}
+        <div className="bg-zinc-800 border-t border-zinc-800 px-3 py-2 flex items-center gap-2">
           {success ? (
             <>
-              <span className="text-sm text-lime-500 pr-2">Correct answer</span>
-              <span className="text-sm text-lime-500">{testResults?.passed?.length} passed,</span>
+              <span className="text-sm text-lime-500 font-medium">✓</span>
+              <span className="text-sm text-lime-500">{testResults?.passed?.length} passed</span>
             </>
-          ) : null}
-          {!success ? (
+          ) : (
             <>
-              <span className="text-sm text-red-500 pr-2">Wrong answer</span>
-              <span className="text-sm text-red-500">{testResults?.failed?.length} failed,</span>
+              <span className="text-sm text-red-500 font-medium">✗</span>
+              <span className="text-sm text-red-500">{testResults?.failed?.length} failed</span>
             </>
-          ) : null}
-          <span className="text-sm text-zinc-300">
+          )}
+          <span className="text-sm text-zinc-400">
             {(testResults?.failed?.length || 0) + (testResults?.passed?.length || 0)} total
           </span>
-          <button className="relative text-end flex-grow text-sm text-zinc-300" onClick={() => handleEditorTabClick(1)}>
+          <button
+            className="ml-auto text-sm text-zinc-300 hover:text-zinc-100 transition-colors border border-zinc-700 px-2 py-0.5 rounded hover:bg-zinc-800"
+            onClick={() => handleEditorTabClick(1)}
+          >
             Edit tests
           </button>
         </div>
       </div>
-    </>
-  );
+    );
+  };
 
   return (
     <div className="w-full h-full flex flex-col border-t-2 border-t-zinc-700">
@@ -196,18 +236,20 @@ const ResultsPanel = ({
       </div>
 
       {/* Control panel */}
-      <div className="flex-grow bg-zinc-800">
-        <div className="flex gap-3 justify-between w-full">
-          {/* Tab buttons */}
-          <div className="flex gap-1 p-2">
+      <div className="flex-grow bg-zinc-800 flex flex-col h-full">
+        <div className="flex items-center justify-between w-full border-b border-zinc-700 bg-zinc-800 px-2">
+          {/* Tab buttons as terminal-like tabs */}
+          <div className="flex">
             <button
-              className={`${
-                showConsoleOutput ? "text-zinc-300" : "text-zinc-500"
-              } text-sm flex gap-2 items-center w-fit h-fit self-center px-2 py-1 rounded-lg`}
+              className={`relative px-3 py-2 flex items-center gap-2 transition-colors ${
+                showConsoleOutput
+                  ? "text-zinc-200"
+                  : "text-zinc-500 hover:text-zinc-300"
+              }`}
               onClick={handleShowTestCases}
             >
               <svg
-                className={`${showConsoleOutput ? "text-zinc-300" : "text-zinc-500"} h-4 w-4`}
+                className="h-4 w-4"
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -221,17 +263,24 @@ const ResultsPanel = ({
                   clipRule="evenodd"
                 />
               </svg>
-              Console
+              <span className="text-sm">Console</span>
+              {consoleLogMap && consoleLogMap.length > 0 && (
+                <span className="ml-1 text-xs px-2 py-1 rounded-full bg-zinc-700 text-zinc-300">
+                  {consoleLogMap.length}
+                </span>
+              )}
             </button>
             {currentProblem.category == "dsa" && (
               <button
-                className={`${
-                  showResults ? "text-zinc-300" : "text-zinc-500"
-                } text-sm flex gap-1 items-center w-fit h-fit self-center px-2 py-1 rounded-lg`}
+                className={`relative px-3 py-3 flex items-center gap-2 transition-colors ${
+                  showResults
+                    ? "text-zinc-200"
+                    : "text-zinc-500 hover:text-zinc-300"
+                }`}
                 onClick={handleShowResults}
               >
                 <svg
-                  className={`${showResults ? "text-zinc-300" : "text-zinc-500"} h-4 w-4`}
+                  className="h-4 w-4"
                   aria-hidden="true"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -245,31 +294,39 @@ const ResultsPanel = ({
                     clipRule="evenodd"
                   />
                 </svg>
-                Result
+                <span className="text-sm">Results</span>
+                {testResults && (testResults.passed?.length > 0 || testResults.failed?.length > 0) && (
+                  <span className="ml-1 text-xs px-2 py-1 rounded-full bg-zinc-700 text-zinc-300">
+                    {(testResults.passed?.length || 0) + (testResults.failed?.length || 0)}
+                  </span>
+                )}
               </button>
             )}
           </div>
 
           {/* Action buttons */}
-          { currentProblem.category == "dsa" && <div className="flex gap-2">
-            <button
-              className="text-lime-500 text-sm tracking-wide flex gap-2 items-center h-fit w-fit self-center px-3 py-1 rounded-lg"
-              onClick={handleRunCode}
-            >
-              <span className="text-xs">▶</span>Run
-            </button>
-            <button
-              className="text-zinc-300 text-sm tracking-wide flex gap-2 items-center h-fit w-fit self-center px-3 py-1 rounded-lg mr-2"
-              onClick={handleSubmitCode}
-            >
-              Submit
-            </button>
-          </div>}
+          {currentProblem.category == "dsa" && (
+            <div className="flex items-center gap-2 pr-1">
+              <button
+                className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm flex items-center gap-2   py-1.5 px-3 rounded transition-colors"
+                onClick={handleRunCode}
+              >
+                <span className="text-xs text-emerald-300">▶</span>
+                <span className="text-md text-emerald-300">Run</span>
+              </button>
+              <button
+                className="bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm flex items-center gap-1.5 py-1.5 px-3 rounded transition-colors"
+                onClick={handleSubmitCode}
+              >
+                <span>Submit</span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Console output panel */}
         {showConsoleOutput && (
-          <div className="w-full h-full flex flex-col justify-between relative">
+          <div className="w-full flex-1 flex flex-col overflow-hidden">
             {didExecute && !isRunning ? <ConsoleOutput /> : null}
             {!didExecute && !isRunning ? <EmptyStateOutput /> : null}
             {isRunning ? <LoadingSpinner /> : null}
@@ -278,7 +335,7 @@ const ResultsPanel = ({
 
         {/* Results panel */}
         {showResults && (
-          <div className="w-full h-full flex flex-col justify-between relative">
+          <div className="w-full flex-1 flex flex-col overflow-hidden">
             {didExecute && !isRunning ? <TestResults /> : null}
             {!didExecute && !isRunning ? <EmptyStateResult /> : null}
             {isRunning ? <LoadingSpinner /> : null}

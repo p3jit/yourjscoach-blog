@@ -19,7 +19,7 @@ const EditorSection = ({
   const [cssContent, setCssContent] = useState(``);
   const [jsContent, setJsContent] = useState("");
   const { progressMap } = useContext(LocalStorageProvider);
-  const { handleReset } = useContext(ProblemDataProvider);;
+  const { handleReset, setCurrentProblem } = useContext(ProblemDataProvider);
 
   // Function to check for errors
   const checkForErrors = (markers) => {
@@ -101,7 +101,9 @@ const EditorSection = ({
   }, 500); // 500ms debounce delay
 
   const getDefaultEditorValue = () => {
+    // debugger;
     if (progressMap[currentProblem.documentId]) {
+      // setCurrentProblem({...currentProblem, editorValueCode: progressMap[currentProblem.documentId]})
       return progressMap[currentProblem.documentId];
     }
     return currentProblem.editorValueCode;
@@ -201,7 +203,7 @@ const EditorSection = ({
 
         {currentProblem.category == "dsa" && (
           <div className="relative left-1">
-            <ResetButton onClick={handleReset}/>
+            <ResetButton onClick={handleReset} />
           </div>
         )}
       </div>
@@ -213,13 +215,12 @@ const EditorSection = ({
         </div>
       ) : (
         <Editor
+          key={currentProblem.documentId + currentEditorTabIndex}
           defaultLanguage="javascript"
           value={
             currentEditorTabIndex === 0 && currentProblem.category === "dsa"
               ? getDefaultEditorValue()
-              : currentEditorTabIndex === 1
-              ? currentProblem.editorValueTests
-              : ""
+              : currentProblem.editorValueTests
           }
           onChange={handleValueChange}
           onValidate={handleErrorCheck}
