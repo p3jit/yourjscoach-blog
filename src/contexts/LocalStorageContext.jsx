@@ -5,7 +5,7 @@ export const LocalStorageProvider = createContext();
 const LocalStorageContext = ({ children }) => {
   const [localUser, setLocalUser] = useState({});
   const [solvedProblems, setSolvedProblems] = useState([]);
-  const [solvedMap, setSolvedMap] = useState({});
+  const [progressMap, setProgressMap] = useState({});
 
   const updateLocalStorage = (data) => {
     localStorage.setItem('yjsUser', JSON.stringify(data));
@@ -17,13 +17,13 @@ const LocalStorageContext = ({ children }) => {
     if (storedData) {
       storedData = JSON.parse(storedData);
       setSolvedProblems(storedData.solvedProblems || []);
-      setSolvedMap(storedData.solvedMap || {});
+      setProgressMap(storedData.progressMap || {});
       setLocalUser(storedData);
     }
   }, []);
 
   return (
-    <LocalStorageProvider.Provider value={{ localUser, setLocalUser, solvedProblems, setSolvedProblems, solvedMap, setSolvedMap, updateLocalStorage }}>
+    <LocalStorageProvider.Provider value={{ localUser, setLocalUser, solvedProblems, setSolvedProblems, progressMap, setProgressMap, updateLocalStorage }}>
       {children}
     </LocalStorageProvider.Provider>
   );

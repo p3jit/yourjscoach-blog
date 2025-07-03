@@ -68,6 +68,7 @@ const useExecutionState = () => {
 const useMiddleBarTabs = (currentProblem) => {
   const [middleBarTabIndex, setMiddleBarTabIndex] = useState(0);
   const [middleBarTabs, setMiddleBarTabs] = useState([]);
+  const { progressMap } = useContext(LocalStorageProvider);
 
   useEffect(() => {
     if (currentProblem) {
@@ -81,7 +82,9 @@ const useMiddleBarTabs = (currentProblem) => {
             fill: "currentColor",
           },
           content: "HTML Content",
-          editorValue: currentProblem.editorHtmlCode,
+          editorValue: progressMap[currentProblem.documentId]
+            ? progressMap[currentProblem.documentId].htmlCode
+            : currentProblem.editorHtmlCode,
           language: "html",
         },
         {
@@ -93,7 +96,9 @@ const useMiddleBarTabs = (currentProblem) => {
             fill: "currentColor",
           },
           content: "CSS Content",
-          editorValue: currentProblem.editorCssCode,
+          editorValue: progressMap[currentProblem.documentId]
+            ? progressMap[currentProblem.documentId].cssCode
+            : currentProblem.editorCssCode,
           language: "css",
         },
         {
@@ -105,7 +110,9 @@ const useMiddleBarTabs = (currentProblem) => {
             fill: "currentColor",
           },
           content: "JavaScript Content",
-          editorValue: currentProblem.editorJsCode,
+          editorValue: progressMap[currentProblem.documentId]
+            ? progressMap[currentProblem.documentId].jsCode
+            : currentProblem.editorJsCode,
           language: "javascript",
         },
       ]);
@@ -202,7 +209,8 @@ const Practice = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { currentProblem, setCurrentProblem } = useProblemData(location, navigate);
-  const { setSolvedProblems, solvedProblems, updateLocalStorage } = useContext(LocalStorageProvider);
+  const { setSolvedProblems, solvedProblems, updateLocalStorage, progressMap, setProgressMap } =
+    useContext(LocalStorageProvider);
   const {
     didExecute,
     setDidExecute,
@@ -238,7 +246,7 @@ const Practice = () => {
     if (!isSolved) {
       updatedSolvedProblems = [...solvedProblems, currentId];
       setSolvedProblems(updatedSolvedProblems);
-      updateLocalStorage({ solvedProblems: [...updatedSolvedProblems] } );
+      updateLocalStorage({ solvedProblems: [...updatedSolvedProblems] });
     }
   };
 
@@ -300,8 +308,19 @@ const Practice = () => {
           ? { ...oldValue, editorValueCode: value }
           : { ...oldValue, editorValueTests: value };
       });
+      const clonedMap = progressMap ? structuredClone(progressMap) : {};
+      const currentId = currentProblem.documentId;
+      if (clonedMap[currentId]) {
+        clonedMap[currentId] = value;
+      } else {
+        clonedMap[currentId] = "";
+        clonedMap[currentId] = value;
+      }
+      // Update current progressMap and localStorage progressMap
+      updateLocalStorage({ progressMap: { ...clonedMap } });
+      setProgressMap({ ...clonedMap });
     },
-    300 // debounce delay in ms, adjust as needed
+    500 // debounce delay in ms, adjust as needed
   );
 
   const handleEditorValueChange = (value) => {

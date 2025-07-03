@@ -1,6 +1,7 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 import Editor from "@monaco-editor/react";
 import useDebounce from "../../hooks/useDebounce";
+import { LocalStorageProvider } from "../../contexts/localStorageContext";
 
 const EditorSection = ({
   currentProblem,
@@ -15,6 +16,7 @@ const EditorSection = ({
   const [htmlContent, setHtmlContent] = useState(``);
   const [cssContent, setCssContent] = useState(``);
   const [jsContent, setJsContent] = useState("");
+  const { progressMap } = useContext(LocalStorageProvider);
 
   // Function to check for errors
   const checkForErrors = (markers) => {
@@ -94,6 +96,13 @@ const EditorSection = ({
       iframeDoc.close();
     }
   }, 500); // 500ms debounce delay
+
+  const getDefaultEditorValue = () => {
+    if (progressMap[currentProblem.documentId]) {
+      return progressMap[currentProblem.documentId];
+    }
+    return currentProblem.editorValueCode;
+  };
 
   // Update iframe content when code changes or tab changes
   useEffect(() => {
@@ -187,30 +196,32 @@ const EditorSection = ({
       </div>
 
       {/* Show iframe for Output tab only for non-DSA problems */}
-      {currentProblem.category !== "dsa" && currentEditorTabIndex === 0 ? (
+      {(currentProblem.category !== "dsa" && currentEditorTabIndex === 0) ? (
         <div className="w-full h-full bg-white">
           <iframe ref={iframeRef} title="Output Preview" className="w-full h-full border-none"></iframe>
         </div>
       ) : (
-        <Editor
-          defaultLanguage="javascript"
-          value={
-            currentEditorTabIndex === 0 && currentProblem.category === "dsa"
-              ? currentProblem.editorValueCode
-              : currentEditorTabIndex === 1
-              ? currentProblem.editorValueTests
-              : ""
-          }
-          onChange={handleValueChange}
-          onValidate={handleErrorCheck}
-          theme="vs-dark"
-          options={{
-            minimap: {
-              enabled: false,
-            },
-            autoIndent: true,
-          }}
-        />
+        
+          <Editor
+            defaultLanguage="javascript"
+            value={
+              currentEditorTabIndex === 0 && currentProblem.category === "dsa"
+                ? getDefaultEditorValue()
+                : currentEditorTabIndex === 1
+                ? currentProblem.editorValueTests
+                : ""
+            }
+            onChange={handleValueChange}
+            onValidate={handleErrorCheck}
+            theme="vs-dark"
+            options={{
+              minimap: {
+                enabled: false,
+              },
+              autoIndent: true,
+            }}
+          />
+        
       )}
     </>
   );

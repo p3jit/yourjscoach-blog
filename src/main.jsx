@@ -12,8 +12,8 @@ import LocalStorageContext from "./contexts/localStorageContext";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <ProblemDataContext>
-      <LocalStorageContext>
+    <LocalStorageContext>
+      <ProblemDataContext>
         <BlogDataContext>
           <DarkModeContext>
             <ModalContext>
@@ -23,7 +23,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             </ModalContext>
           </DarkModeContext>
         </BlogDataContext>
-      </LocalStorageContext>
-    </ProblemDataContext>
+      </ProblemDataContext>
+    </LocalStorageContext>
   </BrowserRouter>
 );
