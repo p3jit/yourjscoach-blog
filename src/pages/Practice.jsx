@@ -291,7 +291,7 @@ const Practice = () => {
 
   const handleEditorValueChange = (value) => {
     setCurrentProblem((oldValue) => {
-      return currentEditorTabIndex === 1 // Adjusted for new tab order
+      return currentEditorTabIndex === 0 // Adjusted for new tab order
         ? { ...oldValue, editorValueCode: value }
         : { ...oldValue, editorValueTests: value };
     });
