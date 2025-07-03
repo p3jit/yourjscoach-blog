@@ -40,7 +40,7 @@ const ProblemDataContext = ({ children }) => {
       const newProblems = sortedProblems.filter((problem) =>
         isNewProblem(problem.timestamp || problem.createdAt) ? problem : null
       );
-      setNewProblems(newProblems);
+      setNewProblems(newProblems.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 2));
     } catch (err) {
       console.error("Error fetching problems:", err);
       setError(err.message);

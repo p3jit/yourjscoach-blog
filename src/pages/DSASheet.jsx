@@ -49,12 +49,12 @@ return practice.reduce((confidence, skill) => {
 
         {/* Floating code symbols */}
         <div className="floating-elements absolute inset-0 pointer-events-none">
-          <span className="floating-item text-zinc-400">{`{}`}</span>
-          <span className="floating-item text-zinc-300">{`()`}</span>
-          <span className="floating-item text-zinc-400">{`=>`}</span>
-          <span className="floating-item text-zinc-300">{`</>`}</span>
-          <span className="floating-item text-zinc-400">{`[]`}</span>
-          <span className="floating-item text-zinc-300">{`$`}</span>
+          <span className="floating-item text-zinc-400/40">{`{}`}</span>
+          <span className="floating-item text-purple-600/40">{`()`}</span>
+          <span className="floating-item text-zinc-400/40">{`=>`}</span>
+          <span className="floating-item text-emerald-300/40">{`var`}</span>
+          <span className="floating-item text-red-400/40">{`const`}</span>
+          <span className="floating-item text-yellow-500/40">{`function`}</span>
         </div>
 
         {/* Main content */}
@@ -78,13 +78,13 @@ return practice.reduce((confidence, skill) => {
               <span className="absolute inset-0 bg-zinc-500/20 translate-y-full group-hover:translate-y-0 transition-transform"></span>
             </button>
 
-            <button className="px-6 py-3 border border-zinc-600 text-zinc-300 rounded-lg hover:bg-zinc-800 transition-colors">
+            {/* <button className="px-6 py-3 border border-zinc-600 text-zinc-300 rounded-lg hover:bg-zinc-800 transition-colors">
               View Curriculum
-            </button>
+            </button> */}
           </div>
 
           {/* Stats */}
-          <div className="flex gap-8 mt-8">
+          {/* <div className="flex gap-8 mt-8">
             <div className="text-center">
               <div className="text-2xl font-bold text-zinc-300 counter-animate">100+</div>
               <div className="text-sm text-zinc-500">Coding Problems</div>
@@ -97,7 +97,7 @@ return practice.reduce((confidence, skill) => {
               <div className="text-2xl font-bold text-zinc-300 counter-animate">8+</div>
               <div className="text-sm text-zinc-500">Categories</div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 
