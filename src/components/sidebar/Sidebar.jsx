@@ -9,8 +9,9 @@ import {
   IconAdjustments,
   IconChartBar
 } from "@tabler/icons";
-import { returnColor, returnDifficultyText } from "../../utils/utils";
+import { returnColor, returnDifficultyText, isNewProblem } from "../../utils/utils";
 import Brand from "../brand/Brand";
+import NewBadge from "../new-badge/NewBadge";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LocalStorageProvider } from "../../contexts/localStorageContext";
 import { useStudyPlan } from "../../contexts/StudyPlanContext";
@@ -95,6 +96,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const ProblemItem = ({ problem }) => {
     const isCurrentProblem = currentProblem && currentProblem.documentId === problem.documentId;
     const isSolved = solvedProblems.includes(problem.documentId);
+    const isNew = isNewProblem(problem.timestamp || problem.createdAt);
 
     return (
       <li
@@ -127,6 +129,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                     Current
                   </span>
                 )}
+                {isNew && <NewBadge />}
               </div>
               {problem.tags && problem.tags.length > 0 && (
                 <div className="flex gap-1 mt-1 flex-wrap">

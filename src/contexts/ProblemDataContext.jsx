@@ -50,30 +50,6 @@ const ProblemDataContext = ({ children }) => {
     }
   };
 
-  // Filter problems based on search text and selected category
-  const filterProblems = (searchValue, category = "") => {
-    if (!problems.length) return [];
-
-    let filtered = problems;
-
-    // Apply search text filter
-    if (searchValue.length > 0) {
-      filtered = allProblems.filter(
-        (problem) =>
-          problem.problemTitle.includes(searchValue) ||
-          problem.askedIn.some((company) => company.toLowerCase().includes(searchValue)) ||
-          problem.tags.some((tag) => tag.toLowerCase().includes(searchValue))
-      );
-    }
-
-    // Apply category filter
-    if (category && category !== "all") {
-      filtered = filtered.filter((problem) => problem.category === category);
-    }
-
-    return filtered;
-  };
-
   // Fetch a single problem by ID
   const fetchProblemById = async (documentId) => {
     setIsLoading(true);
@@ -116,7 +92,6 @@ const ProblemDataContext = ({ children }) => {
     fetchProblemById,
     setProblems,
     setFilteredProblems,
-    filterProblems,
     setCurrentProblem,
     currentProblemIndex,
     setCurrentProblemIndex,

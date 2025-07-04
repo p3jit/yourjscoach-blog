@@ -8,6 +8,7 @@ import { DarkModeProvider } from "./contexts/DarkModeContext.jsx";
 import { ModalProvider } from "./contexts/ModalContext.jsx";
 import { SidebarProvider } from "./contexts/SidebarContext.jsx";
 import Footer from "./components/footer/Footer.jsx";
+import Hero from "./components/hero/Hero.jsx";
 
 const LazyPages = {
   Error: lazy(() => import("./pages/Error")),
@@ -30,16 +31,14 @@ const AppLayout = ({ children, isDarkMode, pathname }) => {
     if (isPostPage) {
       return "gap-10 py-[5vh] 2xl:px-[23vw] lg:px-[20vw] px-[7vw] min-w-[56vw]";
     }
-    return "gap-10 py-[3vh] 2xl:px-[19vw] lg:px-[10vw] px-[7vw] min-w-[56vw]";
+    return "gap-10 2xl:px-[19vw] lg:px-[10vw] px-[7vw] min-w-[56vw]";
   }
 
   const themeClasses = isDarkMode ? "bg-white" : "bg-zinc-900";
 
   return (
     <div className={`w-full flex flex-col ${themeClasses} flex-1 h-full`}>
-      <div
-        className={`font-roboto h-full flex flex-col relative tracking-tight ${containerClasses} ${themeClasses}`}
-      >
+      <div className={`font-roboto h-full flex flex-col relative tracking-tight ${containerClasses} ${themeClasses}`}>
         {children}
       </div>
     </div>
@@ -76,7 +75,8 @@ const App = () => {
       <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
       <div className="flex flex-col z-0 w-full overflow-hidden">
         <Header />
-        <div className="overflow-y-auto min-w-[400px] bg-zinc-900 flex-grow scrollbar scrollbar-thumb-zinc-800 scrollbar-track-zinc-900">
+        <div className="relative overflow-y-auto min-w-[400px] bg-zinc-900 flex-grow scrollbar scrollbar-thumb-zinc-800 scrollbar-track-zinc-900">
+          {location.pathname == "/problems" && <Hero />}
           <AppLayout isDarkMode={isDarkMode} pathname={location.pathname}>
             <Suspense fallback={<Loader />}>
               <AppRoutes />

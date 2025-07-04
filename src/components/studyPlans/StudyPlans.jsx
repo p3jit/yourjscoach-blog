@@ -37,7 +37,7 @@ const PlanCard = ({ plan, isActive, onClick }) => {
       }`}
     >
       <div
-        className={`group relative p-6 rounded-xl border-2 h-full flex flex-col ${
+        className={`group relative p-6 rounded-xl border shadow-lg h-full flex flex-col ${
           plan.isPopular
             ? "border-zinc-700 bg-zinc-900/50 hover:border-zinc-400"
             : "border-zinc-700 bg-zinc-900/50 hover:border-zinc-400"
@@ -166,12 +166,12 @@ const StudyPlans = () => {
   return (
     <section ref={sectionRef} className="py-12 relative">
       <div
-        className={`transition-all duration-500 max-w-6xl mb-12 ${
+        className={`transition-all pt-12 duration-500 max-w-6xl mb-12 ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         }`}
       >
-        <h2 className="text-2xl font-bold text-zinc-100 mb-3">Featured Study Plans</h2>
-        <p className="text-zinc-400">
+        <h2 className="text-3xl text-center font-bold text-zinc-100 mb-3">Featured Study Plans</h2>
+        <p className="text-zinc-400 mx-auto text-center">
           Browse through our curated collection of study plans to boost your learning journey.
         </p>
       </div>
