@@ -40,7 +40,7 @@ const ProblemDescription = ({ currentProblem }) => {
                 <IconCircleCheck className="w-5" /> Solved
               </span>
             )}
-            <div className="flex gap-2">
+            <div className="flex gap-2 flex-wrap">
               {currentProblem.tags?.map((currentTag, index) => (
                 <div key={index}>
                   <Tag data={currentTag} key={index} />
@@ -70,7 +70,7 @@ const ProblemDescription = ({ currentProblem }) => {
       <div className="flex justify-between w-full items-end border-t-2 border-t-zinc-800 pt-4">
         <div className="flex gap-3">
           <p className="text-zinc-300">Companies - </p>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap">
             {currentProblem.askedIn?.map((company, index) => (
               <Tag data={company} key={index} showHash={false} />
             ))}

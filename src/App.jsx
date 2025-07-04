@@ -25,7 +25,7 @@ const AppLayout = ({ children, isDarkMode, pathname }) => {
 
   function returnContainerClasses() {
     if (isPracticePage) {
-      return "gap-5 min-w-[950px] overflow-hidden justify-center 2xl:items-center";
+      return "gap-5 min-w-[1000px] overflow-hidden justify-center 2xl:items-center";
     }
     if (isPostPage) {
       return "gap-10 py-[5vh] 2xl:px-[23vw] lg:px-[20vw] px-[7vw] min-w-[56vw]";
@@ -38,7 +38,7 @@ const AppLayout = ({ children, isDarkMode, pathname }) => {
   return (
     <div className={`w-full flex flex-col ${themeClasses} flex-1 h-full`}>
       <div
-        className={`font-roboto h-full flex flex-col relative tracking-tight w-full ${containerClasses} ${themeClasses}`}
+        className={`font-roboto h-full flex flex-col relative tracking-tight ${containerClasses} ${themeClasses}`}
       >
         {children}
       </div>

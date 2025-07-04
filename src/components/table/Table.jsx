@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { isNewProblem, returnColor, returnDifficultyText } from "../../utils/utils";
 import { useNavigate } from "react-router-dom";
-import { IconChevronLeft, IconChevronRight, IconMoodEmpty, IconSortAscending, IconSortDescending } from '@tabler/icons';
+import { IconChevronLeft, IconChevronRight, IconMoodEmpty, IconSortAscending, IconSortDescending, IconCircleCheck, IconCircleX } from '@tabler/icons';
 import NewBadge from "../new-badge/NewBadge";
 import Tag from "../tag/Tag";
+import { LocalStorageProvider } from "../../contexts/localStorageContext";
 
 const TableHeader = (props) => {
   const headers = [
     { key: "problemTitle", label: "Problem" },
+    { key: "solved", label: "Solved" },
     { key: "difficulty", label: "Difficulty" },
     { key: "askedIn", label: "Asked in" },
     { key: "tags", label: "Topic" }
@@ -62,7 +64,9 @@ const TagList = (props) => {
 const TableRow = (props) => {
   const cellClass = "px-4 py-4 text-zinc-300";
   const isNew = isNewProblem(props.question.timestamp || props.question.createdAt);
-  
+  const { solvedProblems } = useContext(LocalStorageProvider);
+  const isSolved = solvedProblems.includes(props.question.documentId);
+
   return (
     <tr 
       className="border-b border-zinc-600 hover:bg-zinc-600 transition-colors cursor-pointer"
@@ -74,6 +78,14 @@ const TableRow = (props) => {
           {props.question.problemTitle}
           {isNew && <NewBadge />}
         </div>
+      </td>
+      <td className={`${cellClass} text-center`}>
+        {isSolved && (
+          <IconCircleCheck className="w-5 h-5 text-emerald-400 mx-auto" />
+        )}
+        {!isSolved && (
+          <IconCircleX className="w-5 h-5 text-red-400 mx-auto" />
+        )}
       </td>
       <td className={`${cellClass} whitespace-nowrap`}>
         <span className={`px-3 py-1 rounded-full text-sm font-medium ${returnColor(props.question.difficulty)}`}>
@@ -99,7 +111,7 @@ const TableRow = (props) => {
 const EmptyState = () => (
   <tr>
     <td 
-      colSpan={4} 
+      colSpan={5} 
       className="p-8 text-center text-zinc-500"
     >
       <div className="flex flex-col items-center justify-center">
