@@ -1,13 +1,20 @@
 import React, { memo, useState, useEffect } from "react";
+import { Header } from "../header/header";
 
 const AnimationStyles = () => (
   <style jsx="true">{`
     @keyframes float {
-      0% { transform: translateY(0px); }
-      50% { transform: translateY(-10px); }
-      100% { transform: translateY(0px); }
+      0% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+      100% {
+        transform: translateY(0px);
+      }
     }
-    
+
     .floating-shapes {
       position: absolute;
       width: 100%;
@@ -15,7 +22,7 @@ const AnimationStyles = () => (
       overflow: hidden;
       z-index: 0;
     }
-    
+
     .floating-shapes::before,
     .floating-shapes::after {
       content: "";
@@ -24,7 +31,7 @@ const AnimationStyles = () => (
       filter: blur(40px);
       opacity: 0.1;
     }
-    
+
     .floating-shapes::before {
       width: 300px;
       height: 300px;
@@ -33,7 +40,7 @@ const AnimationStyles = () => (
       left: 20%;
       top: 20%;
     }
-    
+
     .floating-shapes::after {
       width: 200px;
       height: 200px;
@@ -63,8 +70,7 @@ const AnimationStyles = () => (
       left: 0;
       width: 100%;
       height: 100%;
-      background-image: 
-        linear-gradient(to right, #a1a1aa 1px, transparent 1px),
+      background-image: linear-gradient(to right, #a1a1aa 1px, transparent 1px),
         linear-gradient(to bottom, #a1a1aa 1px, transparent 1px);
       background-size: 40px 40px;
       animation: gridMove 30s linear infinite;
@@ -106,11 +112,13 @@ const HeroSection = memo(() => {
           <div className="grid-container"></div>
           <div className="grid-overlay"></div>
         </div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 z-10">
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32 z-10">
+          <Header />
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Content */}
-            <div className="space-y-8 text-center lg:text-left">
+
+            <div className="space-y-14 text-center lg:text-left">
               <div className="inline-flex items-center px-4 py-1.5 rounded-full bg-zinc-900/20 border border-zinc-700/50 text-sm text-zinc-300">
                 <span className="relative flex h-2 w-2 mr-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-zinc-400 opacity-75"></span>

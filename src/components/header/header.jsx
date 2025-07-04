@@ -54,6 +54,7 @@ export const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const isPracticePage = (() => location.pathname.includes("/practice/"))();
+  const isProblemsPage = (() => location.pathname.includes("/problems"))();
   const isPostPage = (() => location.pathname.includes("/blog/") || location.pathname.includes("/sd/"))();
   const currentId = currentProblem.documentId || currentProblem.displayId;
   const isSolved = solvedProblems.includes(currentId);
@@ -75,15 +76,19 @@ export const Header = () => {
 
   function returnContainerClasses() {
     if (isPracticePage) {
-      return "py-3 px-4 gap-5 min-w-[950px]";
+      return "py-3 px-4 gap-5 min-w-[950px] bg-zinc-900";
     }
     if (isPostPage) {
-      return "py-3 px-4 gap-5 min-w-[950px]";
+      return "py-3 px-4 gap-5 min-w-[950px] bg-zinc-900";
     }
-    return "gap-10 py-[1.5vh] 2xl:px-[20vw] lg:px-[10vw] px-[7vw] min-w-[56vw]";
+    if (isProblemsPage) {
+      return "absolute w-full bottom-14";
+    }
+    return "gap-10 py-[1.5vh] 2xl:px-[20vw] lg:px-[10vw] px-[7vw] min-w-[56vw] bg-zinc-900";
   }
 
   const handleHomeRedirect = () => {
+    if (isProblemsPage) return;
     navigate("/");
     setSearchData(postData.sort((a, b) => b.timeStamp - a.timeStamp));
     setSearchFilter([]);
@@ -104,11 +109,8 @@ export const Header = () => {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full shadow-md">
-      <nav
-        className={`flex justify-between text-xl items-center bg-zinc-900 ${containerClasses}`}
-        aria-label="Main navigation"
-      >
+    <header className="sticky top-0 z-50 w-full shadow-md ">
+      <nav className={`flex justify-between text-xl items-center ${containerClasses}`} aria-label="Main navigation">
         <div className="flex items-center gap-5">
           {(isPracticePage || isPostPage) && (
             <button onClick={toggleSidebar}>

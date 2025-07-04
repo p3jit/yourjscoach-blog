@@ -21,6 +21,7 @@ const LazyPages = {
 
 const AppLayout = ({ children, isDarkMode, pathname }) => {
   const isPracticePage = (() => pathname.includes("/practice/"))();
+
   const isPostPage = (() => pathname.includes("/blog") || pathname.includes("/sd"))();
   const containerClasses = returnContainerClasses();
 
@@ -69,12 +70,13 @@ const App = () => {
   const { isDarkMode } = useContext(DarkModeProvider);
   const { isOpen: isSidebarOpen, toggleSidebar } = useContext(SidebarProvider);
   const location = useLocation();
+  const isProblemsPage = (() => location.pathname.includes("/problems"))();
 
   return (
     <div className="w-full flex h-[100vh] relative">
       <Sidebar isOpen={isSidebarOpen} onClose={toggleSidebar} />
       <div className="flex flex-col z-0 w-full overflow-hidden">
-        <Header />
+        {!isProblemsPage && <Header />}
         <div className="relative overflow-y-auto min-w-[400px] bg-zinc-900 flex-grow scrollbar scrollbar-thumb-zinc-800 scrollbar-track-zinc-900">
           {location.pathname == "/problems" && <Hero />}
           <AppLayout isDarkMode={isDarkMode} pathname={location.pathname}>

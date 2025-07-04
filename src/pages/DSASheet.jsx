@@ -244,11 +244,11 @@ const DSASheet = () => {
   // Main render
   return (
     <div className="flex flex-col items-center gap-10">
-      <StudyPlans />
+      {/* <StudyPlans /> */}
 
       {/* Newly added problems section */}
       {newProblems.length > 0 && (
-        <div className="flex flex-col gap-2 w-full">
+        <div className="flex flex-col gap-2 w-full pt-10">
           <h2 className="text-2xl font-semibold text-zinc-300 mb-3 flex items-center">Newly Added Problems</h2>
           {newProblems.length > 0 && (
             <div className="flex gap-5 w-full">
