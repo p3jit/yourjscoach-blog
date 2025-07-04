@@ -198,7 +198,7 @@ const Table = (props) => {
 
   return (
     <section 
-      className="flex flex-col gap-3 w-full min-h-[400px]" 
+      className="flex flex-col gap-3 w-full min-h-[700px]" 
       aria-label="Problems table"
     >
       <div className="overflow-x-auto rounded-lg border-2 border-zinc-600">
