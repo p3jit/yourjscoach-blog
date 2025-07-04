@@ -2,12 +2,13 @@ import Table from "../components/table/Table";
 import React, { useState, useEffect, useContext, memo } from "react";
 import { IconSearch, IconX } from "@tabler/icons";
 import useDebounce from "../hooks/useDebounce";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import FeatureCards from "../components/features/FeatureCards";
 import ProblemSet from "../components/ProblemSet/ProblemSet";
 import { ProblemDataProvider } from "../contexts/ProblemDataContext";
 import Footer from "../components/footer/Footer";
 import Tag from "../components/tag/Tag";
+import StudyPlans from "../components/studyPlans/StudyPlans";
 
 // Memoized HeroSection to prevent unnecessary re-renders
 const HeroSection = memo(() => (
@@ -364,7 +365,8 @@ const AnimationStyles = () => (
 
 const DSASheet = () => {
   // Context and state
-  const { filteredProblems, setFilteredProblems, problems, newProblems } = useContext(ProblemDataProvider);
+  const { filteredProblems, setFilteredProblems, problems, newProblems, setProblems, allProblems } =
+    useContext(ProblemDataProvider);
 
   // UI state
   const [searchText, setSearchText] = useState("");
@@ -377,6 +379,9 @@ const DSASheet = () => {
   const [uniqueTags, setUniqueTags] = useState([]);
   const [uniqueCompanies, setUniqueCompanies] = useState([]);
   const [uniqueCategories, setUniqueCategories] = useState([]);
+
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // Filter functions
   const clearSearch = () => {
@@ -455,6 +460,13 @@ const DSASheet = () => {
       setUniqueCategories(Array.from(categories).sort());
     }
   }, [problems]);
+
+  useEffect(() => {
+    if (location.pathname == "/problems") {
+      setProblems([...allProblems]);
+      setFilteredProblems([...allProblems]);
+    }
+  }, [location.pathname, navigate]);
 
   // UI Components
   const FilterComponent = () => (
@@ -582,13 +594,12 @@ const DSASheet = () => {
     </div>
   );
 
-  const navigate = useNavigate();
-
   // Main render
   return (
     <div className="py-6 flex flex-col items-center gap-10 min-h-[85vh]">
       <HeroSection />
       <AnimationStyles />
+      <StudyPlans />
 
       {/* Newly added problems section */}
       {newProblems.length > 0 && (

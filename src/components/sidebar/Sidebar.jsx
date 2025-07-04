@@ -5,6 +5,7 @@ import { returnColor, returnDifficultyText } from "../../utils/utils";
 import Brand from "../brand/Brand";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LocalStorageProvider } from "../../contexts/localStorageContext";
+import { useStudyPlan } from "../../contexts/StudyPlanContext";
 
 const Sidebar = ({ isOpen, onClose }) => {
   const { problems, currentProblem } = useContext(ProblemDataProvider);
@@ -16,11 +17,12 @@ const Sidebar = ({ isOpen, onClose }) => {
     js: false,
     sd: false,
   });
+  const {activeStudyPlan} = useStudyPlan();
 
   // Filter problems by category
-  const dsaProblems = problems.filter((problem) => problem?.category === "dsa");
-  const jsProblems = problems.filter((problem) => problem?.category === "js");
-  const systemDesignProblems = problems.filter((problem) => problem?.category === "System Design");
+  const dsaProblems = problems?.filter((problem) => problem?.category === "dsa");
+  const jsProblems = problems?.filter((problem) => problem?.category === "js");
+  const systemDesignProblems = problems?.filter((problem) => problem?.category === "System Design");
 
   // Update expanded sections based on current problem
   useEffect(() => {
@@ -150,7 +152,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           <div className="flex justify-between items-center">
             <div>
               <p className="text-sm text-zinc-400 uppercase tracking-wider font-medium">current plan</p>
-              <h2 className="text-xl font-bold text-white mt-1">All Problems</h2>
+              <h2 className="text-xl font-bold text-white mt-1">{activeStudyPlan ? activeStudyPlan.title : "All Problems"}</h2>
             </div>
             <button
               onClick={onClose}

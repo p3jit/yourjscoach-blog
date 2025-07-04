@@ -11,18 +11,36 @@ import EditorSection from "../components/Practice/EditorSection";
 import ResultsPanel from "../components/Practice/ResultsPanel";
 import { ProblemDataProvider } from "../contexts/ProblemDataContext";
 import { LocalStorageProvider } from "../contexts/localStorageContext";
+import { useStudyPlan } from "../contexts/StudyPlanContext";
 
 // Custom hook for managing problem data
 const useProblemData = (location, navigate, resetExecutionState) => {
-  const { currentProblem, fetchProblemById, setCurrentProblem, problems, setCurrentProblemIndex } =
-    useContext(ProblemDataProvider);
+  const {
+    currentProblem,
+    fetchProblemById,
+    setCurrentProblem,
+    problems,
+    setCurrentProblemIndex,
+    setProblems,
+    allProblems,
+  } = useContext(ProblemDataProvider);
+  const { fetchStudyPlanById, setActiveStudyPlan } = useStudyPlan();
   const documentId = location.pathname.split("/")[2];
 
   useEffect(() => {
+    const currentPlanId = new URLSearchParams(location.search).get("plan");
     fetchProblemById(documentId);
+    if (currentPlanId) fetchStudyPlanById(currentPlanId);
+    else {
+      setActiveStudyPlan(null);
+      setProblems((_prev) => allProblems);
+    }
     const problemIndex = problems.findIndex((prblm) => prblm.documentId === documentId);
     if (problemIndex >= 0) {
       setCurrentProblemIndex(problemIndex);
+    }
+    if (location.pathname.includes("/problems")) {
+      setProblems(allProblems);
     }
     resetExecutionState();
   }, [location.pathname, navigate]);
@@ -234,8 +252,8 @@ const Practice = () => {
   const iframeRef = useRef(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const [windowSize, setWindowSize] = useState({
-    width: typeof window !== 'undefined' ? window.innerWidth : 0,
-    height: typeof window !== 'undefined' ? window.innerHeight : 0,
+    width: typeof window !== "undefined" ? window.innerWidth : 0,
+    height: typeof window !== "undefined" ? window.innerHeight : 0,
   });
 
   // Handle window resize
@@ -247,8 +265,8 @@ const Practice = () => {
       });
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   // Custom hooks
@@ -355,9 +373,7 @@ const Practice = () => {
   const debouncedSetCurrentProblem = useDebounce(
     (value) => {
       setEditorValue((oldValue) => {
-        return currentEditorTabIndex === 0
-          ? { ...oldValue, code: value }
-          : { ...oldValue, tests: value };
+        return currentEditorTabIndex === 0 ? { ...oldValue, code: value } : { ...oldValue, tests: value };
       });
       if (currentEditorTabIndex != 0) return false;
       const clonedMap = progressMap ? structuredClone(progressMap) : {};

@@ -7,9 +7,9 @@ export const ProblemDataProvider = createContext();
 const ProblemDataContext = ({ children }) => {
   // State management
   const [problems, setProblems] = useState([]);
+  const [allProblems, setAllProblems] = useState([]);
   const [filteredProblems, setFilteredProblems] = useState([]);
   const [currentProblem, setCurrentProblem] = useState({});
-  const [originalProblem, setOriginalProblem] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
@@ -34,8 +34,9 @@ const ProblemDataContext = ({ children }) => {
 
       let data = await response.json();
       const sortedProblems = data.data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-      setProblems(sortedProblems || []);
-      setFilteredProblems(sortedProblems || []);
+      setProblems([...sortedProblems] || []);
+      setAllProblems([...sortedProblems] || []);
+      setFilteredProblems([...sortedProblems] || []);
 
       // Identify and store newly added problems
       const newProblems = sortedProblems.filter((problem) =>
@@ -57,7 +58,7 @@ const ProblemDataContext = ({ children }) => {
 
     // Apply search text filter
     if (searchValue.length > 0) {
-      filtered = problems.filter(
+      filtered = allProblems.filter(
         (problem) =>
           problem.problemTitle.includes(searchValue) ||
           problem.askedIn.some((company) => company.toLowerCase().includes(searchValue)) ||
@@ -88,7 +89,6 @@ const ProblemDataContext = ({ children }) => {
 
       const data = await response.json();
       setCurrentProblem(data.data || {});
-      setOriginalProblem(data.data || {});
     } catch (err) {
       console.error(`Error fetching problem ${documentId}:`, err);
       setError(err.message);
@@ -100,7 +100,8 @@ const ProblemDataContext = ({ children }) => {
 
   // Fetch all problems on component mount
   useEffect(() => {
-    fetchAllProblems();
+    const currentPlanId = new URLSearchParams(location.search).get("plan");
+    if (!currentPlanId) fetchAllProblems();
   }, []);
 
   // Context value with all data and functions
@@ -119,8 +120,8 @@ const ProblemDataContext = ({ children }) => {
     setCurrentProblem,
     currentProblemIndex,
     setCurrentProblemIndex,
-    originalProblem,
-    setOriginalProblem
+    allProblems,
+    setAllProblems
   };
 
   return <ProblemDataProvider.Provider value={contextValue}>{children}</ProblemDataProvider.Provider>;
