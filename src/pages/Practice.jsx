@@ -3,6 +3,7 @@ import { Panel, PanelGroup, PanelResizeHandle } from "react-resizable-panels";
 import useDebounce from "../hooks/useDebounce";
 import { useLocation, useNavigate } from "react-router-dom";
 import Editor from "@monaco-editor/react";
+import ReactConfetti from "react-confetti";
 
 // Components
 import ProblemDescription from "../components/Practice/ProblemDescription";
@@ -20,7 +21,7 @@ const useProblemData = (location, navigate, resetExecutionState) => {
   useEffect(() => {
     fetchProblemById(documentId);
     const problemIndex = problems.findIndex((prblm) => prblm.documentId === documentId);
-    if (problemIndex) {
+    if (problemIndex >= 0) {
       setCurrentProblemIndex(problemIndex);
     }
     resetExecutionState();
@@ -231,6 +232,24 @@ const CodeEditorMiddleBar = ({ middleBarTabs, middleBarTabIndex, handleMiddleBar
 const Practice = () => {
   // Refs
   const iframeRef = useRef(null);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== 'undefined' ? window.innerWidth : 0,
+    height: typeof window !== 'undefined' ? window.innerHeight : 0,
+  });
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Custom hooks
   const location = useLocation();
@@ -268,12 +287,14 @@ const Practice = () => {
 
   const markSolved = () => {
     const currentId = currentProblem.documentId || currentProblem.displayId;
-    const isSolved = solvedProblems.includes(currentId);
+    const isAlreadySolved = solvedProblems.includes(currentId);
     let updatedSolvedProblems = [];
-    if (!isSolved) {
+    if (!isAlreadySolved) {
       updatedSolvedProblems = [...solvedProblems, currentId];
       setSolvedProblems(updatedSolvedProblems);
       updateLocalStorage({ solvedProblems: [...updatedSolvedProblems] });
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 5000);
     }
   };
 
@@ -417,64 +438,75 @@ const Practice = () => {
   }
 
   return (
-    <PanelGroup key={currentProblem.documentId} direction="horizontal" className="flex h-full">
-      <Panel minSize={30}>
-        <ProblemDescription currentProblem={currentProblem} isSolved={isSolved} />
-      </Panel>
-      {currentProblem.category === "js" && (
-        <>
-          <PanelResizeHandle />
-          <Panel minSize={30}>
-            <div className="w-full h-full flex flex-col">
-              <CodeEditorMiddleBar
+    <>
+      {showConfetti && (
+        <ReactConfetti
+          width={windowSize.width}
+          height={windowSize.height}
+          recycle={false}
+          numberOfPieces={500}
+          gravity={1.2}
+        />
+      )}
+      <PanelGroup key={currentProblem.documentId} direction="horizontal" className="flex h-full">
+        <Panel minSize={30}>
+          <ProblemDescription currentProblem={currentProblem} isSolved={isSolved} />
+        </Panel>
+        {currentProblem.category === "js" && (
+          <>
+            <PanelResizeHandle />
+            <Panel minSize={30}>
+              <div className="w-full h-full flex flex-col">
+                <CodeEditorMiddleBar
+                  middleBarTabs={middleBarTabs}
+                  middleBarTabIndex={middleBarTabIndex}
+                  handleMiddleBarTabClick={handleMiddleBarTabClick}
+                  setMiddleBarTabs={setMiddleBarTabs}
+                />
+              </div>
+            </Panel>
+          </>
+        )}
+        <PanelResizeHandle />
+        <Panel minSize={30}>
+          <PanelGroup direction="vertical">
+            <Panel defaultSize={55} minSize={60}>
+              <EditorSection
+                currentProblem={currentProblem}
+                currentEditorTabIndex={currentEditorTabIndex}
+                handleEditorValueChange={handleEditorValueChange}
+                handleEditorTabClick={handleEditorTabClick}
+                setErrorMsg={setErrorMsg}
                 middleBarTabs={middleBarTabs}
                 middleBarTabIndex={middleBarTabIndex}
-                handleMiddleBarTabClick={handleMiddleBarTabClick}
-                setMiddleBarTabs={setMiddleBarTabs}
+                editorValue={editorValue}
+                setEditorValue={setEditorValue}
               />
-            </div>
-          </Panel>
-        </>
-      )}
-      <PanelResizeHandle />
-      <Panel minSize={30}>
-        <PanelGroup direction="vertical">
-          <Panel defaultSize={55} minSize={60}>
-            <EditorSection
-              currentProblem={currentProblem}
-              currentEditorTabIndex={currentEditorTabIndex}
-              handleEditorValueChange={handleEditorValueChange}
-              handleEditorTabClick={handleEditorTabClick}
-              setErrorMsg={setErrorMsg}
-              middleBarTabs={middleBarTabs}
-              middleBarTabIndex={middleBarTabIndex}
-              editorValue={editorValue}
-              setEditorValue={setEditorValue}
-            />
-          </Panel>
-          <PanelResizeHandle />
-          <Panel defaultSize={45} minSize={5.2}>
-            <ResultsPanel
-              iframeRef={iframeRef}
-              showConsoleOutput={showConsoleOutput}
-              showResults={showResults}
-              didExecute={didExecute}
-              isRunning={isRunning}
-              success={success}
-              errorMsg={errorMsg}
-              testResults={testResults}
-              consoleLogMap={consoleLogMap}
-              handleShowTestCases={handleShowTestCases}
-              handleShowResults={handleShowResults}
-              handleRunCode={handleRunCode}
-              handleSubmitCode={handleSubmitCode}
-              handleEditorTabClick={handleEditorTabClick}
-              currentProblem={currentProblem}
-            />
-          </Panel>
-        </PanelGroup>
-      </Panel>
-    </PanelGroup>
+            </Panel>
+            <PanelResizeHandle />
+            <Panel defaultSize={45} minSize={5.2}>
+              <ResultsPanel
+                iframeRef={iframeRef}
+                showConsoleOutput={showConsoleOutput}
+                showResults={showResults}
+                didExecute={didExecute}
+                isRunning={isRunning}
+                success={success}
+                errorMsg={errorMsg}
+                testResults={testResults}
+                consoleLogMap={consoleLogMap}
+                handleShowTestCases={handleShowTestCases}
+                handleShowResults={handleShowResults}
+                handleRunCode={handleRunCode}
+                handleSubmitCode={handleSubmitCode}
+                handleEditorTabClick={handleEditorTabClick}
+                currentProblem={currentProblem}
+              />
+            </Panel>
+          </PanelGroup>
+        </Panel>
+      </PanelGroup>
+    </>
   );
 };
 

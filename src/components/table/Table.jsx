@@ -3,6 +3,7 @@ import { isNewProblem, returnColor, returnDifficultyText } from "../../utils/uti
 import { useNavigate } from "react-router-dom";
 import { IconChevronLeft, IconChevronRight, IconMoodEmpty, IconSortAscending, IconSortDescending } from '@tabler/icons';
 import NewBadge from "../new-badge/NewBadge";
+import Tag from "../tag/Tag";
 
 const TableHeader = (props) => {
   const headers = [
@@ -46,12 +47,13 @@ const TagList = (props) => {
   return (
     <div className={`flex gap-2 flex-wrap ${props.maxWidth}`}>
       {props.items?.map((item, index) => (
-        <span
+        <Tag
           key={`tag-${item}-${index}`}
-          className="w-fit px-3 py-1 rounded-full text-sm font-normal bg-zinc-700 text-zinc-300"
-        >
-          {item}
-        </span>
+          data={item}
+          isClickable={false}
+          showHash={false}
+          className="text-sm"
+        />
       ))}
     </div>
   );
@@ -196,7 +198,7 @@ const Table = (props) => {
 
   return (
     <section 
-      className="flex flex-col gap-3 w-full" 
+      className="flex flex-col gap-3 w-full min-h-[400px]" 
       aria-label="Problems table"
     >
       <div className="overflow-x-auto rounded-lg border-2 border-zinc-600">

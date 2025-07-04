@@ -1,36 +1,47 @@
-import { useContext, useState } from "react";
-import { DarkModeProvider } from "../../contexts/DarkModeContext";
+import { useContext } from "react";
 import { BlogDataProvider } from "../../contexts/BlogDataContext";
 
-const Tag = ({ data, isClickable = false, showHash = true }) => {
-  const [isActive, setIsActive] = useState(false);
-  const { isDarkMode } = useContext(DarkModeProvider);
+const Tag = ({ data, isClickable = false, showHash = true, isActive = false, onClick }) => {
   const { searchFilter, setSearchFilter } = useContext(BlogDataProvider);
 
-  const handleActive = async () => {
+  const handleActive = async (e) => {
     if (!isClickable) return;
-    await setIsActive(!isActive);
-    if (!isActive) {
-      await setSearchFilter((prev) => [...prev, data]);
-    } else {
+    e.preventDefault();
+    if (isActive) {
       await setSearchFilter(
-        searchFilter.filter((singleFilter) => singleFilter != data)
+        searchFilter.filter((singleFilter) => singleFilter !== data)
       );
+    } else {
+      await setSearchFilter((prev) => [...new Set([...prev, data])]);
     }
   };
 
+  const baseStyles = "inline-flex items-center px-3 py-1 rounded-md text-sm font-medium transition-all duration-200";
+const tagStyles = isActive 
+  ? "bg-zinc-600 text-white shadow-md hover:bg-zinc-700"
+  : "bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-700";
+
   return (
-    <div className="flex" onClick={handleActive}>
-      <span
-        className={`w-fit px-3 py-1 rounded-lg text-sm ${
-          isDarkMode ? (!isActive ? "bg-zinc-200" : "bg-zinc-400")  : (!isActive ? "bg-zinc-600 text-zinc-300" : "bg-zinc-800 text-zinc-300") 
-        } ${
-          isClickable ? "cursor-pointer" : "cursor-auto"
-        }`}
-      >
-        {showHash ? "# " : ""}{data}
-      </span>
-    </div>
+    <button
+      onClick={onClick || handleActive}
+      disabled={!isClickable}
+      aria-pressed={isActive}
+      className={`${baseStyles} ${tagStyles} ${
+        isClickable ? 'cursor-pointer focus:outline-none' : 'cursor-default'
+      }`}
+    >
+      {showHash && (
+        <span className="mr-1" aria-hidden="true">
+          #
+        </span>
+      )}
+      {data}
+      {isClickable && isActive && (
+        <span className="ml-1.5" aria-hidden="true">
+          ×
+        </span>
+      )}
+    </button>
   );
 };
 

@@ -7,6 +7,7 @@ import FeatureCards from "../components/features/FeatureCards";
 import ProblemSet from "../components/ProblemSet/ProblemSet";
 import { ProblemDataProvider } from "../contexts/ProblemDataContext";
 import Footer from "../components/footer/Footer";
+import Tag from "../components/tag/Tag";
 
 // Memoized HeroSection to prevent unnecessary re-renders
 const HeroSection = memo(() => (
@@ -461,52 +462,66 @@ const DSASheet = () => {
       <div className="flex flex-col gap-1.5 w-full">
         <label className="text-base font-medium text-zinc-300">Filter by Categories</label>
         <div className="flex flex-wrap gap-2.5 mt-1.5">
-          {uniqueCategories.map((category) => (
-            <span
-              key={category}
-              onClick={() => handleCategorySelect(category)}
-              className={`px-3.5 py-1.5 text-sm rounded-md cursor-pointer ${
-                selectedCategories.includes(category) ? "bg-zinc-600 text-zinc-100" : "bg-zinc-800 text-zinc-400"
-              }`}
-            >
-              {category === "dsa" ? "Data Structures and Algorithm Problem" : ""}
-              {category === "js" ? "UI Problems" : ""}
-            </span>
-          ))}
+          {uniqueCategories.map((category) => {
+            const isActive = selectedCategories.includes(category);
+            return (
+              <Tag
+                key={category}
+                data={category === "dsa" ? "Data Structures and Algorithm Problem" : "UI Problems"}
+                isClickable={true}
+                isActive={isActive}
+                showHash={false}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleCategorySelect(category);
+                }}
+              />
+            );
+          })}
         </div>
       </div>
 
       <div className="flex flex-col gap-1.5 w-full">
         <label className="text-base font-medium text-zinc-300">Filter by Tags</label>
         <div className="flex flex-wrap gap-2.5 mt-1.5">
-          {uniqueTags.map((tag) => (
-            <span
-              key={tag}
-              onClick={() => handleTagSelect(tag)}
-              className={`px-3.5 py-1.5 text-sm rounded-md cursor-pointer ${
-                selectedTags.includes(tag) ? "bg-zinc-600 text-zinc-100" : "bg-zinc-800 text-zinc-400"
-              }`}
-            >
-              {tag}
-            </span>
-          ))}
+          {uniqueTags.map((tag) => {
+            const isActive = selectedTags.includes(tag);
+            return (
+              <Tag
+                key={tag}
+                data={tag}
+                isClickable={true}
+                isActive={isActive}
+                showHash={false}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleTagSelect(tag);
+                }}
+              />
+            );
+          })}
         </div>
       </div>
 
       <div className="flex flex-col gap-1.5 w-full">
         <label className="text-base font-medium text-zinc-300">Filter by Companies</label>
         <div className="flex flex-wrap gap-2.5 mt-1.5">
-          {uniqueCompanies.map((company) => (
-            <span
-              key={company}
-              onClick={() => handleCompanySelect(company)}
-              className={`px-3.5 py-1.5 text-sm rounded-md cursor-pointer ${
-                selectedCompanies.includes(company) ? "bg-zinc-600 text-zinc-100" : "bg-zinc-800 text-zinc-400"
-              }`}
-            >
-              {company}
-            </span>
-          ))}
+          {uniqueCompanies.map((company) => {
+            const isActive = selectedCompanies.includes(company);
+            return (
+              <Tag
+                key={company}
+                data={company}
+                isClickable={true}
+                isActive={isActive}
+                showHash={false}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleCompanySelect(company);
+                }}
+              />
+            );
+          })}
         </div>
       </div>
 
