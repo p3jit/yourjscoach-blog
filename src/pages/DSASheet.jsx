@@ -245,17 +245,18 @@ const DSASheet = () => {
   // Main render
   return (
     <div className="flex flex-col items-center gap-10">
-      {/* <StudyPlans /> */}
+      <StudyPlans />
 
       {/* Newly added problems section */}
       {newProblems.length > 0 && (
         <div className="w-full pt-12">
-          <div className="mb-8 flex items-center justify-between">
+          <div className="flex pb-2 items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold text-zinc-100">Newly Added Problems</h2>
             </div>
             <span className="text-sm text-zinc-400">{newProblems.length} problems</span>
           </div>
+          <h2 className="text-lg tracking-wide font-medium text-zinc-500 mb-8">Fresh problems to test your skills</h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {newProblems.map((problem, index) => (
@@ -273,11 +274,11 @@ const DSASheet = () => {
                 </div>
 
                 {/* Problem Content */}
-                <div className="space-y-3">
+                <div className="space-y-3 pb-5">
                   <h3 className="text-lg font-semibold text-white group-hover:text-zinc-200 transition-colors">
                     {problem.problemTitle}
                   </h3>
-                  <p className="text-zinc-400 text-sm line-clamp-4">{problem.description}</p>
+                  <p className="text-zinc-400 text-md line-clamp-4">{problem.description}</p>
                 </div>
 
                 {/* Tags */}

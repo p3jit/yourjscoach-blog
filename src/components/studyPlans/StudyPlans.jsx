@@ -170,8 +170,8 @@ const StudyPlans = () => {
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         }`}
       >
-        <h2 className="text-3xl text-center font-bold text-zinc-100 mb-3">Featured Study Plans</h2>
-        <p className="text-zinc-400 mx-auto text-center">
+        <h2 className="text-3xl font-bold text-zinc-100 mb-3">Featured Study Plans</h2>
+        <p className="text-zinc-500 font-medium tracking-wide">
           Browse through our curated collection of study plans to boost your learning journey.
         </p>
       </div>

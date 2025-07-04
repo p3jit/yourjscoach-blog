@@ -100,13 +100,67 @@ const AnimationStyles = () => (
   `}</style>
 );
 
+const FloatingText = () => {
+  const words = ["JavaScript", "React", "Node.js", "Algorithms", "Data Structures", "TypeScript", "Web Development", "System Design"];
+  
+  return (
+    <div className="absolute inset-0 overflow-hidden opacity-10 pointer-events-none">
+      {words.map((word, index) => {
+        // Random position and animation delay
+        const top = `${10 + Math.random() * 80}%`;
+        const left = `${Math.random() * 100}%`;
+        const delay = Math.random() * 5;
+        const duration = 20 + Math.random() * 20;
+        const size = 0.5 + Math.random() * 1.5; // Random font size between 0.5 and 2rem
+        
+        return (
+          <div 
+            key={index}
+            className="absolute text-zinc-200 font-mono whitespace-nowrap"
+            style={{
+              top,
+              left,
+              fontSize: `${size}rem`,
+              animation: `float ${duration}s linear ${delay}s infinite`,
+            }}
+          >
+            {word}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 const HeroSection = memo(() => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
     <>
+      <style jsx="true">{`
+        @keyframes float {
+          0% {
+            transform: translateY(0) translateX(0) rotate(0deg);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.5;
+          }
+          90% {
+            opacity: 0.5;
+          }
+          100% {
+            transform: translateY(-100vh) translateX(20px) rotate(10deg);
+            opacity: 0;
+          }
+        }
+      `}</style>
+      
       <AnimationStyles />
       <div className="relative overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 w-full">
+        {/* Floating Text Background */}
+        <FloatingText />
+        
         {/* Animated Grid Background */}
         <div className="grid-bg">
           <div className="grid-container"></div>

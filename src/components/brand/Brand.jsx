@@ -5,12 +5,12 @@ const Brand = ({ isDarkMode = false, onClick, size="1.8em", fontSize="text-2xl" 
   const baseLogoClass = "transition-all duration-300 ease-in-out";
   const logoClass = isDarkMode 
     ? `${baseLogoClass} text-zinc-500 hover:text-zinc-400` 
-    : `${baseLogoClass} text-zinc-400 hover:text-zinc-300`;
+    : `${baseLogoClass} text-zinc-300 hover:text-zinc-200`;
   
   const baseTextClass = "cursor-pointer font-bold transition-all duration-300 ease-in-out";
   const textClass = isDarkMode
     ? `${baseTextClass} ${fontSize} bg-clip-text text-transparent bg-gradient-to-r from-zinc-500 to-zinc-600 hover:from-zinc-400 hover:to-zinc-500`
-    : `${baseTextClass} ${fontSize} bg-clip-text text-transparent bg-gradient-to-r from-zinc-300 to-zinc-400 hover:from-zinc-200 hover:to-zinc-300`;
+    : `${baseTextClass} ${fontSize} bg-clip-text text-transparent bg-gradient-to-r from-zinc-200 to-zinc-300 hover:from-zinc-100 hover:to-zinc-200`;
 
   return (
     <div className="flex items-center gap-2 py-1">
