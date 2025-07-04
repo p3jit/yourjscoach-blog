@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const ResetButton = ({ onClick, className = "", disabled = false, size = "md", label = "Reset" }) => {
+const ResetButton = ({ onClick, className = "", disabled = false, size = "sm", label = "Reset" }) => {
   const [isAnimating, setIsAnimating] = useState(false);
 
   const sizeClasses = {
@@ -20,12 +20,10 @@ const ResetButton = ({ onClick, className = "", disabled = false, size = "md", l
 
     const timer = setTimeout(() => {
       setIsAnimating(false);
-    }, 800);
+    }, 300);
 
     return () => clearTimeout(timer);
   };
-
-  return false;
 
   return (
     <button

@@ -254,22 +254,17 @@ const Practice = () => {
     resetExecutionState,
   } = useExecutionState();
 
-  const { currentProblem, setCurrentProblem } = useProblemData(
-    location,
-    navigate,
-    resetExecutionState
-  );
+  const { currentProblem, setCurrentProblem } = useProblemData(location, navigate, resetExecutionState);
 
   const { middleBarTabIndex, middleBarTabs, setMiddleBarTabs, handleMiddleBarTabClick } =
     useMiddleBarTabs(currentProblem);
+
+  const [editorValue, setEditorValue] = useState({ code: "", tests: "" });
 
   // State for UI
   const [showConsoleOutput, setShowConsoleOutput] = useState(true);
   const [showResults, setShowResults] = useState(false);
   const [currentEditorTabIndex, setCurrentEditorTabIndex] = useState(0);
-
-  // State for code
-  const [defaultTestCode, setDefaultTestCode] = useState("");
 
   const markSolved = () => {
     const currentId = currentProblem.documentId || currentProblem.displayId;
@@ -288,8 +283,9 @@ const Practice = () => {
       // this check is needed for local development
       if (event.data && !event.data.vscodeScheduleAsyncWork) {
         const { stack, name, error, testResultsPassed, testResultsFailed, consoleLogList } = event.data;
-        if (error || stack || name) {
-          setErrorMsg(error || stack || name);
+        const err = error || stack || name;
+        if (err) {
+          setErrorMsg(err);
           setSuccess(false);
         } else {
           // Fixed bug in the condition check
@@ -306,6 +302,11 @@ const Practice = () => {
           failed: testResultsFailed !== undefined ? testResultsFailed : [],
         });
 
+        // Check is the current problem is solved or not
+        if (!err && testResultsPassed.length + testResultsFailed.length === testResultsPassed.length) {
+          markSolved();
+        }
+
         setConsoleLogMap(consoleLogList ? consoleLogList : {});
         setDidExecute(true);
         setIsRunning(false);
@@ -314,9 +315,6 @@ const Practice = () => {
 
     // Add iframe message event listener
     window.addEventListener("message", handleMessage);
-
-    // Set default test
-    setDefaultTestCode(currentProblem.editorValueTests);
 
     // Clean up the event listener on component unmount
     return () => {
@@ -335,10 +333,10 @@ const Practice = () => {
 
   const debouncedSetCurrentProblem = useDebounce(
     (value) => {
-      setCurrentProblem((oldValue) => {
+      setEditorValue((oldValue) => {
         return currentEditorTabIndex === 0
-          ? { ...oldValue, editorValueCode: value }
-          : { ...oldValue, editorValueTests: value };
+          ? { ...oldValue, code: value }
+          : { ...oldValue, tests: value };
       });
       if (currentEditorTabIndex != 0) return false;
       const clonedMap = progressMap ? structuredClone(progressMap) : {};
@@ -353,7 +351,7 @@ const Practice = () => {
       updateLocalStorage({ progressMap: { ...clonedMap } });
       setProgressMap({ ...clonedMap });
     },
-    500 // debounce delay in ms, adjust as needed
+    300 // debounce delay in ms, adjust as needed
   );
 
   const handleEditorValueChange = (value) => {
@@ -374,10 +372,14 @@ const Practice = () => {
     if (iframeRef.current && iframeRef.current.contentWindow) {
       iframeRef.current.contentWindow.postMessage(
         {
-          code: currentProblem.editorValueCode,
+          code: editorValue.code,
           functionName: currentProblem.functionName,
-          testCases: currentProblem.testCases,
-          testCode: type === "submit" ? defaultTestCode : currentProblem.editorValueTests,
+          testCode:
+            type === "submit"
+              ? currentProblem.submitTests
+                ? currentProblem.submitTests
+                : currentProblem.editorValueTests
+              : editorValue.tests,
           sampleTestInput: currentProblem.sampleTestInput,
         },
         "*"
@@ -389,13 +391,13 @@ const Practice = () => {
     setCurrentEditorTabIndex(id);
   };
 
-  const debouncedSendMessageToIframe = useDebounce(sendMessageToIframe, 1000);
+  const debouncedSendMessageToIframe = useDebounce(sendMessageToIframe, 500);
 
   const handleRunCode = () => {
     setDidExecute(false);
     handleShowResults();
     setIsRunning(true);
-    setConsoleLogMap({});
+    setConsoleLogMap();
     setErrorMsg("");
     debouncedSendMessageToIframe();
   };
@@ -446,6 +448,8 @@ const Practice = () => {
               setErrorMsg={setErrorMsg}
               middleBarTabs={middleBarTabs}
               middleBarTabIndex={middleBarTabIndex}
+              editorValue={editorValue}
+              setEditorValue={setEditorValue}
             />
           </Panel>
           <PanelResizeHandle />

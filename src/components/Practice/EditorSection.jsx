@@ -13,13 +13,14 @@ const EditorSection = ({
   setErrorMsg,
   middleBarTabs,
   middleBarTabIndex,
+  editorValue,
+  setEditorValue
 }) => {
   const iframeRef = useRef(null);
   const [htmlContent, setHtmlContent] = useState(``);
   const [cssContent, setCssContent] = useState(``);
   const [jsContent, setJsContent] = useState("");
   const { progressMap } = useContext(LocalStorageProvider);
-  const { handleReset, setCurrentProblem } = useContext(ProblemDataProvider);
 
   // Function to check for errors
   const checkForErrors = (markers) => {
@@ -52,6 +53,7 @@ const EditorSection = ({
 
   const handleErrorCheck = (markers) => {
     // Check for errors after a short delay to allow Monaco to validate
+    debugger;
     setTimeout(() => {
       checkForErrors(markers);
     }, 100);
@@ -100,14 +102,18 @@ const EditorSection = ({
     }
   }, 500); // 500ms debounce delay
 
-  const getDefaultEditorValue = () => {
-    // debugger;
-    if (progressMap[currentProblem.documentId]) {
-      // setCurrentProblem({...currentProblem, editorValueCode: progressMap[currentProblem.documentId]})
-      return progressMap[currentProblem.documentId];
-    }
-    return currentProblem.editorValueCode;
-  };
+  const handleReset = () => {
+    setEditorValue({code: currentProblem.editorValueCode, tests: currentProblem.editorValueTests});
+  }
+
+  useEffect(() => {
+    setEditorValue({
+      tests: currentProblem.editorValueTests,
+      code: progressMap[currentProblem.documentId]
+        ? progressMap[currentProblem.documentId]
+        : currentProblem.editorValueCode,
+    });
+  }, [currentProblem]);
 
   // Update iframe content when code changes or tab changes
   useEffect(() => {
@@ -218,9 +224,7 @@ const EditorSection = ({
           key={currentProblem.documentId + currentEditorTabIndex}
           defaultLanguage="javascript"
           value={
-            currentEditorTabIndex === 0 && currentProblem.category === "dsa"
-              ? getDefaultEditorValue()
-              : currentProblem.editorValueTests
+            currentEditorTabIndex === 0 && currentProblem.category === "dsa" ? editorValue.code : editorValue.tests
           }
           onChange={handleValueChange}
           onValidate={handleErrorCheck}
@@ -229,7 +233,6 @@ const EditorSection = ({
             minimap: {
               enabled: false,
             },
-            autoIndent: true,
           }}
         />
       )}

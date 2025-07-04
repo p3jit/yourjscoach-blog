@@ -103,17 +103,6 @@ const ProblemDataContext = ({ children }) => {
     fetchAllProblems();
   }, []);
 
-  const handleReset = () => {
-    debugger;
-    if (currentProblem.category == "js") {
-      currentProblem.editorHtmlCode = originalProblem.editorHtmlCode;
-      currentProblem.editorJsCode = originalProblem.editorJsCode;
-      currentProblem.editorCssCode = originalProblem.editorCssCode;
-    } else if (currentProblem.category == "dsa") {
-      currentProblem.editorValueCode = originalProblem.editorValueCode;
-    }
-  };
-
   // Context value with all data and functions
   const contextValue = {
     problems,
@@ -131,8 +120,7 @@ const ProblemDataContext = ({ children }) => {
     currentProblemIndex,
     setCurrentProblemIndex,
     originalProblem,
-    setOriginalProblem,
-    handleReset,
+    setOriginalProblem
   };
 
   return <ProblemDataProvider.Provider value={contextValue}>{children}</ProblemDataProvider.Provider>;

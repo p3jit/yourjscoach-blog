@@ -151,6 +151,7 @@ const postTestResults = (event) => {
   window.YJC_Test_Results_Passed = [];
   window.YJC_Test_Results_Failed = [];
   window.YJC_Error = null;
+  window.YJC_Console_Log_List = [];
   startTime = null;
   setupMocha();
 };
