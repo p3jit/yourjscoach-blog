@@ -9,6 +9,7 @@ import { ProblemDataProvider } from "../contexts/ProblemDataContext";
 import Footer from "../components/footer/Footer";
 import Tag from "../components/tag/Tag";
 import StudyPlans from "../components/studyPlans/StudyPlans";
+import NewBadge from "../components/new-badge/NewBadge";
 
 const DSASheet = () => {
   // Context and state
@@ -248,51 +249,75 @@ const DSASheet = () => {
 
       {/* Newly added problems section */}
       {newProblems.length > 0 && (
-        <div className="flex flex-col gap-2 w-full pt-10">
-          <h2 className="text-2xl font-semibold text-zinc-300 mb-3 flex items-center">Newly Added Problems</h2>
-          {newProblems.length > 0 && (
-            <div className="flex gap-5 w-full">
-              {newProblems.map((problem, index) => (
-                <div
-                  key={index}
-                  onClick={() => navigate(`/practice/${problem.documentId}`)}
-                  className="bg-gradient-to-br from-zinc-800 to-zinc-900 p-5 rounded-lg shadow-lg hover:shadow-xl border border-zinc-700/50 hover:border-zinc-600 transition-all duration-300 cursor-pointer group relative overflow-hidden flex flex-col w-6/12"
-                >
-                  <div className="absolute top-0 right-0 w-16 h-16">
-                    <div className="absolute transform rotate-45 bg-zinc-700 text-xs font-medium text-zinc-200 text-center py-1 right-[-35px] top-[12px] w-[120px]">
-                      New
-                    </div>
-                  </div>
-                  <h3 className="text-sm font-semibold text-zinc-500 group-hover:text-zinc-200 pr-6 mb-3">
-                    {problem.category === "dsa" && "Data Structure and Algorithm Problem"}
-                    {problem.category === "js" && "Javascript Problem"}
-                    {problem.category === "sd" && "System Design & Architecture Problem"}
-                  </h3>
-                  <h3 className="text-xl font-semibold text-white group-hover:text-zinc-200 pr-6 mb-3">
+        <div className="w-full pt-12">
+          <div className="mb-8 flex items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-zinc-100">Newly Added Problems</h2>
+            </div>
+            <span className="text-sm text-zinc-400">{newProblems.length} problems</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {newProblems.map((problem, index) => (
+              <div
+                key={index}
+                onClick={() => navigate(`/practice/${problem.documentId}`)}
+                className="group relative bg-zinc-800/40 rounded-xl p-5 hover:bg-zinc-800/60 transition-all duration-300 cursor-pointer border border-zinc-700/30 hover:border-zinc-600/50"
+              >
+                {/* Category and New Badge */}
+                <div className="flex justify-between items-start mb-4">
+                  <span className="text-xs font-medium px-3 py-1 rounded-full bg-zinc-700/50 text-zinc-300">
+                    {problem.category === "dsa" ? "DSA" : problem.category === "js" ? "JavaScript" : "System Design"}
+                  </span>
+                  <NewBadge />
+                </div>
+
+                {/* Problem Content */}
+                <div className="space-y-3">
+                  <h3 className="text-lg font-semibold text-white group-hover:text-zinc-200 transition-colors">
                     {problem.problemTitle}
                   </h3>
-                  <p className="text-zinc-400 line-clamp-3 mb-4 flex-grow">{problem.description}</p>
-                  <div className="flex justify-between items-center mt-auto pt-4">
-                    <div className="flex flex-wrap gap-2">
-                      {problem.tags?.slice(0, 2).map((tag, idx) => (
-                        <span key={idx} className="px-2 py-1 text-xs rounded-md bg-zinc-700/50 text-zinc-300">
-                          {tag}
-                        </span>
-                      ))}
-                      {problem.tags?.length > 2 && (
-                        <span className="px-2 py-1 text-xs rounded-md bg-zinc-700/50 text-zinc-300">
-                          +{problem.tags.length - 2}
-                        </span>
-                      )}
-                    </div>
-                    <span className="text-zinc-400 group-hover:text-zinc-300 flex items-center">
-                      Solve <span className="ml-1 transform group-hover:translate-x-1 transition-transform">→</span>
-                    </span>
-                  </div>
+                  <p className="text-zinc-400 text-sm line-clamp-4">{problem.description}</p>
                 </div>
-              ))}
-            </div>
-          )}
+
+                {/* Tags */}
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {problem.tags?.slice(0, 2).map((tag, idx) => (
+                    <Tag key={idx} data={tag} isClickable={false} showHash={false} className="text-xs" />
+                  ))}
+                  {problem.tags?.length > 2 && (
+                    <Tag
+                      data={`+${problem.tags.length - 2}`}
+                      isClickable={false}
+                      showHash={false}
+                      className="text-xs bg-zinc-700/40 text-zinc-400"
+                    />
+                  )}
+                </div>
+
+                {/* Action Button */}
+                <div className="mt-5 pt-4 border-t border-zinc-700/30 flex justify-end">
+                  <button
+                    className="text-sm text-zinc-400 hover:text-white flex items-center transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/practice/${problem.documentId}`);
+                    }}
+                  >
+                    Start Solving
+                    <svg
+                      className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

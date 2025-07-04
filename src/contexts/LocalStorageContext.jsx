@@ -8,7 +8,9 @@ const LocalStorageContext = ({ children }) => {
   const [progressMap, setProgressMap] = useState({});
 
   const updateLocalStorage = (data) => {
-    localStorage.setItem('yjsUser', JSON.stringify(data));
+    let storedData = localStorage.getItem("yjsUser");
+    storedData = JSON.parse(storedData);
+    localStorage.setItem('yjsUser', JSON.stringify({...storedData, ...data}));
   }
 
   

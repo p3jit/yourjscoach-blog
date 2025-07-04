@@ -12,6 +12,7 @@ import ResultsPanel from "../components/Practice/ResultsPanel";
 import { ProblemDataProvider } from "../contexts/ProblemDataContext";
 import { LocalStorageProvider } from "../contexts/localStorageContext";
 import { useStudyPlan } from "../contexts/StudyPlanContext";
+import ResetButton from "../components/ResetButton";
 
 // Custom hook for managing problem data
 const useProblemData = (location, navigate, resetExecutionState) => {
@@ -186,42 +187,55 @@ const CodeEditorMiddleBar = ({ middleBarTabs, middleBarTabIndex, handleMiddleBar
     setProgressMap({ ...clonedMap });
   };
 
+  const handleReset = () => {
+    const newMiddleBarTabs = structuredClone(middleBarTabs);
+    newMiddleBarTabs[0].editorValue = currentProblem.editorHtmlCode;
+    newMiddleBarTabs[1].editorValue = currentProblem.editorCssCode;
+    newMiddleBarTabs[2].editorValue = currentProblem.editorJsCode;
+    setMiddleBarTabs([...newMiddleBarTabs]);
+  };
+
   // Debounce the editor change handler to prevent excessive updates
   const debouncedHandleEditorChange = useDebounce(handleEditorChange, 300);
 
   return (
     <div className="h-full border-r-2 border-r-zinc-700">
-      <div className="flex gap-8 py-3 px-4 bg-zinc-800">
-        {middleBarTabs.map((tab) => (
-          <button
-            key={tab.id}
-            className={`${
-              middleBarTabIndex === tab.id ? "text-zinc-200 " : "text-zinc-500"
-            } flex gap-1 cursor-pointer text-sm`}
-            onClick={() => handleMiddleBarTabClick(tab.id)}
-          >
-            <svg
-              className={`w-5 h-5 mt-px ${middleBarTabIndex === tab.id ? "text-zinc-200" : "text-zinc-500"}`}
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              fill={tab.icon.fill || "currentColor"}
-              viewBox={tab.icon.viewBox}
+      <div className="flex items-center justify-between gap-8 py-3 px-4 bg-zinc-800">
+        <div className="flex gap-5">
+          {middleBarTabs.map((tab) => (
+            <button
+              key={tab.id}
+              className={`${
+                middleBarTabIndex === tab.id ? "text-zinc-200 " : "text-zinc-500"
+              } flex gap-1 cursor-pointer text-sm`}
+              onClick={() => handleMiddleBarTabClick(tab.id)}
             >
-              <path
-                stroke={tab.icon.fill ? undefined : "currentColor"}
-                strokeLinecap={tab.icon.strokeLinecap}
-                strokeLinejoin={tab.icon.strokeLinejoin}
-                strokeWidth={tab.icon.strokeWidth}
-                d={tab.icon.path}
-                fillRule={tab.icon.fillRule}
-                clipRule={tab.icon.clipRule}
-              />
-            </svg>
-            {tab.label}
-          </button>
-        ))}
+              <svg
+                className={`w-5 h-5 mt-px ${middleBarTabIndex === tab.id ? "text-zinc-200" : "text-zinc-500"}`}
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                fill={tab.icon.fill || "currentColor"}
+                viewBox={tab.icon.viewBox}
+              >
+                <path
+                  stroke={tab.icon.fill ? undefined : "currentColor"}
+                  strokeLinecap={tab.icon.strokeLinecap}
+                  strokeLinejoin={tab.icon.strokeLinejoin}
+                  strokeWidth={tab.icon.strokeWidth}
+                  d={tab.icon.path}
+                  fillRule={tab.icon.fillRule}
+                  clipRule={tab.icon.clipRule}
+                />
+              </svg>
+              {tab.label}
+            </button>
+          ))}
+        </div>
+        <div>
+          <ResetButton onClick={handleReset} />
+        </div>
       </div>
       <div className="h-[calc(100%-5vh)] bg-zinc-900">
         {middleBarTabs[middleBarTabIndex] && (
@@ -291,7 +305,7 @@ const Practice = () => {
     resetExecutionState,
   } = useExecutionState();
 
-  const { currentProblem, setCurrentProblem } = useProblemData(location, navigate, resetExecutionState);
+  const { currentProblem } = useProblemData(location, navigate, resetExecutionState);
 
   const { middleBarTabIndex, middleBarTabs, setMiddleBarTabs, handleMiddleBarTabClick } =
     useMiddleBarTabs(currentProblem);
@@ -303,7 +317,8 @@ const Practice = () => {
   const [showResults, setShowResults] = useState(false);
   const [currentEditorTabIndex, setCurrentEditorTabIndex] = useState(0);
 
-  const markSolved = () => {
+  const markSolved = (shouldSolve) => {
+    if (!shouldSolve) return;
     const currentId = currentProblem.documentId || currentProblem.displayId;
     const isAlreadySolved = solvedProblems.includes(currentId);
     let updatedSolvedProblems = [];
@@ -321,7 +336,7 @@ const Practice = () => {
     const handleMessage = (event) => {
       // this check is needed for local development
       if (event.data && !event.data.vscodeScheduleAsyncWork) {
-        const { stack, name, error, testResultsPassed, testResultsFailed, consoleLogList } = event.data;
+        const { stack, name, error, testResultsPassed, testResultsFailed, consoleLogList, shouldSolve } = event.data;
         const err = error || stack || name;
         if (err) {
           setErrorMsg(err);
@@ -343,7 +358,7 @@ const Practice = () => {
 
         // Check is the current problem is solved or not
         if (!err && testResultsPassed.length + testResultsFailed.length === testResultsPassed.length) {
-          markSolved();
+          markSolved(shouldSolve);
         }
 
         setConsoleLogMap(consoleLogList ? consoleLogList : {});
@@ -410,6 +425,7 @@ const Practice = () => {
       iframeRef.current.contentWindow.postMessage(
         {
           code: editorValue.code,
+          shouldSolve: type === "submit" ? true : false,
           functionName: currentProblem.functionName,
           testCode:
             type === "submit"
@@ -445,7 +461,6 @@ const Practice = () => {
     setIsRunning(true);
     setErrorMsg("");
     debouncedSendMessageToIframe("submit");
-    //markSolved();
   };
 
   // If problem is not loaded yet, don't render anything

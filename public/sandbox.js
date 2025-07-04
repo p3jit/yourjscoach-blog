@@ -16,6 +16,7 @@ const initGlobals = () => {
   window.assert = chai.assert;
   window.YJC_Result = [];
   window.YJC_Error = null;
+  window.YJC_ShouldSolve = false;
 };
 
 // Helper function to replace content in a string using regex
@@ -139,6 +140,7 @@ const postTestResults = (event) => {
         testResultsFailed: window.YJC_Test_Results_Failed,
         consoleLogList: window.YJC_Console_Log_List || [],
         error: window.YJC_Error,
+        shouldSolve: window.YJC_ShouldSolve
       },
       event.origin
     );
@@ -166,6 +168,7 @@ const postMessages = (event) => {
     try {
       codeBlock = transpileCode(data.code);
       testBlock = transpileCode(data.testCode);
+      window.YJC_ShouldSolve = data.shouldSolve;
     } catch (error) {
       event.source.postMessage(error, event.origin);
       return;

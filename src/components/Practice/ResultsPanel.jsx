@@ -48,15 +48,21 @@ const ResultsPanel = ({
 
   // Empty state component for console output
   const EmptyStateOutput = ({ message = "console.log() statements show here" }) => (
-    <div className="w-full h-full flex flex-col justify-center items-center gap-5">
-      <IconTerminal2 className="text-zinc-300" />
-      <h1 className="text-zinc-400">{message}</h1>
+    <div className="flex flex-col items-center justify-center h-full p-4 bg-zinc-900">
+      <div className="flex items-center text-zinc-600 mb-2">
+        <span className="text-md text-zinc-500 mr-2">$</span>
+        <span className="text-md font-mono">_</span>
+      </div>
+      <div className="text-zinc-500 text-md">No console output</div>
+      <div className="text-zinc-600 text-md mt-2 max-w-md text-center">
+        Use console.log() statements in your code to see output here
+      </div>
     </div>
   );
 
   // Empty state component for result output
   const EmptyStateResult = ({ message = "Please run your code to see the result" }) => (
-    <div className="w-full h-full flex flex-col justify-center items-center gap-5">
+    <div className="w-full h-full flex flex-col justify-center items-center gap-5 bg-zinc-900">
       <svg
         stroke="currentColor"
         fill="currentColor"
@@ -137,7 +143,7 @@ const ResultsPanel = ({
               )}
 
           {/* Error message */}
-          {errorMsg && (
+          {errorMsg != "Test case mismatch" && (
             <div className="mt-4 ml-2 font-mono">
               <div className="px-3 py-2 border-l-2 border-red-500">
                 <div className="text-red-400 text-xs mb-2">Error</div>
@@ -242,9 +248,7 @@ const ResultsPanel = ({
           <div className="flex">
             <button
               className={`relative px-3 py-2 flex items-center gap-2 transition-colors ${
-                showConsoleOutput
-                  ? "text-zinc-200"
-                  : "text-zinc-500 hover:text-zinc-300"
+                showConsoleOutput ? "text-zinc-200" : "text-zinc-500 hover:text-zinc-300"
               }`}
               onClick={handleShowTestCases}
             >
@@ -273,9 +277,7 @@ const ResultsPanel = ({
             {currentProblem.category == "dsa" && (
               <button
                 className={`relative px-3 py-3 flex items-center gap-2 transition-colors ${
-                  showResults
-                    ? "text-zinc-200"
-                    : "text-zinc-500 hover:text-zinc-300"
+                  showResults ? "text-zinc-200" : "text-zinc-500 hover:text-zinc-300"
                 }`}
                 onClick={handleShowResults}
               >
