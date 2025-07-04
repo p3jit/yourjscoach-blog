@@ -94,7 +94,6 @@ export const Header = () => {
   };
 
   const handleProblemNavigation = (type) => {
-    debugger;
     if (type === "prev") {
       if (problems[currentProblemIndex - 1]) {
         navigate(`/practice/${problems[currentProblemIndex - 1].documentId}`);

@@ -53,7 +53,6 @@ const EditorSection = ({
 
   const handleErrorCheck = (markers) => {
     // Check for errors after a short delay to allow Monaco to validate
-    debugger;
     setTimeout(() => {
       checkForErrors(markers);
     }, 100);
