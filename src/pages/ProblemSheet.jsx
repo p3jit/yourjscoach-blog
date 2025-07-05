@@ -11,7 +11,7 @@ import Tag from "../components/tag/Tag";
 import StudyPlans from "../components/studyPlans/StudyPlans";
 import NewBadge from "../components/new-badge/NewBadge";
 
-const DSASheet = () => {
+const ProblemSheet = () => {
   // Context and state
   const { filteredProblems, setFilteredProblems, problems, newProblems, setProblems, allProblems } =
     useContext(ProblemDataProvider);
@@ -347,4 +347,4 @@ const DSASheet = () => {
   );
 };
 
-export default DSASheet;
+export default ProblemSheet;

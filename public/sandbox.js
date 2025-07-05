@@ -1,6 +1,7 @@
 // Constants and regex patterns
 const IMPORTS_REGEX = /import(?:["'\s]*([\w*{}\n\r\t, ]+)from\s*)?["'\s].*([@\w/_-]+)["'\s].*/g;
 const PURE_REGEX = /\/\*#__PURE__\*\//g;
+const DEBUGGER_REGEX = /^\s*debugger;\s*$/gm;
 const VALID_ORIGINS = ["https://www.yourjscoach.online", "https://api.yourjscoach.online"];
 const LOCAL_HOSTS = ["localhost", "127.0.0.1", "192.168.0.106"];
 
@@ -75,7 +76,8 @@ const setupMocha = () => {
 
 // Function to transpile code using Babel
 const transpileCode = (code) => {
-  const codeToTranspile = replace(code, IMPORTS_REGEX);
+  let codeToTranspile = replace(code, IMPORTS_REGEX);
+  codeToTranspile = replace(code, DEBUGGER_REGEX);
   const options = { presets: ["es2015-loose", "react"] };
   const { code: transpiledCode } = Babel.transform(codeToTranspile, options);
 

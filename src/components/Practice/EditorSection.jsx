@@ -68,12 +68,15 @@ const EditorSection = ({
 
       const html = htmlTab ? htmlTab.editorValue : "";
       const css = cssTab ? cssTab.editorValue : "";
-      const js = jsTab ? jsTab.editorValue : "";
+      let js = jsTab ? jsTab.editorValue : "";
 
       setHtmlContent(html);
       setCssContent(css);
       setJsContent(js);
 
+      const DEBUGGER_REGEX = /^\s*debugger;\s*$/gm;
+      js = js.replace(DEBUGGER_REGEX,"");
+      
       // Combine HTML, CSS, and JS for the iframe
       const iframeContent = `
         <!DOCTYPE html>

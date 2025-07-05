@@ -157,7 +157,7 @@ export const Header = () => {
                 "shadow-sm hover:shadow-lg active:shadow-md "
               }
             >
-              Previous
+              {`< Previous`}
             </button>
             <button
               type="button"
@@ -168,7 +168,7 @@ export const Header = () => {
                 "shadow-sm hover:shadow-md active:shadow-md "
               }
             >
-              Next
+              {`Next >`}
             </button>
           </div>
         )}

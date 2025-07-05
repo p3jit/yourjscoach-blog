@@ -16,7 +16,7 @@ const LazyPages = {
   SinglePost: lazy(() => import("./pages/SinglePost.jsx")),
   Editor: lazy(() => import("./pages/Editor.jsx")),
   Practice: lazy(() => import("./pages/Practice.jsx")),
-  DSASheet: lazy(() => import("./pages/DSASheet")),
+  ProblemSheet: lazy(() => import("./pages/ProblemSheet")),
 };
 
 const AppLayout = ({ children, isDarkMode, pathname }) => {
@@ -103,7 +103,7 @@ const AppRoutes = () => (
       path="/problems" 
       element={
         <PageTitle title="Curated Problems">
-          <LazyPages.DSASheet />
+          <LazyPages.ProblemSheet />
         </PageTitle>
       } 
     />
