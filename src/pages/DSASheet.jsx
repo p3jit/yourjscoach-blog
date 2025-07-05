@@ -186,7 +186,7 @@ const DSASheet = () => {
       </div>
 
       {(selectedCategories.length > 0 || selectedTags.length > 0 || selectedCompanies.length > 0) && (
-        <div className="flex items-start w-full mt-1.5">
+        <div className="reltaive flex items-start w-full mt-1.5">
           <button
             className="bg-zinc-700 text-zinc-200 px-5 py-2.5 rounded-md text-sm flex items-center gap-1.5"
             onClick={() => {
@@ -249,7 +249,7 @@ const DSASheet = () => {
 
       {/* Newly added problems section */}
       {newProblems.length > 0 && (
-        <div className="w-full pt-12">
+        <div className="w-full pt-8">
           <div className="flex pb-2 items-center justify-between">
             <div>
               <h2 className="text-2xl font-bold text-zinc-100">Newly Added Problems</h2>

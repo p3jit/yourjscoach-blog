@@ -101,7 +101,7 @@ const AnimationStyles = () => (
 );
 
 const FloatingText = () => {
-  const words = ["JavaScript", "React", "Node.js", "Algorithms", "Data Structures", "TypeScript", "Web Development", "System Design"];
+  const words = ["JavaScript", "HTML", "CSS", "Algorithms", "Data Structures", "Web Development", "System Design"];
   
   return (
     <div className="absolute inset-0 overflow-hidden opacity-10 pointer-events-none">
@@ -224,7 +224,7 @@ const HeroSection = memo(() => {
                   { value: "10+", label: "Companies" },
                   { value: "8+", label: "Categories" },
                 ].map((stat) => (
-                  <div key={stat.label} className="p-4 bg-zinc-900/20 rounded-xl border border-zinc-700/30">
+                  <div key={stat.label} className="p-4 bg-zinc-900/40 rounded-xl border border-zinc-700/30">
                     <div className="text-2xl font-bold text-zinc-100">{stat.value}</div>
                     <div className="text-sm text-zinc-400 mt-1">{stat.label}</div>
                   </div>
@@ -247,7 +247,7 @@ const HeroSection = memo(() => {
 
                 {/* Code Block */}
                 <div className="relative">
-                  <pre className="font-mono text-sm text-zinc-300 overflow-auto">
+                  <pre className="font-mono text-sm text-zinc-300 overflow-hidden">
                     <code>
                       {`// Find the longest substring without repeating characters
 function longestSubstring(s) {

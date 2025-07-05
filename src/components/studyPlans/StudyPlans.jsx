@@ -37,11 +37,11 @@ const PlanCard = ({ plan, isActive, onClick }) => {
       }`}
     >
       <div
-        className={`group relative p-6 rounded-xl border shadow-lg h-full flex flex-col ${
+        className={`group relative p-6 rounded-lg border shadow-lg h-full flex flex-col ${
           plan.isPopular
-            ? "border-zinc-700 bg-zinc-900/50 hover:border-zinc-400"
-            : "border-zinc-700 bg-zinc-900/50 hover:border-zinc-400"
-        } transition-all hover:shadow-lg`}
+            ? "border-zinc-700/80 bg-zinc-800/40 hover:border-zinc-700 hover:bg-zinc-800/50"
+            : "border-zinc-700/80 bg-zinc-800/40 hover:border-zinc-700 hover:bg-zinc-800/50"
+        } transition-all hover:shadow-xl`}
       >
         {plan.isPopular && (
           <div className="absolute -top-3 right-6 bg-zinc-700 text-zinc-100 text-xs font-medium px-3 py-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -164,7 +164,7 @@ const StudyPlans = () => {
   if (!studyPlans?.length) return null;
 
   return (
-    <section ref={sectionRef} className="py-12 relative">
+    <section ref={sectionRef} className="py-5 relative">
       <div
         className={`transition-all pt-12 duration-500 max-w-6xl mb-12 ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
