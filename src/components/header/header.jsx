@@ -79,7 +79,7 @@ export const Header = () => {
       return "py-3 px-4 gap-5 min-w-[950px] bg-zinc-900";
     }
     if (isPostPage) {
-      return "py-3 px-4 gap-5 min-w-[950px] bg-zinc-900";
+      return "gap-10 py-[1.5vh] 2xl:px-[20vw] lg:px-[10vw] px-[7vw] min-w-[56vw] bg-zinc-900";
     }
     if (isProblemsPage) {
       return "absolute w-full bottom-14";
@@ -112,7 +112,7 @@ export const Header = () => {
     <header className="sticky top-0 z-50 w-full shadow-md ">
       <nav className={`flex justify-between text-xl items-center ${containerClasses}`} aria-label="Main navigation">
         <div className="flex items-center gap-5">
-          {(isPracticePage || isPostPage) && (
+          {(isPracticePage) && (
             <button onClick={toggleSidebar}>
               <IconMenu2 className="text-zinc-200 cursor-pointer" />
             </button>
@@ -174,7 +174,7 @@ export const Header = () => {
         )}
         {!(isPracticePage || isPostPage) && <Navigation currentPath={location.pathname} navigate={navigate} />}
       </nav>
-      {(isPracticePage || isPostPage) && <hr className="bg-zinc-700 h-0.5 outline-none border-none" />}
+      {(isPracticePage) && <hr className="bg-zinc-700 h-0.5 outline-none border-none" />}
     </header>
   );
 };

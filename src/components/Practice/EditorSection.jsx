@@ -76,7 +76,7 @@ const EditorSection = ({
 
       const DEBUGGER_REGEX = /^\s*debugger;\s*$/gm;
       js = js.replace(DEBUGGER_REGEX,"");
-      
+
       // Combine HTML, CSS, and JS for the iframe
       const iframeContent = `
         <!DOCTYPE html>
@@ -123,122 +123,95 @@ const EditorSection = ({
   }, [currentEditorTabIndex, middleBarTabs, middleBarTabIndex, currentProblem.category]);
 
   return (
-    <>
-      <div className="flex py-3 px-4 bg-zinc-800 justify-between items-center relative w-full">
-        {/* Only show Output tab for non-DSA problems */}
-        <div className="flex gap-7">
-          {currentProblem.category !== "dsa" && (
+    <div className="flex flex-col h-full bg-zinc-900 border-zinc-800/30">
+      {/* Tabs */}
+      <div className="flex items-center px-4 py-2.5 bg-zinc-900/50 border-b border-zinc-800/30">
+        <div className="flex space-x-1 rounded-lg bg-zinc-800/50 p-0.5">
+          {currentProblem.category !== "dsa" ? (
             <button
-              className={`${
-                currentEditorTabIndex === 0 ? "text-zinc-200 " : "text-zinc-500"
-              } flex gap-1 cursor-pointer text-sm`}
               onClick={() => handleEditorTabClick(0)}
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                currentEditorTabIndex === 0
+                  ? 'bg-zinc-700/70 text-zinc-100 shadow-sm'
+                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/30'
+              }`}
             >
-              <svg
-                className={`w-4 h-4 mt-px ${currentEditorTabIndex === 0 ? "text-zinc-200" : "text-zinc-500"}`}
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M14 7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7Zm2 0a4 4 0 0 1-4 4v2a4 4 0 0 1 4 4h4a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-4Z"
-                  clipRule="evenodd"
-                />
-              </svg>
               Output
             </button>
-          )}
-
-          {/* Show Code tab for DSA problems */}
-          {currentProblem.category === "dsa" && (
-            <button
-              className={`${
-                currentEditorTabIndex === 0 ? "text-zinc-200 " : "text-zinc-500"
-              } flex gap-1 cursor-pointer text-sm`}
-              onClick={() => handleEditorTabClick(0)}
-            >
-              <svg
-                className={`w-4 h-4 mt-px ${currentEditorTabIndex === 0 ? "text-zinc-200" : "text-zinc-500"}`}
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="none"
-                viewBox="0 0 24 24"
+          ) : (
+            <>
+              <button
+                onClick={() => handleEditorTabClick(0)}
+                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                  currentEditorTabIndex === 0
+                    ? 'bg-zinc-700/70 text-zinc-100 shadow-sm'
+                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/30'
+                }`}
               >
-                <path
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="m8 8-4 4 4 4m8 0 4-4-4-4m-2-3-4 14"
-                />
-              </svg>
-              Code
-            </button>
-          )}
-
-          {currentProblem.category == "dsa" && (
-            <button
-              className={`${
-                currentEditorTabIndex === 1 ? "text-zinc-200 " : "text-zinc-500"
-              } flex gap-1 cursor-pointer text-sm justify-end`}
-              onClick={() => handleEditorTabClick(1)}
-            >
-              <svg
-                className={`w-4 h-4 mt-px ${currentEditorTabIndex === 1 ? "text-zinc-200" : "text-zinc-500"}`}
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="currentColor"
-                viewBox="0 0 24 24"
+                Code
+              </button>
+              <button
+                onClick={() => handleEditorTabClick(1)}
+                className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+                  currentEditorTabIndex === 1
+                    ? 'bg-zinc-700/70 text-zinc-100 shadow-sm'
+                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/30'
+                }`}
               >
-                <path
-                  fillRule="evenodd"
-                  d="M9 2.221V7H4.221a2 2 0 0 1 .365-.5L8.5 2.586A2 2 0 0 1 9 2.22ZM11 2v5a2 2 0 0 1-2 2H4v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2h-7Zm-.293 9.293a1 1 0 0 1 0 1.414L9.414 14l1.293 1.293a1 1 0 0 1-1.414 1.414l-2-2a1 1 0 0 1 0-1.414l2-2a1 1 0 0 1 1.414 0Zm2.586 1.414a1 1 0 0 1 1.414-1.414l2 2a1 1 0 0 1 0 1.414l-2 2a1 1 0 0 1-1.414-1.414L14.586 14l-1.293-1.293Z"
-                  clipRule="evenodd"
-                />
-              </svg>
-              Test Cases
-            </button>
+                Test Cases
+              </button>
+            </>
           )}
         </div>
+        
+        <div className="ml-auto">
+          <ResetButton onClick={handleReset} />
+        </div>
+      </div>
 
-        {currentProblem.category == "dsa" && (
-          <div className="relative left-1">
-            <ResetButton onClick={handleReset} />
+      {/* Editor/Output Area */}
+      <div className="flex-1  bg-zinc-950/70">
+        {currentEditorTabIndex === 0 ? (
+          currentProblem.category === "dsa" ? (
+            <div className="h-full">
+              <Editor
+                defaultLanguage="javascript"
+                value={editorValue?.code}
+                onChange={handleValueChange}
+                onValidate={handleErrorCheck}
+                theme="vs-dark"
+                options={{
+                  minimap: { enabled: false },
+                  fontSize: 14
+                }}
+              />
+            </div>
+          ) : (
+            <div className="h-full bg-white">
+              <iframe
+                ref={iframeRef}
+                title="output"
+                className="w-full h-full bg-white"
+                sandbox="allow-scripts allow-same-origin"
+              />
+            </div>
+          )
+        ) : (
+          <div className="h-full">
+            <Editor
+              defaultLanguage="javascript"
+              value={editorValue?.tests}
+              onChange={(value) => handleEditorValueChange(value, 'tests')}
+              theme="vs-dark"
+              options={{
+                minimap: { enabled: false },
+                fontSize: 14
+              }}
+            />
           </div>
         )}
       </div>
-
-      {/* Show iframe for Output tab only for non-DSA problems */}
-      {currentProblem.category !== "dsa" && currentEditorTabIndex === 0 ? (
-        <div className="w-full h-full bg-white">
-          <iframe ref={iframeRef} title="Output Preview" className="w-full h-full border-none"></iframe>
-        </div>
-      ) : (
-        <Editor
-          key={currentProblem.documentId + currentEditorTabIndex}
-          defaultLanguage="javascript"
-          value={
-            currentEditorTabIndex === 0 && currentProblem.category === "dsa" ? editorValue.code : editorValue.tests
-          }
-          onChange={handleValueChange}
-          onValidate={handleErrorCheck}
-          theme="vs-dark"
-          options={{
-            minimap: {
-              enabled: false,
-            },
-          }}
-        />
-      )}
-    </>
+    </div>
   );
 };
 
