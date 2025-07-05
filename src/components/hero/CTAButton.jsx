@@ -1,12 +1,6 @@
-import React, { memo } from 'react';
+import React, { memo } from "react";
 
-const CTAButton = memo(({ 
-  children, 
-  isHovered, 
-  onMouseEnter, 
-  onMouseLeave,
-  className = ''
-}) => {
+const CTAButton = memo(({ children, isHovered, onMouseEnter, onMouseLeave, className = "" }) => {
   return (
     <button
       onMouseEnter={onMouseEnter}
@@ -22,18 +16,13 @@ const CTAButton = memo(({
           stroke="currentColor"
           aria-hidden="true"
         >
-          <path 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            strokeWidth={2} 
-            d="M14 5l7 7m0 0l-7 7m7-7H3" 
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
         </svg>
       </span>
     </button>
   );
 });
 
-CTAButton.displayName = 'CTAButton';
+CTAButton.displayName = "CTAButton";
 
 export { CTAButton };

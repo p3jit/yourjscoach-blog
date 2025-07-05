@@ -3,6 +3,7 @@ import Editor from "@monaco-editor/react";
 import useDebounce from "../../hooks/useDebounce";
 import { LocalStorageProvider } from "../../contexts/localStorageContext";
 import ResetButton from "../ResetButton";
+import { IconCornerLeftUpDouble, IconDeviceDesktop } from "@tabler/icons";
 
 const EditorSection = ({
   currentProblem,
@@ -182,12 +183,13 @@ const EditorSection = ({
           {currentProblem.category !== "dsa" ? (
             <button
               onClick={() => handleEditorTabClick(0)}
-              className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
+              className={`px-3 py-1.5 text-sm rounded-md transition-colors flex gap-2 items-center ${
                 currentEditorTabIndex === 0
                   ? "bg-zinc-700/70 text-zinc-100 shadow-sm"
                   : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/30"
               }`}
             >
+              <IconDeviceDesktop className="w-4"/>
               Output
             </button>
           ) : (

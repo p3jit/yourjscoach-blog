@@ -1,20 +1,21 @@
-import React, { memo, useState, useMemo } from 'react';
-import { Header } from '../header/header';
-import { FloatingText } from './FloatingText';
-import { CodePreview } from './CodePreview';
-import { CTAButton } from './CTAButton';
+import React, { memo, useState, useMemo } from "react";
+import { Header } from "../header/header";
+import { FloatingText } from "./FloatingText";
+import { CodePreview } from "./CodePreview";
+import { CTAButton } from "./CTAButton";
 
 // Constants
 const STATS = [
-  { value: '50+', label: 'Problems' },
-  { value: '10+', label: 'Companies' },
-  { value: '8+', label: 'Categories' },
+  { value: "50+", label: "Problems" },
+  { value: "10+", label: "Companies" },
+  { value: "8+", label: "Categories" },
 ];
 
 const HeroSection = memo(() => {
   const [isHovered, setIsHovered] = useState(false);
-  const codeSnippet = useMemo(() => (
-    `// Find the longest substring without repeating characters
+  const codeSnippet = useMemo(
+    () =>
+      `// Find the longest substring without repeating characters
 function longestSubstring(s) {
   let max = 0, start = 0;
   const map = new Map();
@@ -28,15 +29,16 @@ function longestSubstring(s) {
     map.set(char, end);
   }
   return max;
-}`
-  ), []);
+}`,
+    []
+  );
 
-  const codeTags = ['JavaScript', 'Algorithms', 'Strings', 'Hash Map'];
+  const codeTags = ["JavaScript", "Algorithms", "Strings", "Hash Map"];
 
   return (
     <div className="relative overflow-hidden bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 w-full">
       <FloatingText />
-      
+
       {/* Animated Grid Background */}
       <div className="grid-bg">
         <div className="grid-container"></div>
@@ -69,14 +71,14 @@ function longestSubstring(s) {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start pt-4">
-              <CTAButton 
+              <CTAButton
                 isHovered={isHovered}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >
                 Start Practicing
               </CTAButton>
-              
+
               <button className="px-6 py-4 border-2 border-zinc-700 text-zinc-300 rounded-xl hover:bg-zinc-800/50 transition-colors hover:border-zinc-600">
                 View All Problems
               </button>
@@ -95,23 +97,29 @@ function longestSubstring(s) {
 
           {/* Code Preview */}
           <div className="relative">
-            <CodePreview 
-              code={codeSnippet}
-              fileName="challenge.js"
-              tags={codeTags}
-            />
+            <CodePreview code={codeSnippet} fileName="challenge.js" tags={codeTags} />
           </div>
         </div>
       </div>
 
       <style jsx global>{`
         @keyframes float {
-          0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
-          10% { opacity: 0.5; }
-          90% { opacity: 0.5; }
-          100% { transform: translateY(-100vh) translateX(20px) rotate(10deg); opacity: 0; }
+          0% {
+            transform: translateY(0) translateX(0) rotate(0deg);
+            opacity: 0;
+          }
+          10% {
+            opacity: 0.5;
+          }
+          90% {
+            opacity: 0.5;
+          }
+          100% {
+            transform: translateY(-100vh) translateX(20px) rotate(10deg);
+            opacity: 0;
+          }
         }
-        
+
         .grid-bg {
           position: absolute;
           top: 0;
@@ -124,21 +132,20 @@ function longestSubstring(s) {
           z-index: 0;
           opacity: 0.1;
         }
-        
+
         .grid-container {
           position: absolute;
           top: 0;
           left: 0;
           width: 100%;
           height: 100%;
-          background-image: 
-            linear-gradient(to right, #a1a1aa 1px, transparent 1px),
+          background-image: linear-gradient(to right, #a1a1aa 1px, transparent 1px),
             linear-gradient(to bottom, #a1a1aa 1px, transparent 1px);
           background-size: 40px 40px;
           animation: gridMove 30s linear infinite;
           transform-origin: center;
         }
-        
+
         .grid-overlay {
           position: absolute;
           top: 0;
@@ -147,17 +154,23 @@ function longestSubstring(s) {
           height: 100%;
           background: radial-gradient(circle at center, transparent 0%, rgba(24, 24, 27, 0.8) 100%);
         }
-        
+
         @keyframes gridMove {
-          0% { transform: translate(-5%, -5%) scale(1.1); }
-          50% { transform: translate(0, 0) scale(1); }
-          100% { transform: translate(-5%, -5%) scale(1.1); }
+          0% {
+            transform: translate(-5%, -5%) scale(1.1);
+          }
+          50% {
+            transform: translate(0, 0) scale(1);
+          }
+          100% {
+            transform: translate(-5%, -5%) scale(1.1);
+          }
         }
       `}</style>
     </div>
   );
 });
 
-HeroSection.displayName = 'HeroSection';
+HeroSection.displayName = "HeroSection";
 
 export { HeroSection as default };

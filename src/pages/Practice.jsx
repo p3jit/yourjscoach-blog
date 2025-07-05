@@ -13,6 +13,7 @@ import { ProblemDataProvider } from "../contexts/ProblemDataContext";
 import { LocalStorageProvider } from "../contexts/localStorageContext";
 import { useStudyPlan } from "../contexts/StudyPlanContext";
 import ResetButton from "../components/ResetButton";
+import { IconBrandCss3, IconBrandHtml5, IconBrandJavascript } from "@tabler/icons";
 
 // Custom hook for managing problem data
 const useProblemData = (location, navigate, resetExecutionState) => {
@@ -154,7 +155,13 @@ const useMiddleBarTabs = (currentProblem) => {
   };
 };
 
-const CodeEditorMiddleBar = ({ middleBarTabs, middleBarTabIndex, handleMiddleBarTabClick, setMiddleBarTabs, setConsoleLogMap }) => {
+const CodeEditorMiddleBar = ({
+  middleBarTabs,
+  middleBarTabIndex,
+  handleMiddleBarTabClick,
+  setMiddleBarTabs,
+  setConsoleLogMap,
+}) => {
   const { progressMap, setProgressMap, updateLocalStorage } = useContext(LocalStorageProvider);
   const { currentProblem } = useContext(ProblemDataProvider);
 
@@ -201,35 +208,21 @@ const CodeEditorMiddleBar = ({ middleBarTabs, middleBarTabIndex, handleMiddleBar
 
   return (
     <div className="h-full border-r-2 border-r-zinc-700">
-      <div className="flex items-center justify-between gap-8 py-3 px-4 bg-zinc-800">
-        <div className="flex gap-5">
-          {middleBarTabs.map((tab) => (
+      <div className="flex items-center justify-between gap-8 py-3 px-4 bg-zinc-900">
+        <div className="flex space-x-1 rounded-lg bg-zinc-800/40 p-0.5">
+          {middleBarTabs.map((tab, index) => (
             <button
               key={tab.id}
               className={`${
-                middleBarTabIndex === tab.id ? "text-zinc-200 " : "text-zinc-500"
-              } flex gap-1 cursor-pointer text-sm`}
+                middleBarTabIndex === tab.id
+                  ? "bg-zinc-700/70 text-zinc-100 shadow-sm"
+                  : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/30"
+              } px-3 py-1.5 text-sm rounded-md transition-colors flex justify-center items-center`}
               onClick={() => handleMiddleBarTabClick(tab.id)}
             >
-              <svg
-                className={`w-5 h-5 mt-px ${middleBarTabIndex === tab.id ? "text-zinc-200" : "text-zinc-500"}`}
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill={tab.icon.fill || "currentColor"}
-                viewBox={tab.icon.viewBox}
-              >
-                <path
-                  stroke={tab.icon.fill ? undefined : "currentColor"}
-                  strokeLinecap={tab.icon.strokeLinecap}
-                  strokeLinejoin={tab.icon.strokeLinejoin}
-                  strokeWidth={tab.icon.strokeWidth}
-                  d={tab.icon.path}
-                  fillRule={tab.icon.fillRule}
-                  clipRule={tab.icon.clipRule}
-                />
-              </svg>
+              {index === 0 && <IconBrandHtml5 className="w-5 mr-1.5" />}
+              {index === 1 && <IconBrandCss3 className="w-5 mr-1.5" />}
+              {index == 2 && <span className="mr-1.5 font-bold text-md">JS</span>}
               {tab.label}
             </button>
           ))}
@@ -370,9 +363,8 @@ const Practice = () => {
         debugger;
         setConsoleLogMap((prev) => {
           if (prev && prev.length > 0) {
-            return [...prev,event.data.message];
-          }
-          else {
+            return [...prev, event.data.message];
+          } else {
             return [event.data.message];
           }
         });

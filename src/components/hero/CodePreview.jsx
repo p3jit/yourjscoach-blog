@@ -1,4 +1,4 @@
-import React, { memo } from 'react';
+import React, { memo } from "react";
 
 const CodePreview = memo(({ code, fileName, tags }) => {
   return (
@@ -16,9 +16,7 @@ const CodePreview = memo(({ code, fileName, tags }) => {
       {/* Code Block */}
       <div className="relative">
         <pre className="font-mono text-sm text-zinc-300 overflow-hidden">
-          <code>
-            {code}
-          </code>
+          <code>{code}</code>
         </pre>
       </div>
 
@@ -39,6 +37,6 @@ const CodePreview = memo(({ code, fileName, tags }) => {
   );
 });
 
-CodePreview.displayName = 'CodePreview';
+CodePreview.displayName = "CodePreview";
 
 export { CodePreview };
