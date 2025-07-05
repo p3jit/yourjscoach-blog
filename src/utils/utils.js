@@ -103,5 +103,5 @@ export const isNewProblem = (timestamp) => {
   const diffDays = diffTime / (1000 * 60 * 60 * 24);
   
   // Return true if less than 3 days old
-  return diffDays < 3;
+  return diffDays < 10;
 };

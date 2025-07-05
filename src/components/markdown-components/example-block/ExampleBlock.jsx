@@ -25,7 +25,7 @@ const ExampleBlock = ({ input, output, name, explanation }) => {
 
         {explanation && (
           <div className="pt-3 border-t border-zinc-700/50">
-            <p className="text-sm text-zinc-300 leading-relaxed">
+            <p className="text-md text-zinc-400 leading-relaxed">
               {explanation}
             </p>
           </div>

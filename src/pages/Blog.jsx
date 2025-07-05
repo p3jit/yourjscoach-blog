@@ -55,11 +55,18 @@ const SearchBar = ({ triggerSearch, handleClear, showClear, searchRef, isDarkMod
 
 // TagList Component
 const TagList = ({ fetchedTags }) => {
+  const { searchFilter } = useContext(BlogDataProvider);
+
   if (fetchedTags.length) {
     return (
       <div className="flex gap-2 flex-wrap mt-5">
         {fetchedTags.map((singleTag) => (
-          <Tag data={singleTag} key={singleTag} isClickable={true} />
+          <Tag 
+            data={singleTag} 
+            key={singleTag} 
+            isClickable={true} 
+            isActive={searchFilter.includes(singleTag)}
+          />
         ))}
       </div>
     );

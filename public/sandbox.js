@@ -138,6 +138,7 @@ const postTestResults = (event) => {
   if (!window.YJC_Error) {
     event.source.postMessage(
       {
+        type: "IFRAME_DSA_CODE",
         testResultsPassed: window.YJC_Test_Results_Passed,
         testResultsFailed: window.YJC_Test_Results_Failed,
         consoleLogList: window.YJC_Console_Log_List || [],

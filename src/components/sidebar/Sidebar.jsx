@@ -195,7 +195,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         <div className="bg-gradient-to-r from-zinc-900 to-zinc-800 py-5 px-5 border-b border-zinc-700/50">
           <div className="flex justify-between items-center">
             <div>
-              <p className="text-sm text-zinc-400 uppercase tracking-wider font-medium">current plan</p>
+              <p className="text-xs text-zinc-400 uppercase tracking-wider font-medium">current plan</p>
               <h2 className="text-xl font-bold text-white mt-1">
                 {activeStudyPlan ? activeStudyPlan.title : "All Problems"}
               </h2>

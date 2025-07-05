@@ -2,6 +2,7 @@ import React from 'react';
 import Brand from '../brand/Brand';
 
 const Footer = () => {
+  return false;
   return (
     <footer className="bg-zinc-900 text-zinc-300 border-t pt-20 border-zinc-700 pb-5">
       <div className="container flex justify-around">

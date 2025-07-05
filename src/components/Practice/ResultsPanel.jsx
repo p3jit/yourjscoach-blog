@@ -104,7 +104,7 @@ const ResultsPanel = ({
     return (
       <div className="bg-zinc-900 flex flex-col w-full h-full flex-1 font-mono">
         {/* Console content */}
-        <div className="flex-1 overflow-y-auto px-2 py-3 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-zinc-700 scrollbar-track-zinc-800">
+        <div className="flex-1 overflow-y-auto px-2 pb-10 pt-2 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-zinc-700 scrollbar-track-zinc-800">
           {consoleLogMap && Object.keys(consoleLogMap).length > 0
             ? Object.keys(consoleLogMap).map((singleLog, singleCount) => {
                 const logStyle = getLogTypeStyle(consoleLogMap[singleLog]);
@@ -151,7 +151,6 @@ const ResultsPanel = ({
                   {errorMsg}
                 </pre>
               </div>
-
             </div>
           )}
         </div>
@@ -164,7 +163,7 @@ const ResultsPanel = ({
     return (
       <div className="bg-zinc-900 flex flex-col w-full h-full flex-1 font-mono">
         {/* Results content */}
-        <div className="flex-1 overflow-y-auto p-2 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-zinc-700 scrollbar-track-zinc-800">
+        <div className="flex-1 overflow-y-auto px-2 pb-10 pt-2 scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar scrollbar-thumb-zinc-700 scrollbar-track-zinc-800">
           {Array.isArray(testResults.passed) && Array.isArray(testResults.failed) ? (
             [...testResults.passed, ...testResults.failed].map((singleCase, index) => (
               <div key={index} className={`group border-b border-zinc-800/50 hover:bg-zinc-900 transition-colors`}>
@@ -326,9 +325,15 @@ const ResultsPanel = ({
         {/* Console output panel */}
         {showConsoleOutput && (
           <div className="w-full flex-1 flex flex-col overflow-hidden">
-            {didExecute && !isRunning ? <ConsoleOutput /> : null}
-            {!didExecute && !isRunning ? <EmptyStateOutput /> : null}
-            {isRunning ? <LoadingSpinner /> : null}
+            {currentProblem.category == "js" ? (
+              <ConsoleOutput />
+            ) : (
+              <>
+                {didExecute && !isRunning ? <ConsoleOutput /> : null}
+                {!didExecute && !isRunning ? <EmptyStateOutput /> : null}
+                {isRunning ? <LoadingSpinner /> : null}
+              </>
+            )}
           </div>
         )}
 

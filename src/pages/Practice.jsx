@@ -154,7 +154,7 @@ const useMiddleBarTabs = (currentProblem) => {
   };
 };
 
-const CodeEditorMiddleBar = ({ middleBarTabs, middleBarTabIndex, handleMiddleBarTabClick, setMiddleBarTabs }) => {
+const CodeEditorMiddleBar = ({ middleBarTabs, middleBarTabIndex, handleMiddleBarTabClick, setMiddleBarTabs, setConsoleLogMap }) => {
   const { progressMap, setProgressMap, updateLocalStorage } = useContext(LocalStorageProvider);
   const { currentProblem } = useContext(ProblemDataProvider);
 
@@ -185,6 +185,7 @@ const CodeEditorMiddleBar = ({ middleBarTabs, middleBarTabIndex, handleMiddleBar
     // Update current progressMap and localStorage progressMap
     updateLocalStorage({ progressMap: { ...clonedMap } });
     setProgressMap({ ...clonedMap });
+    setConsoleLogMap({});
   };
 
   const handleReset = () => {
@@ -196,7 +197,7 @@ const CodeEditorMiddleBar = ({ middleBarTabs, middleBarTabIndex, handleMiddleBar
   };
 
   // Debounce the editor change handler to prevent excessive updates
-  const debouncedHandleEditorChange = useDebounce(handleEditorChange, 300);
+  const debouncedHandleEditorChange = useDebounce(handleEditorChange, 500);
 
   return (
     <div className="h-full border-r-2 border-r-zinc-700">
@@ -335,7 +336,7 @@ const Practice = () => {
   useEffect(() => {
     const handleMessage = (event) => {
       // this check is needed for local development
-      if (event.data && !event.data.vscodeScheduleAsyncWork) {
+      if (event.data && !event.data.vscodeScheduleAsyncWork && event.data.type == "IFRAME_DSA_CODE") {
         const { stack, name, error, testResultsPassed, testResultsFailed, consoleLogList, shouldSolve } = event.data;
         const err = error || stack || name;
         if (err) {
@@ -360,9 +361,21 @@ const Practice = () => {
           markSolved(shouldSolve);
         }
 
+        // debugger;
         setConsoleLogMap(consoleLogList ? consoleLogList : {});
         setDidExecute(true);
         setIsRunning(false);
+      }
+      if (event.data && !event.data.vscodeScheduleAsyncWork && event.data.type === "IFRAME_JS_CODE") {
+        debugger;
+        setConsoleLogMap((prev) => {
+          if (prev && prev.length > 0) {
+            return [...prev,event.data.message];
+          }
+          else {
+            return [event.data.message];
+          }
+        });
       }
     };
 
@@ -493,6 +506,7 @@ const Practice = () => {
                   middleBarTabIndex={middleBarTabIndex}
                   handleMiddleBarTabClick={handleMiddleBarTabClick}
                   setMiddleBarTabs={setMiddleBarTabs}
+                  setConsoleLogMap={setConsoleLogMap}
                 />
               </div>
             </Panel>
@@ -512,6 +526,7 @@ const Practice = () => {
                 middleBarTabIndex={middleBarTabIndex}
                 editorValue={editorValue}
                 setEditorValue={setEditorValue}
+                setConsoleLogMap={setConsoleLogMap}
               />
             </Panel>
             <PanelResizeHandle />

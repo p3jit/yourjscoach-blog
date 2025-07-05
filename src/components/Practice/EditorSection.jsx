@@ -14,6 +14,7 @@ const EditorSection = ({
   middleBarTabIndex,
   editorValue,
   setEditorValue,
+  setConsoleLogMap,
 }) => {
   const iframeRef = useRef(null);
   const [htmlContent, setHtmlContent] = useState(``);
@@ -78,21 +79,73 @@ const EditorSection = ({
 
       // Combine HTML, CSS, and JS for the iframe
       const iframeContent = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <style>${css}</style>
-        </head>
-        <body>
-          ${html}
-          <script>
-            (function() {
-              ${js}
-            })();
-          </script>
-        </body>
-        </html>
-      `;
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <style>${css}</style>
+    <script>
+      // Only declare originalConsole if it doesn't exist
+      if (typeof originalConsole === 'undefined') {
+        window.originalConsole = {
+          log: console.log,
+          error: console.error,
+          warn: console.warn,
+          info: console.info
+        };
+      }
+
+      function sendToParent(level, args) {
+        try {
+          const message = Array.from(args).map(arg => 
+            typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+          ).join(' ');
+          window.parent.postMessage({ 
+            type: 'IFRAME_JS_CODE',
+            level,
+            message,
+            timestamp: new Date().toISOString()
+          }, '*');
+        } catch (e) {
+          window.originalConsole.error('Error sending console message:', e);
+        }
+      }
+
+      // Only override console methods if they haven't been overridden yet
+      if (!console.__overridden) {
+        ['log', 'error', 'warn', 'info'].forEach(method => {
+          const originalMethod = console[method];
+          console[method] = function() {
+            originalMethod.apply(console, arguments);
+            sendToParent(method, arguments);
+          };
+        });
+        console.__overridden = true;
+      }
+
+      // Handle uncaught errors
+      if (!window.__errorHandlerSet) {
+        window.onerror = function(message, source, lineno, colno, error) {
+          sendToParent('error', [message + '\\n' + (error ? error.stack : '')]);
+          return true; // Prevent default browser error handling
+        };
+        window.__errorHandlerSet = true;
+      }
+    </script>
+  </head>
+  <body>
+    ${html}
+    <script>
+      (function() {
+        try {
+          ${js}
+        } catch (e) {
+          console.error('Uncaught error:', e);
+        }
+      })();
+    </script>
+  </body>
+  </html>
+`;
 
       // Update the iframe content
       const iframe = iframeRef.current;
