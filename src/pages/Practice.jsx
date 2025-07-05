@@ -346,7 +346,6 @@ const Practice = () => {
           if (testResultsPassed?.length > 0 && testResultsFailed?.length === 0) {
             setSuccess(true);
           } else {
-            setErrorMsg("Test case mismatch");
             setSuccess(false);
           }
         }
@@ -402,6 +401,7 @@ const Practice = () => {
       // Update current progressMap and localStorage progressMap
       updateLocalStorage({ progressMap: { ...clonedMap } });
       setProgressMap({ ...clonedMap });
+      setConsoleLogMap({});
     },
     300 // debounce delay in ms, adjust as needed
   );
@@ -424,7 +424,7 @@ const Practice = () => {
     if (iframeRef.current && iframeRef.current.contentWindow) {
       iframeRef.current.contentWindow.postMessage(
         {
-          code: editorValue.code,
+          code: editorValue.code || " ", //need the empty space for proper parsing the code value
           shouldSolve: type === "submit" ? true : false,
           functionName: currentProblem.functionName,
           testCode:

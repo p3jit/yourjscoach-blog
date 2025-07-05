@@ -143,7 +143,7 @@ const ResultsPanel = ({
               )}
 
           {/* Error message */}
-          {errorMsg != "Test case mismatch" && (
+          {errorMsg && (
             <div className="mt-4 ml-2 font-mono">
               <div className="px-3 py-2 border-l-2 border-red-500">
                 <div className="text-red-400 text-xs mb-2">Error</div>
@@ -151,6 +151,7 @@ const ResultsPanel = ({
                   {errorMsg}
                 </pre>
               </div>
+
             </div>
           )}
         </div>
@@ -231,6 +232,7 @@ const ResultsPanel = ({
       <div>
         <iframe
           ref={iframeRef}
+          key={currentProblem.documentId}
           src={
             import.meta.env.VITE_ENV === "prod"
               ? "https://api.yourjscoach.online/assets/3cae4489-5ac4-4c09-bd97-a2cd51409c12.html"
@@ -268,11 +270,6 @@ const ResultsPanel = ({
                 />
               </svg>
               <span className="text-sm">Console</span>
-              {consoleLogMap && consoleLogMap.length > 0 && (
-                <span className="ml-1 text-xs px-2 py-1 rounded-full bg-zinc-700 text-zinc-300">
-                  {consoleLogMap.length}
-                </span>
-              )}
             </button>
             {currentProblem.category == "dsa" && (
               <button

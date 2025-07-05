@@ -314,7 +314,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           </div>
           <div className="w-full bg-zinc-700/30 rounded-full h-1.5">
             <div 
-              className="bg-gradient-to-r from-indigo-500 to-purple-500 h-1.5 rounded-full" 
+              className="bg-gradient-to-r from-zinc-500 to-gray-500 h-1.5 rounded-full" 
               style={{ width: `${problems?.length ? (solvedProblems.length / problems.length) * 100 : 0}%` }}
             ></div>
           </div>

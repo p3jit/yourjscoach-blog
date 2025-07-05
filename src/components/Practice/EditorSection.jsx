@@ -3,7 +3,6 @@ import Editor from "@monaco-editor/react";
 import useDebounce from "../../hooks/useDebounce";
 import { LocalStorageProvider } from "../../contexts/localStorageContext";
 import ResetButton from "../ResetButton";
-import { ProblemDataProvider } from "../../contexts/ProblemDataContext";
 
 const EditorSection = ({
   currentProblem,
@@ -14,7 +13,7 @@ const EditorSection = ({
   middleBarTabs,
   middleBarTabIndex,
   editorValue,
-  setEditorValue
+  setEditorValue,
 }) => {
   const iframeRef = useRef(null);
   const [htmlContent, setHtmlContent] = useState(``);
@@ -75,7 +74,7 @@ const EditorSection = ({
       setJsContent(js);
 
       const DEBUGGER_REGEX = /^\s*debugger;\s*$/gm;
-      js = js.replace(DEBUGGER_REGEX,"");
+      js = js.replace(DEBUGGER_REGEX, "");
 
       // Combine HTML, CSS, and JS for the iframe
       const iframeContent = `
@@ -105,8 +104,8 @@ const EditorSection = ({
   }, 500); // 500ms debounce delay
 
   const handleReset = () => {
-    setEditorValue({code: currentProblem.editorValueCode, tests: currentProblem.editorValueTests});
-  }
+    setEditorValue({ code: currentProblem.editorValueCode, tests: currentProblem.editorValueTests });
+  };
 
   useEffect(() => {
     setEditorValue({
@@ -132,8 +131,8 @@ const EditorSection = ({
               onClick={() => handleEditorTabClick(0)}
               className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                 currentEditorTabIndex === 0
-                  ? 'bg-zinc-700/70 text-zinc-100 shadow-sm'
-                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/30'
+                  ? "bg-zinc-700/70 text-zinc-100 shadow-sm"
+                  : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/30"
               }`}
             >
               Output
@@ -144,8 +143,8 @@ const EditorSection = ({
                 onClick={() => handleEditorTabClick(0)}
                 className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                   currentEditorTabIndex === 0
-                    ? 'bg-zinc-700/70 text-zinc-100 shadow-sm'
-                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/30'
+                    ? "bg-zinc-700/70 text-zinc-100 shadow-sm"
+                    : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/30"
                 }`}
               >
                 Code
@@ -154,8 +153,8 @@ const EditorSection = ({
                 onClick={() => handleEditorTabClick(1)}
                 className={`px-3 py-1.5 text-sm rounded-md transition-colors ${
                   currentEditorTabIndex === 1
-                    ? 'bg-zinc-700/70 text-zinc-100 shadow-sm'
-                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/30'
+                    ? "bg-zinc-700/70 text-zinc-100 shadow-sm"
+                    : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/30"
                 }`}
               >
                 Test Cases
@@ -163,10 +162,12 @@ const EditorSection = ({
             </>
           )}
         </div>
-        
-        <div className="ml-auto">
-          <ResetButton onClick={handleReset} />
-        </div>
+
+        {currentProblem.category != "js" && (
+          <div className="ml-auto">
+            <ResetButton onClick={handleReset} />
+          </div>
+        )}
       </div>
 
       {/* Editor/Output Area */}
@@ -182,7 +183,7 @@ const EditorSection = ({
                 theme="vs-dark"
                 options={{
                   minimap: { enabled: false },
-                  fontSize: 14
+                  fontSize: 14,
                 }}
               />
             </div>
@@ -201,11 +202,11 @@ const EditorSection = ({
             <Editor
               defaultLanguage="javascript"
               value={editorValue?.tests}
-              onChange={(value) => handleEditorValueChange(value, 'tests')}
+              onChange={(value) => handleEditorValueChange(value, "tests")}
               theme="vs-dark"
               options={{
                 minimap: { enabled: false },
-                fontSize: 14
+                fontSize: 14,
               }}
             />
           </div>
