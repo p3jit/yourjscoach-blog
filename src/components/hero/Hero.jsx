@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect } from "react";
+import React, { memo, useState, useEffect, useMemo } from "react";
 import { Header } from "../header/header";
 
 const AnimationStyles = () => (
@@ -100,28 +100,34 @@ const AnimationStyles = () => (
   `}</style>
 );
 
-const FloatingText = () => {
-  const words = ["JavaScript", "HTML", "CSS", "Algorithms", "Data Structures", "Web Development", "System Design"];
-  
+const FloatingText = memo(() => {
+  const words = useMemo(() => 
+    ["JavaScript", "HTML", "CSS", "Algorithms", "Web Dev", "System Design"]
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 12), // Reduced from 7 to 5 words
+    []
+  );
+
   return (
     <div className="absolute inset-0 overflow-hidden opacity-10 pointer-events-none">
       {words.map((word, index) => {
-        // Random position and animation delay
         const top = `${10 + Math.random() * 80}%`;
         const left = `${Math.random() * 100}%`;
         const delay = Math.random() * 5;
         const duration = 20 + Math.random() * 20;
-        const size = 0.5 + Math.random() * 1.5; // Random font size between 0.5 and 2rem
+        const size = 0.5 + Math.random() * 1.5;
         
         return (
           <div 
             key={index}
-            className="absolute text-zinc-200 font-mono whitespace-nowrap"
+            className="absolute text-zinc-200 font-mono whitespace-nowrap will-change-transform"
             style={{
               top,
               left,
               fontSize: `${size}rem`,
               animation: `float ${duration}s linear ${delay}s infinite`,
+              transform: 'translateZ(0)',
+              backfaceVisibility: 'hidden'
             }}
           >
             {word}
@@ -130,7 +136,7 @@ const FloatingText = () => {
       })}
     </div>
   );
-};
+});
 
 const HeroSection = memo(() => {
   const [isHovered, setIsHovered] = useState(false);

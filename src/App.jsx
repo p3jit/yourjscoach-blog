@@ -1,4 +1,4 @@
-import { useContext, Suspense, lazy } from "react";
+import { useContext, Suspense, lazy, useEffect } from "react";
 import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Header } from "./components/header/header.jsx";
 import Loader from "./components/loader/Loader.jsx";
@@ -46,16 +46,83 @@ const AppLayout = ({ children, isDarkMode, pathname }) => {
   );
 };
 
+const PageTitle = ({ title, children }) => {
+  useEffect(() => {
+    document.title = `${title} | Your JS Coach`;
+    return () => {
+      document.title = 'Your JS Coach'; // Reset title when component unmounts
+    };
+  }, [title]);
+
+  return children || null;
+};
+
 const AppRoutes = () => (
   <Routes>
-    <Route path="/" element={<Navigate to="/problems" />} />
-    <Route path="/blog" element={<LazyPages.Blog />} />
-    <Route path="/blog/:id" element={<LazyPages.SinglePost />} />
-    <Route path="/editor" element={<LazyPages.Editor />} />
-    <Route path="/practice/:id" element={<LazyPages.Practice />} />
-    <Route path="/problems" element={<LazyPages.DSASheet />} />
-    <Route path="/404" element={<LazyPages.Error />} />
-    <Route path="*" element={<LazyPages.Error />} />
+    <Route 
+      path="/" 
+      element={
+        <PageTitle title="Home">
+          <Navigate to="/problems" />
+        </PageTitle>
+      } 
+    />
+    <Route 
+      path="/blog" 
+      element={
+        <PageTitle title="Blog">
+          <LazyPages.Blog />
+        </PageTitle>
+      } 
+    />
+    <Route 
+      path="/blog/:id" 
+      element={
+        <PageTitle title="Blog Post">
+          <LazyPages.SinglePost />
+        </PageTitle>
+      } 
+    />
+    <Route 
+      path="/editor" 
+      element={
+        <PageTitle title="Code Editor">
+          <LazyPages.Editor />
+        </PageTitle>
+      } 
+    />
+    <Route 
+      path="/practice/:id" 
+      element={
+        <PageTitle title="Practice">
+          <LazyPages.Practice />
+        </PageTitle>
+      } 
+    />
+    <Route 
+      path="/problems" 
+      element={
+        <PageTitle title="Curated Problems">
+          <LazyPages.DSASheet />
+        </PageTitle>
+      } 
+    />
+    <Route 
+      path="/404" 
+      element={
+        <PageTitle title="Page Not Found">
+          <LazyPages.Error />
+        </PageTitle>
+      } 
+    />
+    <Route 
+      path="*" 
+      element={
+        <PageTitle title="Page Not Found">
+          <LazyPages.Error />
+        </PageTitle>
+      } 
+    />
   </Routes>
 );
 

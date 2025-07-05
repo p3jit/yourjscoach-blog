@@ -245,7 +245,7 @@ const DSASheet = () => {
   // Main render
   return (
     <div className="flex flex-col items-center gap-10">
-      <StudyPlans />
+      {/* <StudyPlans /> */}
 
       {/* Newly added problems section */}
       {newProblems.length > 0 && (
