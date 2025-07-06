@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import Table from "../components/table/Table";
+import React, { useState, useEffect, useContext } from "react";
 import { IconSearch, IconX, IconLayoutGrid, IconTag, IconBuilding, IconChevronDown, IconCheck } from "@tabler/icons";
 import useDebounce from "../hooks/useDebounce";
-import Table from "../components/table/Table";
+import { useLocation, useNavigate } from "react-router-dom";
 import FeatureCards from "../components/features/FeatureCards";
 import ProblemSet from "../components/ProblemSet/ProblemSet";
 import { ProblemDataProvider } from "../contexts/ProblemDataContext";
@@ -11,433 +11,412 @@ import Tag from "../components/tag/Tag";
 import StudyPlans from "../components/studyPlans/StudyPlans";
 import NewBadge from "../components/new-badge/NewBadge";
 
-// Custom hook for filter logic
-const useProblemFilters = (initialProblems) => {
-  const [filters, setFilters] = useState({
-    searchText: "",
-    selectedTags: [],
-    selectedCompanies: [],
-    selectedCategories: [],
-  });
-
-  const [uniqueValues, setUniqueValues] = useState({
-    tags: [],
-    companies: [],
-    categories: [],
-  });
-
-  const [filteredProblems, setFilteredProblems] = useState(initialProblems);
-
-  // Extract unique values from problems
-  useEffect(() => {
-    if (initialProblems.length === 0) return;
-
-    const tags = new Set();
-    const companies = new Set();
-    const categories = new Set();
-
-    initialProblems.forEach((problem) => {
-      problem.tags?.forEach(tag => tags.add(tag));
-      problem.askedIn?.forEach(company => companies.add(company));
-      if (problem.category) categories.add(problem.category);
-    });
-
-    setUniqueValues({
-      tags: Array.from(tags).sort(),
-      companies: Array.from(companies).sort(),
-      categories: Array.from(categories).sort(),
-    });
-  }, [initialProblems]);
-
-  // Apply filters when they change
-  useEffect(() => {
-    let result = [...initialProblems];
-    const { searchText, selectedCategories, selectedTags, selectedCompanies } = filters;
-
-    if (searchText) {
-      const searchLower = searchText.toLowerCase();
-      result = result.filter(
-        (problem) =>
-          problem.problemTitle.toLowerCase().includes(searchLower) ||
-          problem.askedIn?.some(comp => comp.toLowerCase().includes(searchLower)) ||
-          problem.tags?.some(tag => tag.toLowerCase().includes(searchLower))
-      );
-    }
-
-    if (selectedCategories.length > 0) {
-      result = result.filter(problem => selectedCategories.includes(problem.category));
-    }
-
-    if (selectedTags.length > 0) {
-      result = result.filter(problem => selectedTags.some(tag => problem.tags?.includes(tag)));
-    }
-
-    if (selectedCompanies.length > 0) {
-      result = result.filter(problem => 
-        selectedCompanies.some(company => problem.askedIn?.includes(company))
-      );
-    }
-
-    setFilteredProblems(result);
-  }, [filters, initialProblems]);
-
-  const updateFilter = useCallback((filterName, value) => {
-    setFilters(prev => ({
-      ...prev,
-      [filterName]: value
-    }));
-  }, []);
-
-  const clearFilter = useCallback((filterName) => {
-    setFilters(prev => ({
-      ...prev,
-      [filterName]: Array.isArray(prev[filterName]) ? [] : ""
-    }));
-  }, []);
-
-  return {
-    filters,
-    filteredProblems,
-    uniqueValues,
-    updateFilter,
-    clearFilter,
-  };
-};
-
-// Filter Dropdown Component
-const FilterDropdown = ({ 
-  label, 
-  items, 
-  selectedItems = [], 
-  onSelect, 
-  icon,
-  isOpen,
-  onToggle,
-  dropdownRef
-}) => (
-  <div ref={dropdownRef} className="relative">
-    <button
-      onClick={onToggle}
-      className={`flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors ${
-        selectedItems.length > 0
-          ? "bg-zinc-700/30 border-zinc-600 text-zinc-100"
-          : "border-zinc-700 text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200"
-      }`}
-    >
-      {icon}
-      {label}
-      {selectedItems.length > 0 && (
-        <span className="flex items-center justify-center w-5 h-5 text-xs rounded-full bg-zinc-600/50">
-          {selectedItems.length}
-        </span>
-      )}
-      <IconChevronDown className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
-    </button>
-
-    {isOpen && (
-      <div className="absolute z-10 mt-1 w-56 bg-zinc-800 border border-zinc-700 rounded-lg shadow-xl">
-        <div className="p-1 max-h-64 overflow-y-auto custom-scrollbar">
-          {items.map((item) => (
-            <button
-              key={item}
-              onClick={() => onSelect(item)}
-              className={`w-full px-3 py-2 text-sm rounded-md flex items-center justify-between ${
-                selectedItems.includes(item)
-                  ? "bg-zinc-700/50 text-zinc-100"
-                  : "text-zinc-400 hover:bg-zinc-700/30 hover:text-zinc-200"
-              }`}
-            >
-              <span className="truncate">{item}</span>
-              {selectedItems.includes(item) && <IconCheck className="w-4 h-4 text-blue-400" />}
-            </button>
-          ))}
-        </div>
-      </div>
-    )}
-  </div>
-);
-
-// Search Input Component
-const SearchInput = ({ value, onChange, onClear }) => (
-  <div className="relative flex-1">
-    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-      <IconSearch className="w-5 h-5 text-zinc-500" />
-    </div>
-    <input
-      type="text"
-      value={value}
-      onChange={onChange}
-      placeholder="Search problems..."
-      className="w-full pl-10 pr-10 py-2 bg-zinc-800/50 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent"
-    />
-    {value && (
-      <button
-        onClick={onClear}
-        className="absolute inset-y-0 right-0 flex items-center pr-3 text-zinc-500 hover:text-zinc-300"
-      >
-        <IconX className="w-4 h-4" />
-      </button>
-    )}
-  </div>
-);
-
-// View Toggle Component
-const ViewToggle = ({ isTableView, onToggle }) => (
-  <div className="flex border border-zinc-700 rounded-lg overflow-hidden">
-    <button
-      onClick={() => onToggle(true)}
-      className={`px-3 py-1.5 text-sm font-medium transition-colors ${
-        isTableView
-          ? "bg-zinc-700/50 text-white"
-          : "bg-transparent text-zinc-400 hover:bg-zinc-800/50"
-      }`}
-    >
-      Table View
-    </button>
-    <button
-      onClick={() => onToggle(false)}
-      className={`px-3 py-1.5 text-sm font-medium transition-colors ${
-        !isTableView
-          ? "bg-zinc-700/50 text-white"
-          : "bg-transparent text-zinc-400 hover:bg-zinc-800/50"
-      }`}
-    >
-      Card View
-    </button>
-  </div>
-);
-
-// Main Component
 const ProblemSheet = () => {
+  // Context and state
   const { filteredProblems, setFilteredProblems, problems, newProblems, setProblems, allProblems } =
     useContext(ProblemDataProvider);
-  
-  const [isTableView, setIsTableView] = useState(true);
-  const [openDropdown, setOpenDropdown] = useState(null);
-  const dropdownRefs = {
-    categories: React.useRef(null),
-    tags: React.useRef(null),
-    companies: React.useRef(null),
-  };
 
-  const {
-    filters,
-    filteredProblems: currentFilteredProblems,
-    uniqueValues,
-    updateFilter,
-    clearFilter,
-  } = useProblemFilters(problems);
+  // UI state
+  const [searchText, setSearchText] = useState("");
+  const [isTableView, setIsTableView] = useState(true);
+
+  // Filter state
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [selectedCompanies, setSelectedCompanies] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [uniqueTags, setUniqueTags] = useState([]);
+  const [uniqueCompanies, setUniqueCompanies] = useState([]);
+  const [uniqueCategories, setUniqueCategories] = useState([]);
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Update filtered problems in context
-  useEffect(() => {
-    setFilteredProblems(currentFilteredProblems);
-  }, [currentFilteredProblems, setFilteredProblems]);
+  // Filter functions
+  const clearSearch = () => {
+    setSearchText("");
+    applyFilters("", selectedCategories, selectedTags, selectedCompanies);
+  };
 
-  // Reset filters when path changes
+  const applyFilters = (search, categories, tags, companies) => {
+    let filtered = problems;
+
+    if (search.length > 0) {
+      filtered = filtered.filter(
+        (problem) =>
+          problem.problemTitle.toLowerCase().includes(search.toLowerCase()) ||
+          problem.askedIn.some((comp) => comp.toLowerCase().includes(search.toLowerCase())) ||
+          problem.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()))
+      );
+    }
+
+    if (categories.length > 0) {
+      filtered = filtered.filter((problem) => categories.includes(problem.category));
+    }
+
+    if (tags.length > 0) {
+      filtered = filtered.filter((problem) => tags.some((tag) => problem.tags.includes(tag)));
+    }
+
+    if (companies.length > 0) {
+      filtered = filtered.filter((problem) => companies.some((company) => problem.askedIn.includes(company)));
+    }
+
+    setFilteredProblems(filtered);
+  };
+
+  const handleSearchQuestion = (e) => {
+    const searchValue = e.target.value;
+    setSearchText(searchValue);
+    applyFilters(searchValue, selectedCategories, selectedTags, selectedCompanies);
+  };
+
+  const debouncedHandleSearchQuestion = useDebounce(handleSearchQuestion, 800);
+
+  const handleTagSelect = (tag) => {
+    setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
+  };
+
+  const handleCompanySelect = (company) => {
+    setSelectedCompanies((prev) => (prev.includes(company) ? prev.filter((c) => c !== company) : [...prev, company]));
+  };
+
+  const handleCategorySelect = (category) => {
+    setSelectedCategories((prev) =>
+      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
+    );
+  };
+
+  // Effects
   useEffect(() => {
-    if (location.pathname === "/problems") {
+    applyFilters(searchText, selectedCategories, selectedTags, selectedCompanies);
+  }, [selectedCategories, selectedTags, selectedCompanies]);
+
+  useEffect(() => {
+    if (problems.length > 0) {
+      const tags = new Set();
+      const companies = new Set();
+      const categories = new Set();
+
+      problems.forEach((problem) => {
+        problem.tags.forEach((tag) => tags.add(tag));
+        problem.askedIn.forEach((company) => companies.add(company));
+        if (problem.category) categories.add(problem.category);
+      });
+
+      setUniqueTags(Array.from(tags).sort());
+      setUniqueCompanies(Array.from(companies).sort());
+      setUniqueCategories(Array.from(categories).sort());
+    }
+  }, [problems]);
+
+  useEffect(() => {
+    if (location.pathname == "/problems") {
       setProblems([...allProblems]);
       setFilteredProblems([...allProblems]);
     }
-  }, [location.pathname, navigate, allProblems, setProblems, setFilteredProblems]);
+  }, [location.pathname, navigate]);
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      const isOutside = Object.values(dropdownRefs).every(
-        ref => !ref.current?.contains(e.target)
-      );
-      if (isOutside) {
-        setOpenDropdown(null);
-      }
-    };
+  // UI Components
+  const FilterComponent = () => {
+    const [openDropdown, setOpenDropdown] = useState(null);
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  // Handle search with debounce
-  const handleSearch = useDebounce((e) => {
-    updateFilter("searchText", e.target.value);
-  }, 300);
-
-  const handleClearSearch = () => {
-    clearFilter("searchText");
-  };
-
-  const toggleDropdown = (dropdown) => {
-    setOpenDropdown(openDropdown === dropdown ? null : dropdown);
-  };
-
-  const filterSections = [
-    {
-      id: "categories",
-      label: "Categories",
-      items: uniqueValues.categories,
-      selected: filters.selectedCategories,
-      onSelect: (item) => {
-        const newCategories = filters.selectedCategories.includes(item)
-          ? filters.selectedCategories.filter(cat => cat !== item)
-          : [...filters.selectedCategories, item];
-        updateFilter("selectedCategories", newCategories);
+    const filterSections = [
+      {
+        id: "categories",
+        label: "Categories",
+        items: uniqueCategories,
+        selected: selectedCategories,
+        action: handleCategorySelect,
+        icon: <IconLayoutGrid className="w-4 h-4" />,
       },
-      icon: <IconLayoutGrid className="w-4 h-4" />,
-    },
-    {
-      id: "tags",
-      label: "Tags",
-      items: uniqueValues.tags,
-      selected: filters.selectedTags,
-      onSelect: (item) => {
-        const newTags = filters.selectedTags.includes(item)
-          ? filters.selectedTags.filter(tag => tag !== item)
-          : [...filters.selectedTags, item];
-        updateFilter("selectedTags", newTags);
+      {
+        id: "tags",
+        label: "Tags",
+        items: uniqueTags,
+        selected: selectedTags,
+        action: handleTagSelect,
+        icon: <IconTag className="w-4 h-4" />,
       },
-      icon: <IconTag className="w-4 h-4" />,
-    },
-    {
-      id: "companies",
-      label: "Companies",
-      items: uniqueValues.companies,
-      selected: filters.selectedCompanies,
-      onSelect: (item) => {
-        const newCompanies = filters.selectedCompanies.includes(item)
-          ? filters.selectedCompanies.filter(comp => comp !== item)
-          : [...filters.selectedCompanies, item];
-        updateFilter("selectedCompanies", newCompanies);
+      {
+        id: "companies",
+        label: "Companies",
+        items: uniqueCompanies,
+        selected: selectedCompanies,
+        action: handleCompanySelect,
+        icon: <IconBuilding className="w-4 h-4" />,
       },
-      icon: <IconBuilding className="w-4 h-4" />,
-    },
-  ];
+    ];
 
-  return (
-    <div className="min-h-screen flex flex-col bg-zinc-900 text-zinc-100">
-      <main className="flex-1 container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-            Problem Sheet
-          </h1>
-          <p className="text-zinc-400">Practice coding problems to improve your skills</p>
-        </div>
+    useEffect(() => {
+      const handleClickOutside = (e) => {
+        if (!e.target.closest(".filter-dropdown")) {
+          setOpenDropdown(null);
+        }
+      };
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
 
-        {/* Search and Filters */}
-        <div className="mb-6 space-y-4">
-          <div className="flex flex-col md:flex-row gap-4">
-            <SearchInput
-              value={filters.searchText}
-              onChange={(e) => {
-                e.persist();
-                handleSearch(e);
-              }}
-              onClear={handleClearSearch}
-            />
-            <ViewToggle 
-              isTableView={isTableView} 
-              onToggle={setIsTableView} 
-            />
-          </div>
-          
-          <div className="flex flex-wrap items-center gap-2">
-            {filterSections.map((section) => (
-              <FilterDropdown
-                key={section.id}
-                ref={dropdownRefs[section.id]}
-                label={section.label}
-                items={section.items}
-                selectedItems={section.selected}
-                onSelect={section.onSelect}
-                icon={section.icon}
-                isOpen={openDropdown === section.id}
-                onToggle={() => toggleDropdown(section.id)}
-              />
-            ))}
-            
-            {(filters.selectedCategories.length > 0 || 
-              filters.selectedTags.length > 0 || 
-              filters.selectedCompanies.length > 0) && (
+    return (
+      <div className="space-y-3 w-full">
+        {/* Filter Bar */}
+        <div className="flex flex-wrap items-center gap-2">
+          {filterSections.map((section) => (
+            <div key={section.id} className="relative filter-dropdown">
               <button
-                onClick={() => {
-                  clearFilter("selectedCategories");
-                  clearFilter("selectedTags");
-                  clearFilter("selectedCompanies");
-                }}
-                className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1 ml-2"
+                onClick={() => setOpenDropdown(openDropdown === section.id ? null : section.id)}
+                className={`flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors ${
+                  section.selected.length > 0
+                    ? "bg-zinc-700/30 border-zinc-600 text-zinc-100"
+                    : "border-zinc-700 text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200"
+                }`}
               >
-                Clear all filters
+                {section.icon}
+                {section.label}
+                {section.selected.length > 0 && (
+                  <span className="flex items-center justify-center w-5 h-5 text-xs rounded-full bg-zinc-600/50">
+                    {section.selected.length}
+                  </span>
+                )}
+                <IconChevronDown
+                  className={`w-4 h-4 transition-transform ${
+                    openDropdown === section.id ? "transform rotate-180" : ""
+                  }`}
+                />
               </button>
-            )}
-          </div>
-        </div>
 
-        {/* Active Filters */}
-        <div className="flex flex-wrap gap-2 mb-6">
-          {filters.selectedCategories.map((category) => (
-            <Tag
-              key={`cat-${category}`}
-              data={category}
-              onRemove={() => {
-                updateFilter("selectedCategories", 
-                  filters.selectedCategories.filter(c => c !== category)
-                );
-              }}
-            />
+              {openDropdown === section.id && (
+                <div className="absolute z-10 mt-1 w-56 bg-zinc-800 border border-zinc-700 rounded-lg shadow-xl">
+                  <div className="p-1 max-h-64 overflow-y-auto custom-scrollbar">
+                    {section.items.map((item) => (
+                      <button
+                        key={item}
+                        onClick={() => section.action(item)}
+                        className={`w-full px-3 py-2 text-sm rounded-md flex items-center justify-between ${
+                          section.selected.includes(item)
+                            ? "bg-zinc-700/50 text-zinc-100"
+                            : "text-zinc-400 hover:bg-zinc-700/30 hover:text-zinc-200"
+                        }`}
+                      >
+                        <span className="truncate">
+                          {item == "dsa"
+                            ? "Data Structures and Algorithms"
+                            : item == "js"
+                            ? "UI Problem"
+                            : item == "sd"
+                            ? "System Design Problem"
+                            : item}
+                        </span>
+                        {section.selected.includes(item) && (
+                          <IconCheck className="w-4 h-4 flex-shrink-0 text-zinc-300" />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           ))}
-          {filters.selectedTags.map((tag) => (
-            <Tag
-              key={`tag-${tag}`}
-              data={tag}
-              onRemove={() => {
-                updateFilter("selectedTags", 
-                  filters.selectedTags.filter(t => t !== tag)
-                );
-              }}
-            />
-          ))}
-          {filters.selectedCompanies.map((company) => (
-            <Tag
-              key={`comp-${company}`}
-              data={company}
-              onRemove={() => {
-                updateFilter("selectedCompanies", 
-                  filters.selectedCompanies.filter(c => c !== company)
-                );
-              }}
-            />
-          ))}
-        </div>
 
-        {/* Content */}
-        <div className="mb-12">
-          {isTableView ? (
-            <Table problems={filteredProblems} />
-          ) : (
-            <ProblemSet problems={filteredProblems} />
+          {(selectedCategories.length > 0 || selectedTags.length > 0 || selectedCompanies.length > 0) && (
+            <button
+              onClick={() => {
+                setSelectedCategories([]);
+                setSelectedTags([]);
+                setSelectedCompanies([]);
+              }}
+              className="ml-auto text-sm text-zinc-400 hover:text-zinc-200 flex items-center gap-1"
+            >
+              Clear all
+              <IconX size={16} />
+            </button>
           )}
         </div>
 
-        {/* New Problems Section */}
-        {newProblems.length > 0 && (
-          <div className="mb-12">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold flex items-center gap-2">
-                Newly Added
-                <NewBadge />
-              </h2>
-            </div>
-            <FeatureCards problems={newProblems} />
+        {/* Selected Filters */}
+        {(selectedCategories.length > 0 || selectedTags.length > 0 || selectedCompanies.length > 0) && (
+          <div className="flex flex-wrap gap-2 pt-2">
+            {filterSections.flatMap((section) =>
+              section.selected.map((item) => (
+                <div
+                  key={`${section.id}-${item}`}
+                  className="bg-zinc-700/50 px-3 py-1.5 rounded-full text-sm text-zinc-200 flex items-center gap-1.5"
+                >
+                  <span className="text-sm text-zinc-400">{section.label}:</span>{" "}
+                  {item == "dsa"
+                    ? "Data Structures and Algorithms"
+                    : item == "js"
+                    ? "UI Problem"
+                    : item == "sd"
+                    ? "System Design Problem"
+                    : item}
+                  <button onClick={() => section.action(item)} className="text-zinc-400 hover:text-zinc-200">
+                    <IconX size={14} />
+                  </button>
+                </div>
+              ))
+            )}
           </div>
         )}
+      </div>
+    );
+  };
 
-        {/* Study Plans Section */}
-        <StudyPlans />
-      </main>
-      
-      <Footer />
+  const SearchBar = () => {
+    const [isFocused, setIsFocused] = useState(false);
+
+    return (
+      <div className="relative w-full">
+        <div className="relative flex items-center">
+          <div className="absolute left-3 text-zinc-500">
+            <IconSearch size={20} className={isFocused ? "text-blue-400" : ""} />
+          </div>
+
+          <input
+            type="text"
+            className={`w-full py-4 pl-10 pr-10 text-md rounded-lg border ${
+              isFocused ? "bg-zinc-800 border-blue-500/50" : "bg-zinc-800/70 border-zinc-700 hover:border-zinc-600"
+            } text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500/30 transition-all duration-200`}
+            placeholder="Search problems by title, tag, or company..."
+            defaultValue={searchText}
+            onChange={debouncedHandleSearchQuestion}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+          />
+
+          {searchText ? (
+            <button
+              onClick={clearSearch}
+              className="absolute right-3 p-1 text-zinc-400 hover:text-white transition-colors"
+              aria-label="Clear search"
+            >
+              <IconX size={18} />
+            </button>
+          ) : (
+            <></>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  const EmptyState = () => (
+    <div className="w-full flex flex-col items-center justify-center py-20 text-center">
+      <div className="flex flex-col items-center gap-4">
+        <div className="text-zinc-600 text-6xl">¯\_(ツ)_/¯</div>
+        <h3 className="text-2xl font-semibold text-zinc-300">No problems found</h3>
+        <span className="font-normal tracking-wide text-zinc-400">Try searching something different</span>
+      </div>
+    </div>
+  );
+
+  const Caption = () => (
+    <div className="self-start mt-5">
+      <h1 className="text-2xl font-semibold tracking-wide text-zinc-200 mb-2">Explore Problems</h1>
+      <p className="text-lg tracking-normal text-zinc-500">Find challenges by topic, difficulty or company</p>
+    </div>
+  );
+
+  // Main render
+  return (
+    <div className="flex flex-col items-center gap-10">
+      {/* <StudyPlans /> */}
+
+      {/* Newly added problems section */}
+      {newProblems.length > 0 && (
+        <div className="w-full pt-8">
+          <div className="flex pb-2 items-center justify-between">
+            <div>
+              <h2 className="text-2xl font-bold text-zinc-100">Newly Added Problems</h2>
+            </div>
+            <span className="text-sm text-zinc-400">{newProblems.length} problems</span>
+          </div>
+          <h2 className="text-lg tracking-wide font-medium text-zinc-500 mb-8">Fresh problems to test your skills</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {newProblems.map((problem, index) => (
+              <div
+                key={index}
+                onClick={() => navigate(`/practice/${problem.documentId}`)}
+                className="group relative bg-zinc-800/40 rounded-xl p-5 hover:bg-zinc-800/60 transition-all duration-300 cursor-pointer border border-zinc-700/30 hover:border-zinc-600/50"
+              >
+                {/* Category and New Badge */}
+                <div className="flex justify-between items-start mb-4">
+                  <span className="text-xs font-medium px-3 py-1 rounded-full bg-zinc-700/50 text-zinc-300">
+                    {problem.category === "dsa" ? "DSA" : problem.category === "js" ? "JavaScript" : "System Design"}
+                  </span>
+                  <NewBadge />
+                </div>
+
+                {/* Problem Content */}
+                <div className="space-y-3 pb-5">
+                  <h3 className="text-lg font-semibold text-white group-hover:text-zinc-200 transition-colors">
+                    {problem.problemTitle}
+                  </h3>
+                  <p className="text-zinc-400 text-md line-clamp-4">{problem.description}</p>
+                </div>
+
+                {/* Tags */}
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {problem.tags?.slice(0, 2).map((tag, idx) => (
+                    <Tag key={idx} data={tag} isClickable={false} showHash={false} className="text-xs" />
+                  ))}
+                  {problem.tags?.length > 2 && (
+                    <Tag
+                      data={`+${problem.tags.length - 2}`}
+                      isClickable={false}
+                      showHash={false}
+                      className="text-xs bg-zinc-700/40 text-zinc-400"
+                    />
+                  )}
+                </div>
+
+                {/* Action Button */}
+                <div className="mt-5 pt-4 border-t border-zinc-700/30 flex justify-end">
+                  <button
+                    className="text-sm text-zinc-400 hover:text-white flex items-center transition-colors"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/practice/${problem.documentId}`);
+                    }}
+                  >
+                    Start Solving
+                    <svg
+                      className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div id="problems" className="flex flex-col w-full gap-7">
+        <Caption />
+        <SearchBar />
+        <FilterComponent />
+      </div>
+
+      <div className="flex-col w-full flex gap-5">
+        {filteredProblems?.length > 0 ? (
+          isTableView ? (
+            <Table data={filteredProblems} key={filteredProblems.length} />
+          ) : (
+            <ProblemSet data={filteredProblems} />
+          )
+        ) : (
+          <EmptyState />
+        )}
+      </div>
+
+      <FeatureCards />
+      <div className="w-full">{!location.pathname.includes("/practice") && <Footer />}</div>
     </div>
   );
 };
