@@ -1,20 +1,62 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useRef, useEffect } from "react";
 import Markdown from "markdown-to-jsx";
 import Tag from "../tag/Tag";
-import { IconCircleCheck, IconFlame, IconUserCheck } from "@tabler/icons";
+import { IconCircleCheck, IconFlame, IconUserCheck, IconCode, IconChevronDown } from "@tabler/icons";
 import { returnColor, returnDifficultyText } from "../../utils/utils";
 import NormalText from "../markdown-components/normalText/NormalText";
 import ExampleBlock from "../markdown-components/example-block/ExampleBlock";
 import { LocalStorageProvider } from "../../contexts/localStorageContext";
+import { ProblemDataProvider } from "../../contexts/ProblemDataContext";
+import { useNavigate } from "react-router-dom";
 
 /**
  * Component to display the problem description, difficulty, tags, and other metadata
  */
 const ProblemDescription = ({ currentProblem }) => {
   if (!currentProblem) return null;
-  const {solvedProblems} = useContext(LocalStorageProvider);
+  const { solvedProblems } = useContext(LocalStorageProvider);
+  const { allProblems } = useContext(ProblemDataProvider);
+  const navigate = useNavigate();
+  const [isAccordionOpen, setIsAccordionOpen] = useState(false);
+  const accordionRef = useRef(null);
+  const [contentHeight, setContentHeight] = useState(0);
+  
   const currentId = currentProblem.displayId || currentProblem.documentId;
   const isSolved = currentId ? solvedProblems.includes(currentId) : false;
+
+  // Find similar problems based on tags
+  const similarProblems = React.useMemo(() => {
+    if (!currentProblem?.tags?.length || !allProblems?.length) return [];
+    
+    return allProblems
+      .filter(problem => {
+        // Exclude current problem
+        const problemId = problem.displayId || problem.documentId;
+        if (problemId === currentId) return false;
+        
+        // Check if problem shares any tags with current problem
+        return problem.tags && problem.tags.some(tag => 
+          currentProblem.tags.includes(tag)
+        );
+      })
+      .slice(0, 3); // Limit to 3 similar problems
+  }, [currentProblem, allProblems, currentId]);
+
+  // Update content height when accordion is toggled or similar problems change
+  useEffect(() => {
+    if (accordionRef.current) {
+      setContentHeight(isAccordionOpen ? accordionRef.current.scrollHeight : 0);
+    }
+  }, [isAccordionOpen, similarProblems]);
+
+  const handleProblemClick = (problem) => {
+    const problemId = problem.displayId || problem.documentId;
+    navigate(`/practice/${problemId}`);
+  };
+
+  const toggleAccordion = () => {
+    setIsAccordionOpen(!isAccordionOpen);
+  };
 
   return (
     <div className="w-full pr-2 h-full flex flex-col overflow-hidden border-r-2 border-zinc-800 bg-zinc-900/50 backdrop-blur-sm">
@@ -66,6 +108,82 @@ const ProblemDescription = ({ currentProblem }) => {
           {currentProblem.mdContent || ""}
         </Markdown>
       </div>
+
+      {/* Similar Problems Section */}
+      {similarProblems.length > 0 && (
+        <div className="border-t border-zinc-800/50">
+          <button 
+            onClick={toggleAccordion}
+            className="w-full flex items-center justify-between p-4 text-left hover:bg-zinc-800/30 transition-colors rounded"
+          >
+            <h3 className="text-lg font-medium text-zinc-200 flex items-center gap-2">
+              <IconCode className="w-5 h-5 text-zinc-400" />
+              Similar Problems
+              <span className="text-sm text-zinc-400 ml-1">({similarProblems.length})</span>
+            </h3>
+            <IconChevronDown 
+              className={`w-5 h-5 text-zinc-400 transform transition-transform duration-200 ${
+                isAccordionOpen ? 'rotate-180' : ''
+              }`}
+            />
+          </button>
+          
+          <div
+            ref={accordionRef}
+            className={`transition-all duration-300 ease-in-out overflow-hidden ${
+              isAccordionOpen ? 'max-h-[500px]' : 'max-h-0'
+            }`}
+          >
+            <div className="px-4 pb-4 pt-4 space-y-3">
+              {similarProblems.map((problem) => {
+                const problemId = problem.displayId || problem.documentId;
+                const isProblemSolved = solvedProblems.includes(problemId);
+                
+                return (
+                  <div 
+                    key={problemId}
+                    onClick={() => handleProblemClick(problem)}
+                    className="p-3 rounded-lg bg-zinc-800/50 hover:bg-zinc-800/80 transition-colors cursor-pointer border border-zinc-700/50 hover:border-zinc-600/50"
+                  >
+                    <div className="flex items-center justify-between">
+                      <h4 className="font-medium text-zinc-100">
+                        {problem.problemTitle}
+                        {isProblemSolved && (
+                          <span className="ml-2 text-xs text-emerald-400">
+                            <IconCircleCheck className="inline w-3.5 h-3.5" />
+                          </span>
+                        )}
+                      </h4>
+                      <span 
+                        className={`text-xs px-2 py-0.5 rounded-full ${
+                          returnColor(problem.difficulty)
+                        } bg-opacity-10`}
+                      >
+                        {returnDifficultyText(problem.difficulty)}
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {problem.tags?.slice(0, 2).map((tag, idx) => (
+                        <span 
+                          key={idx}
+                          className="text-xs px-2 py-0.5 bg-zinc-700/50 text-zinc-300 rounded-full"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                      {problem.tags?.length > 2 && (
+                        <span className="text-xs text-zinc-500">
+                          +{problem.tags.length - 2} more
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <div className="p-4 border-t border-zinc-800/50 bg-zinc-900/30 backdrop-blur-sm">

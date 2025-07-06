@@ -1,8 +1,8 @@
-import Table from "../components/table/Table";
-import React, { useState, useEffect, useContext } from "react";
-import { IconSearch, IconX } from "@tabler/icons";
-import useDebounce from "../hooks/useDebounce";
+import React, { useState, useEffect, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { IconSearch, IconX, IconLayoutGrid, IconTag, IconBuilding, IconChevronDown, IconCheck } from "@tabler/icons";
+import useDebounce from "../hooks/useDebounce";
+import Table from "../components/table/Table";
 import FeatureCards from "../components/features/FeatureCards";
 import ProblemSet from "../components/ProblemSet/ProblemSet";
 import { ProblemDataProvider } from "../contexts/ProblemDataContext";
@@ -11,338 +11,433 @@ import Tag from "../components/tag/Tag";
 import StudyPlans from "../components/studyPlans/StudyPlans";
 import NewBadge from "../components/new-badge/NewBadge";
 
+// Custom hook for filter logic
+const useProblemFilters = (initialProblems) => {
+  const [filters, setFilters] = useState({
+    searchText: "",
+    selectedTags: [],
+    selectedCompanies: [],
+    selectedCategories: [],
+  });
+
+  const [uniqueValues, setUniqueValues] = useState({
+    tags: [],
+    companies: [],
+    categories: [],
+  });
+
+  const [filteredProblems, setFilteredProblems] = useState(initialProblems);
+
+  // Extract unique values from problems
+  useEffect(() => {
+    if (initialProblems.length === 0) return;
+
+    const tags = new Set();
+    const companies = new Set();
+    const categories = new Set();
+
+    initialProblems.forEach((problem) => {
+      problem.tags?.forEach(tag => tags.add(tag));
+      problem.askedIn?.forEach(company => companies.add(company));
+      if (problem.category) categories.add(problem.category);
+    });
+
+    setUniqueValues({
+      tags: Array.from(tags).sort(),
+      companies: Array.from(companies).sort(),
+      categories: Array.from(categories).sort(),
+    });
+  }, [initialProblems]);
+
+  // Apply filters when they change
+  useEffect(() => {
+    let result = [...initialProblems];
+    const { searchText, selectedCategories, selectedTags, selectedCompanies } = filters;
+
+    if (searchText) {
+      const searchLower = searchText.toLowerCase();
+      result = result.filter(
+        (problem) =>
+          problem.problemTitle.toLowerCase().includes(searchLower) ||
+          problem.askedIn?.some(comp => comp.toLowerCase().includes(searchLower)) ||
+          problem.tags?.some(tag => tag.toLowerCase().includes(searchLower))
+      );
+    }
+
+    if (selectedCategories.length > 0) {
+      result = result.filter(problem => selectedCategories.includes(problem.category));
+    }
+
+    if (selectedTags.length > 0) {
+      result = result.filter(problem => selectedTags.some(tag => problem.tags?.includes(tag)));
+    }
+
+    if (selectedCompanies.length > 0) {
+      result = result.filter(problem => 
+        selectedCompanies.some(company => problem.askedIn?.includes(company))
+      );
+    }
+
+    setFilteredProblems(result);
+  }, [filters, initialProblems]);
+
+  const updateFilter = useCallback((filterName, value) => {
+    setFilters(prev => ({
+      ...prev,
+      [filterName]: value
+    }));
+  }, []);
+
+  const clearFilter = useCallback((filterName) => {
+    setFilters(prev => ({
+      ...prev,
+      [filterName]: Array.isArray(prev[filterName]) ? [] : ""
+    }));
+  }, []);
+
+  return {
+    filters,
+    filteredProblems,
+    uniqueValues,
+    updateFilter,
+    clearFilter,
+  };
+};
+
+// Filter Dropdown Component
+const FilterDropdown = ({ 
+  label, 
+  items, 
+  selectedItems = [], 
+  onSelect, 
+  icon,
+  isOpen,
+  onToggle,
+  dropdownRef
+}) => (
+  <div ref={dropdownRef} className="relative">
+    <button
+      onClick={onToggle}
+      className={`flex items-center gap-2 px-3 py-1.5 text-sm font-medium rounded-lg border transition-colors ${
+        selectedItems.length > 0
+          ? "bg-zinc-700/30 border-zinc-600 text-zinc-100"
+          : "border-zinc-700 text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200"
+      }`}
+    >
+      {icon}
+      {label}
+      {selectedItems.length > 0 && (
+        <span className="flex items-center justify-center w-5 h-5 text-xs rounded-full bg-zinc-600/50">
+          {selectedItems.length}
+        </span>
+      )}
+      <IconChevronDown className={`w-4 h-4 transition-transform ${isOpen ? "rotate-180" : ""}`} />
+    </button>
+
+    {isOpen && (
+      <div className="absolute z-10 mt-1 w-56 bg-zinc-800 border border-zinc-700 rounded-lg shadow-xl">
+        <div className="p-1 max-h-64 overflow-y-auto custom-scrollbar">
+          {items.map((item) => (
+            <button
+              key={item}
+              onClick={() => onSelect(item)}
+              className={`w-full px-3 py-2 text-sm rounded-md flex items-center justify-between ${
+                selectedItems.includes(item)
+                  ? "bg-zinc-700/50 text-zinc-100"
+                  : "text-zinc-400 hover:bg-zinc-700/30 hover:text-zinc-200"
+              }`}
+            >
+              <span className="truncate">{item}</span>
+              {selectedItems.includes(item) && <IconCheck className="w-4 h-4 text-blue-400" />}
+            </button>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+);
+
+// Search Input Component
+const SearchInput = ({ value, onChange, onClear }) => (
+  <div className="relative flex-1">
+    <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+      <IconSearch className="w-5 h-5 text-zinc-500" />
+    </div>
+    <input
+      type="text"
+      value={value}
+      onChange={onChange}
+      placeholder="Search problems..."
+      className="w-full pl-10 pr-10 py-2 bg-zinc-800/50 border border-zinc-700 rounded-lg text-zinc-200 placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent"
+    />
+    {value && (
+      <button
+        onClick={onClear}
+        className="absolute inset-y-0 right-0 flex items-center pr-3 text-zinc-500 hover:text-zinc-300"
+      >
+        <IconX className="w-4 h-4" />
+      </button>
+    )}
+  </div>
+);
+
+// View Toggle Component
+const ViewToggle = ({ isTableView, onToggle }) => (
+  <div className="flex border border-zinc-700 rounded-lg overflow-hidden">
+    <button
+      onClick={() => onToggle(true)}
+      className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+        isTableView
+          ? "bg-zinc-700/50 text-white"
+          : "bg-transparent text-zinc-400 hover:bg-zinc-800/50"
+      }`}
+    >
+      Table View
+    </button>
+    <button
+      onClick={() => onToggle(false)}
+      className={`px-3 py-1.5 text-sm font-medium transition-colors ${
+        !isTableView
+          ? "bg-zinc-700/50 text-white"
+          : "bg-transparent text-zinc-400 hover:bg-zinc-800/50"
+      }`}
+    >
+      Card View
+    </button>
+  </div>
+);
+
+// Main Component
 const ProblemSheet = () => {
-  // Context and state
   const { filteredProblems, setFilteredProblems, problems, newProblems, setProblems, allProblems } =
     useContext(ProblemDataProvider);
-
-  // UI state
-  const [searchText, setSearchText] = useState("");
+  
   const [isTableView, setIsTableView] = useState(true);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const dropdownRefs = {
+    categories: React.useRef(null),
+    tags: React.useRef(null),
+    companies: React.useRef(null),
+  };
 
-  // Filter state
-  const [selectedTags, setSelectedTags] = useState([]);
-  const [selectedCompanies, setSelectedCompanies] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [uniqueTags, setUniqueTags] = useState([]);
-  const [uniqueCompanies, setUniqueCompanies] = useState([]);
-  const [uniqueCategories, setUniqueCategories] = useState([]);
+  const {
+    filters,
+    filteredProblems: currentFilteredProblems,
+    uniqueValues,
+    updateFilter,
+    clearFilter,
+  } = useProblemFilters(problems);
 
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Filter functions
-  const clearSearch = () => {
-    setSearchText("");
-    applyFilters("", selectedCategories, selectedTags, selectedCompanies);
-  };
-
-  const applyFilters = (search, categories, tags, companies) => {
-    let filtered = problems;
-
-    if (search.length > 0) {
-      filtered = filtered.filter(
-        (problem) =>
-          problem.problemTitle.toLowerCase().includes(search.toLowerCase()) ||
-          problem.askedIn.some((comp) => comp.toLowerCase().includes(search.toLowerCase())) ||
-          problem.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()))
-      );
-    }
-
-    if (categories.length > 0) {
-      filtered = filtered.filter((problem) => categories.includes(problem.category));
-    }
-
-    if (tags.length > 0) {
-      filtered = filtered.filter((problem) => tags.some((tag) => problem.tags.includes(tag)));
-    }
-
-    if (companies.length > 0) {
-      filtered = filtered.filter((problem) => companies.some((company) => problem.askedIn.includes(company)));
-    }
-
-    setFilteredProblems(filtered);
-  };
-
-  const handleSearchQuestion = (e) => {
-    const searchValue = e.target.value;
-    setSearchText(searchValue);
-    applyFilters(searchValue, selectedCategories, selectedTags, selectedCompanies);
-  };
-
-  const debouncedHandleSearchQuestion = useDebounce(handleSearchQuestion, 800);
-
-  const handleTagSelect = (tag) => {
-    setSelectedTags((prev) => (prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]));
-  };
-
-  const handleCompanySelect = (company) => {
-    setSelectedCompanies((prev) => (prev.includes(company) ? prev.filter((c) => c !== company) : [...prev, company]));
-  };
-
-  const handleCategorySelect = (category) => {
-    setSelectedCategories((prev) =>
-      prev.includes(category) ? prev.filter((c) => c !== category) : [...prev, category]
-    );
-  };
-
-  // Effects
+  // Update filtered problems in context
   useEffect(() => {
-    applyFilters(searchText, selectedCategories, selectedTags, selectedCompanies);
-  }, [selectedCategories, selectedTags, selectedCompanies]);
+    setFilteredProblems(currentFilteredProblems);
+  }, [currentFilteredProblems, setFilteredProblems]);
 
+  // Reset filters when path changes
   useEffect(() => {
-    if (problems.length > 0) {
-      const tags = new Set();
-      const companies = new Set();
-      const categories = new Set();
-
-      problems.forEach((problem) => {
-        problem.tags.forEach((tag) => tags.add(tag));
-        problem.askedIn.forEach((company) => companies.add(company));
-        if (problem.category) categories.add(problem.category);
-      });
-
-      setUniqueTags(Array.from(tags).sort());
-      setUniqueCompanies(Array.from(companies).sort());
-      setUniqueCategories(Array.from(categories).sort());
-    }
-  }, [problems]);
-
-  useEffect(() => {
-    if (location.pathname == "/problems") {
+    if (location.pathname === "/problems") {
       setProblems([...allProblems]);
       setFilteredProblems([...allProblems]);
     }
-  }, [location.pathname, navigate]);
+  }, [location.pathname, navigate, allProblems, setProblems, setFilteredProblems]);
 
-  // UI Components
-  const FilterComponent = () => (
-    <div className="flex flex-col gap-5 w-full">
-      <div className="flex flex-col gap-1.5 w-full">
-        <label className="text-base font-medium text-zinc-300">Filter by Categories</label>
-        <div className="flex flex-wrap gap-2.5 mt-1.5">
-          {uniqueCategories.map((category) => {
-            const isActive = selectedCategories.includes(category);
-            return (
-              <Tag
-                key={category}
-                data={category === "dsa" ? "Data Structures and Algorithm Problem" : "UI Problems"}
-                isClickable={true}
-                isActive={isActive}
-                showHash={false}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleCategorySelect(category);
-                }}
-              />
-            );
-          })}
-        </div>
-      </div>
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      const isOutside = Object.values(dropdownRefs).every(
+        ref => !ref.current?.contains(e.target)
+      );
+      if (isOutside) {
+        setOpenDropdown(null);
+      }
+    };
 
-      <div className="flex flex-col gap-1.5 w-full">
-        <label className="text-base font-medium text-zinc-300">Filter by Tags</label>
-        <div className="flex flex-wrap gap-2.5 mt-1.5">
-          {uniqueTags.map((tag) => {
-            const isActive = selectedTags.includes(tag);
-            return (
-              <Tag
-                key={tag}
-                data={tag}
-                isClickable={true}
-                isActive={isActive}
-                showHash={false}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleTagSelect(tag);
-                }}
-              />
-            );
-          })}
-        </div>
-      </div>
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-      <div className="flex flex-col gap-1.5 w-full">
-        <label className="text-base font-medium text-zinc-300">Filter by Companies</label>
-        <div className="flex flex-wrap gap-2.5 mt-1.5">
-          {uniqueCompanies.map((company) => {
-            const isActive = selectedCompanies.includes(company);
-            return (
-              <Tag
-                key={company}
-                data={company}
-                isClickable={true}
-                isActive={isActive}
-                showHash={false}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleCompanySelect(company);
-                }}
-              />
-            );
-          })}
-        </div>
-      </div>
+  // Handle search with debounce
+  const handleSearch = useDebounce((e) => {
+    updateFilter("searchText", e.target.value);
+  }, 300);
 
-      {(selectedCategories.length > 0 || selectedTags.length > 0 || selectedCompanies.length > 0) && (
-        <div className="reltaive flex items-start w-full mt-1.5">
-          <button
-            className="bg-zinc-700 text-zinc-200 px-5 py-2.5 rounded-md text-sm flex items-center gap-1.5"
-            onClick={() => {
-              setSelectedCategories([]);
-              setSelectedTags([]);
-              setSelectedCompanies([]);
-            }}
-          >
-            Clear Filters <IconX size={18} />
-          </button>
-        </div>
-      )}
-    </div>
-  );
+  const handleClearSearch = () => {
+    clearFilter("searchText");
+  };
 
-  const SearchBar = () => (
-    <div className="relative w-full">
-      <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-        <IconSearch className="text-zinc-400" size={24} />
-      </div>
-      <input
-        type="text"
-        className="block w-full p-4 pl-12 text-base rounded-lg bg-zinc-800 border-zinc-700 placeholder-zinc-400 text-white focus:outline-none focus:ring-1 focus:ring-zinc-500"
-        placeholder="Search problems by title, tag, or company..."
-        defaultValue={searchText}
-        onChange={debouncedHandleSearchQuestion}
-      />
-      {searchText && (
-        <button
-          onClick={clearSearch}
-          className="absolute inset-y-0 right-0 flex items-center pr-4 text-zinc-400 hover:text-white"
-        >
-          <IconX size={24} />
-        </button>
-      )}
-    </div>
-  );
+  const toggleDropdown = (dropdown) => {
+    setOpenDropdown(openDropdown === dropdown ? null : dropdown);
+  };
 
-  const EmptyState = () => (
-    <div className="w-full flex flex-col items-center justify-center py-20 text-center">
-      <div className="flex flex-col items-center gap-4">
-        <div className="text-zinc-600 text-6xl">¯\_(ツ)_/¯</div>
-        <h3 className="text-2xl font-semibold text-zinc-300">No problems found</h3>
-        <span className="font-normal tracking-wide text-zinc-400">Try searching something different</span>
-      </div>
-    </div>
-  );
+  const filterSections = [
+    {
+      id: "categories",
+      label: "Categories",
+      items: uniqueValues.categories,
+      selected: filters.selectedCategories,
+      onSelect: (item) => {
+        const newCategories = filters.selectedCategories.includes(item)
+          ? filters.selectedCategories.filter(cat => cat !== item)
+          : [...filters.selectedCategories, item];
+        updateFilter("selectedCategories", newCategories);
+      },
+      icon: <IconLayoutGrid className="w-4 h-4" />,
+    },
+    {
+      id: "tags",
+      label: "Tags",
+      items: uniqueValues.tags,
+      selected: filters.selectedTags,
+      onSelect: (item) => {
+        const newTags = filters.selectedTags.includes(item)
+          ? filters.selectedTags.filter(tag => tag !== item)
+          : [...filters.selectedTags, item];
+        updateFilter("selectedTags", newTags);
+      },
+      icon: <IconTag className="w-4 h-4" />,
+    },
+    {
+      id: "companies",
+      label: "Companies",
+      items: uniqueValues.companies,
+      selected: filters.selectedCompanies,
+      onSelect: (item) => {
+        const newCompanies = filters.selectedCompanies.includes(item)
+          ? filters.selectedCompanies.filter(comp => comp !== item)
+          : [...filters.selectedCompanies, item];
+        updateFilter("selectedCompanies", newCompanies);
+      },
+      icon: <IconBuilding className="w-4 h-4" />,
+    },
+  ];
 
-  const Caption = () => (
-    <div className="self-start mt-5">
-      <h1 className="text-2xl font-semibold tracking-wide text-zinc-200 mb-2">Explore Problems</h1>
-      <p className="text-lg tracking-normal text-zinc-500">Find challenges by topic, difficulty or company</p>
-    </div>
-  );
-
-  // Main render
   return (
-    <div className="flex flex-col items-center gap-10">
-      {/* <StudyPlans /> */}
+    <div className="min-h-screen flex flex-col bg-zinc-900 text-zinc-100">
+      <main className="flex-1 container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+            Problem Sheet
+          </h1>
+          <p className="text-zinc-400">Practice coding problems to improve your skills</p>
+        </div>
 
-      {/* Newly added problems section */}
-      {newProblems.length > 0 && (
-        <div className="w-full pt-8">
-          <div className="flex pb-2 items-center justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-zinc-100">Newly Added Problems</h2>
-            </div>
-            <span className="text-sm text-zinc-400">{newProblems.length} problems</span>
+        {/* Search and Filters */}
+        <div className="mb-6 space-y-4">
+          <div className="flex flex-col md:flex-row gap-4">
+            <SearchInput
+              value={filters.searchText}
+              onChange={(e) => {
+                e.persist();
+                handleSearch(e);
+              }}
+              onClear={handleClearSearch}
+            />
+            <ViewToggle 
+              isTableView={isTableView} 
+              onToggle={setIsTableView} 
+            />
           </div>
-          <h2 className="text-lg tracking-wide font-medium text-zinc-500 mb-8">Fresh problems to test your skills</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-            {newProblems.map((problem, index) => (
-              <div
-                key={index}
-                onClick={() => navigate(`/practice/${problem.documentId}`)}
-                className="group relative bg-zinc-800/40 rounded-xl p-5 hover:bg-zinc-800/60 transition-all duration-300 cursor-pointer border border-zinc-700/30 hover:border-zinc-600/50"
-              >
-                {/* Category and New Badge */}
-                <div className="flex justify-between items-start mb-4">
-                  <span className="text-xs font-medium px-3 py-1 rounded-full bg-zinc-700/50 text-zinc-300">
-                    {problem.category === "dsa" ? "DSA" : problem.category === "js" ? "JavaScript" : "System Design"}
-                  </span>
-                  <NewBadge />
-                </div>
-
-                {/* Problem Content */}
-                <div className="space-y-3 pb-5">
-                  <h3 className="text-lg font-semibold text-white group-hover:text-zinc-200 transition-colors">
-                    {problem.problemTitle}
-                  </h3>
-                  <p className="text-zinc-400 text-md line-clamp-4">{problem.description}</p>
-                </div>
-
-                {/* Tags */}
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {problem.tags?.slice(0, 2).map((tag, idx) => (
-                    <Tag key={idx} data={tag} isClickable={false} showHash={false} className="text-xs" />
-                  ))}
-                  {problem.tags?.length > 2 && (
-                    <Tag
-                      data={`+${problem.tags.length - 2}`}
-                      isClickable={false}
-                      showHash={false}
-                      className="text-xs bg-zinc-700/40 text-zinc-400"
-                    />
-                  )}
-                </div>
-
-                {/* Action Button */}
-                <div className="mt-5 pt-4 border-t border-zinc-700/30 flex justify-end">
-                  <button
-                    className="text-sm text-zinc-400 hover:text-white flex items-center transition-colors"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      navigate(`/practice/${problem.documentId}`);
-                    }}
-                  >
-                    Start Solving
-                    <svg
-                      className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
+          
+          <div className="flex flex-wrap items-center gap-2">
+            {filterSections.map((section) => (
+              <FilterDropdown
+                key={section.id}
+                ref={dropdownRefs[section.id]}
+                label={section.label}
+                items={section.items}
+                selectedItems={section.selected}
+                onSelect={section.onSelect}
+                icon={section.icon}
+                isOpen={openDropdown === section.id}
+                onToggle={() => toggleDropdown(section.id)}
+              />
             ))}
+            
+            {(filters.selectedCategories.length > 0 || 
+              filters.selectedTags.length > 0 || 
+              filters.selectedCompanies.length > 0) && (
+              <button
+                onClick={() => {
+                  clearFilter("selectedCategories");
+                  clearFilter("selectedTags");
+                  clearFilter("selectedCompanies");
+                }}
+                className="text-sm text-blue-400 hover:text-blue-300 flex items-center gap-1 ml-2"
+              >
+                Clear all filters
+              </button>
+            )}
           </div>
         </div>
-      )}
 
-      <div id="problems" className="flex flex-col w-full gap-7">
-        <Caption />
-        <SearchBar />
-      </div>
+        {/* Active Filters */}
+        <div className="flex flex-wrap gap-2 mb-6">
+          {filters.selectedCategories.map((category) => (
+            <Tag
+              key={`cat-${category}`}
+              data={category}
+              onRemove={() => {
+                updateFilter("selectedCategories", 
+                  filters.selectedCategories.filter(c => c !== category)
+                );
+              }}
+            />
+          ))}
+          {filters.selectedTags.map((tag) => (
+            <Tag
+              key={`tag-${tag}`}
+              data={tag}
+              onRemove={() => {
+                updateFilter("selectedTags", 
+                  filters.selectedTags.filter(t => t !== tag)
+                );
+              }}
+            />
+          ))}
+          {filters.selectedCompanies.map((company) => (
+            <Tag
+              key={`comp-${company}`}
+              data={company}
+              onRemove={() => {
+                updateFilter("selectedCompanies", 
+                  filters.selectedCompanies.filter(c => c !== company)
+                );
+              }}
+            />
+          ))}
+        </div>
 
-      <FilterComponent />
-
-      <div className="flex-col w-full flex gap-5">
-        {filteredProblems?.length > 0 ? (
-          isTableView ? (
-            <Table data={filteredProblems} key={filteredProblems.length} />
+        {/* Content */}
+        <div className="mb-12">
+          {isTableView ? (
+            <Table problems={filteredProblems} />
           ) : (
-            <ProblemSet data={filteredProblems} />
-          )
-        ) : (
-          <EmptyState />
-        )}
-      </div>
+            <ProblemSet problems={filteredProblems} />
+          )}
+        </div>
 
-      <FeatureCards />
-      <div className="w-full">{!location.pathname.includes("/practice") && <Footer />}</div>
+        {/* New Problems Section */}
+        {newProblems.length > 0 && (
+          <div className="mb-12">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold flex items-center gap-2">
+                Newly Added
+                <NewBadge />
+              </h2>
+            </div>
+            <FeatureCards problems={newProblems} />
+          </div>
+        )}
+
+        {/* Study Plans Section */}
+        <StudyPlans />
+      </main>
+      
+      <Footer />
     </div>
   );
 };
