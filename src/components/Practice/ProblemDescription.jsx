@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef, useEffect } from "react";
+import React, { useContext, useMemo, useState } from "react";
 import Markdown from "markdown-to-jsx";
 import Tag from "../tag/Tag";
 import { IconCircleCheck, IconFlame, IconUserCheck, IconCode, IconChevronDown } from "@tabler/icons";
@@ -14,40 +14,30 @@ import { useNavigate } from "react-router-dom";
  */
 const ProblemDescription = ({ currentProblem }) => {
   if (!currentProblem) return null;
+  
   const { solvedProblems } = useContext(LocalStorageProvider);
   const { allProblems } = useContext(ProblemDataProvider);
   const navigate = useNavigate();
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
-  const accordionRef = useRef(null);
-  const [contentHeight, setContentHeight] = useState(0);
   
   const currentId = currentProblem.displayId || currentProblem.documentId;
   const isSolved = currentId ? solvedProblems.includes(currentId) : false;
 
-  // Find similar problems based on tags
-  const similarProblems = React.useMemo(() => {
+  // Memoize similar problems calculation
+  const similarProblems = useMemo(() => {
     if (!currentProblem?.tags?.length || !allProblems?.length) return [];
     
     return allProblems
       .filter(problem => {
-        // Exclude current problem
         const problemId = problem.displayId || problem.documentId;
         if (problemId === currentId) return false;
         
-        // Check if problem shares any tags with current problem
         return problem.tags && problem.tags.some(tag => 
           currentProblem.tags.includes(tag)
         );
       })
-      .slice(0, 3); // Limit to 3 similar problems
+      .slice(0, 3);
   }, [currentProblem, allProblems, currentId]);
-
-  // Update content height when accordion is toggled or similar problems change
-  useEffect(() => {
-    if (accordionRef.current) {
-      setContentHeight(isAccordionOpen ? accordionRef.current.scrollHeight : 0);
-    }
-  }, [isAccordionOpen, similarProblems]);
 
   const handleProblemClick = (problem) => {
     const problemId = problem.displayId || problem.documentId;
@@ -59,12 +49,12 @@ const ProblemDescription = ({ currentProblem }) => {
   };
 
   return (
-    <div className="w-full pr-2 h-full flex flex-col overflow-hidden border-r-2 border-zinc-800 bg-zinc-900/50 backdrop-blur-sm">
-      {/* Header Section */}
+    <div className="w-full pr-2 h-full flex flex-col overflow-hidden border-r-2 border-zinc-800 bg-zinc-900/50">
+      {/* Header Section - Simplified */}
       <div className="p-6 pb-6 border-b border-zinc-800/50">
         <div className="flex flex-col gap-3">
           <div className="flex items-start justify-between">
-            <h1 className="text-2xl font-semibold bg-gradient-to-r from-zinc-100 to-zinc-300 bg-clip-text text-transparent">
+            <h1 className="text-2xl font-semibold text-zinc-100">
               {currentProblem.problemTitle}
             </h1>
             <div className="flex items-center gap-2">
@@ -85,7 +75,7 @@ const ProblemDescription = ({ currentProblem }) => {
             </div>
           </div>
 
-          {/* Tags */}
+          {/* Tags - Simplified */}
           <div className="flex flex-wrap gap-2 mt-1">
             {currentProblem.tags?.map((tag, index) => (
               <Tag key={index} data={tag} />
@@ -94,8 +84,8 @@ const ProblemDescription = ({ currentProblem }) => {
         </div>
       </div>
 
-      {/* Problem Content */}
-      <div className="flex-1 overflow-y-auto p-6 pt-4 scrollbar-thin scrollbar-thumb-zinc-700/50 scrollbar-track-transparent">
+      {/* Problem Content - Optimized */}
+      <div className="flex-1 overflow-y-auto p-6 pt-4  scrollbar-thumb-rounded-full scrollbar-track-rounded-full scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-zinc-900">
         <Markdown
           options={{
             overrides: { 
@@ -109,32 +99,29 @@ const ProblemDescription = ({ currentProblem }) => {
         </Markdown>
       </div>
 
-      {/* Similar Problems Section */}
+      {/* Similar Problems Section with Accordion */}
       {similarProblems.length > 0 && (
-        <div className="border-t border-zinc-800/50">
+        <div className="border-t border-zinc-800/50 bg-zinc-900/70">
           <button 
             onClick={toggleAccordion}
-            className="w-full flex items-center justify-between p-4 text-left hover:bg-zinc-800/30 transition-colors rounded"
+            className="w-full flex items-center justify-between p-4 text-left hover:bg-zinc-800/30"
+            aria-expanded={isAccordionOpen}
           >
-            <h3 className="text-lg font-medium text-zinc-200 flex items-center gap-2">
-              <IconCode className="w-5 h-5 text-zinc-400" />
+            <h3 className="text-lg font-medium text-zinc-100 flex items-center gap-2">
+              <IconCode className="w-5 h-5 text-blue-400" />
               Similar Problems
-              <span className="text-sm text-zinc-400 ml-1">({similarProblems.length})</span>
+              <span className="text-sm text-blue-300 ml-1">({similarProblems.length})</span>
             </h3>
             <IconChevronDown 
-              className={`w-5 h-5 text-zinc-400 transform transition-transform duration-200 ${
-                isAccordionOpen ? 'rotate-180' : ''
-              }`}
+              className={`w-5 h-5 text-zinc-400 transition-transform ${isAccordionOpen ? 'rotate-180' : ''}`}
             />
           </button>
           
-          <div
-            ref={accordionRef}
-            className={`transition-all duration-300 ease-in-out overflow-hidden ${
-              isAccordionOpen ? 'max-h-[500px]' : 'max-h-0'
-            }`}
+          <div 
+            className={`overflow-hidden ${isAccordionOpen ? 'block' : 'hidden'}`}
+            aria-hidden={!isAccordionOpen}
           >
-            <div className="px-4 pb-4 pt-4 space-y-3">
+            <div className="px-4 pb-4 space-y-2">
               {similarProblems.map((problem) => {
                 const problemId = problem.displayId || problem.documentId;
                 const isProblemSolved = solvedProblems.includes(problemId);
@@ -143,7 +130,7 @@ const ProblemDescription = ({ currentProblem }) => {
                   <div 
                     key={problemId}
                     onClick={() => handleProblemClick(problem)}
-                    className="p-3 rounded-lg bg-zinc-800/50 hover:bg-zinc-800/80 transition-colors cursor-pointer border border-zinc-700/50 hover:border-zinc-600/50"
+                    className="p-3 rounded-lg bg-zinc-800/50 border border-zinc-700/50 cursor-pointer hover:bg-zinc-800/70 active:scale-[0.98]"
                   >
                     <div className="flex items-center justify-between">
                       <h4 className="font-medium text-zinc-100">
@@ -185,8 +172,8 @@ const ProblemDescription = ({ currentProblem }) => {
         </div>
       )}
 
-      {/* Footer */}
-      <div className="p-4 border-t border-zinc-800/50 bg-zinc-900/30 backdrop-blur-sm">
+      {/* Footer - Simplified */}
+      <div className="p-4 border-t border-zinc-800/50 bg-zinc-900/50">
         <div className="flex flex-wrap items-center justify-between gap-4">
           {currentProblem.askedIn?.length > 0 && (
             <div className="flex items-center gap-3">
