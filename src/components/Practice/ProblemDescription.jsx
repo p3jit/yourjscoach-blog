@@ -49,33 +49,56 @@ const ProblemDescription = ({ currentProblem }) => {
   return (
     <div className="w-full h-full flex flex-col overflow-hidden border-r-2 border-zinc-800 bg-zinc-900/50">
       {/* Header Section - Simplified */}
-      <div className="p-6 pb-6 border-b border-zinc-800/50">
-        <div className="flex flex-col gap-3">
-          <div className="flex items-start justify-between">
-            <h1 className="text-2xl font-semibold text-zinc-100">{currentProblem.problemTitle}</h1>
-            <div className="flex items-center gap-2">
-              {isSolved && (
-                <span className="flex items-center gap-1 text-sm font-medium text-emerald-400 bg-emerald-900/30 px-3 py-1 rounded-full">
-                  <IconCircleCheck className="w-4 h-4" />
-                  Solved
-                </span>
-              )}
+      <div className="bg-gradient-to-r from-zinc-800/40 to-zinc-900/30 p-6 border-b border-zinc-700/30">
+        <div className="max-w-4xl">
+          {/* Problem Title with Badge Row */}
+          <div className="flex justify-between gap-3 mb-3">
+            <h1 className="text-xl md:text-3xl font-bold bg-clip-text text-zinc-300">
+              {currentProblem.problemTitle}
+            </h1>
+
+            <div className="flex items-start gap-3">
+              {/* Difficulty Badge */}
               <span
-                className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium ${returnColor(
+                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium ${returnColor(
                   currentProblem.difficulty
-                )} bg-opacity-10`}
+                )} bg-opacity-10 backdrop-blur-sm border border-zinc-600/70 ${returnColor(currentProblem.difficulty)
+                  .replace("text-", "border-")
+                  .replace("text-", "border-")}`}
               >
                 <IconFlame className="w-4 h-4" />
-                {returnDifficultyText(currentProblem.difficulty)}
+                <span className="font-mono tracking-wide">{returnDifficultyText(currentProblem.difficulty)}</span>
               </span>
+
+              {/* Solved Badge */}
+              {isSolved && (
+                <span className="flex items-center gap-1.5 text-sm font-medium text-emerald-400 bg-emerald-900/20 px-3 py-1.5 rounded-lg border border-emerald-800/50 backdrop-blur-sm">
+                  <IconCircleCheck className="w-4 h-4 flex-shrink-0" />
+                  <span>Solved</span>
+                </span>
+              )}
             </div>
           </div>
 
-          {/* Tags - Simplified */}
-          <div className="flex flex-wrap gap-2 mt-1">
-            {currentProblem.tags?.map((tag, index) => (
-              <Tag key={index} data={tag} />
-            ))}
+          {/* Tags with Category */}
+          <div className="flex flex-wrap items-center gap-2">
+            {currentProblem.category && (
+              <span className="text-sm font-medium px-2.5 py-1 rounded-md bg-zinc-700/50 text-zinc-300 border border-zinc-600/50">
+                {currentProblem.category == "dsa" && "Data Structures and Algorithms"}
+                {currentProblem.category == "js" && "UI Problem"}
+                {currentProblem.category == "sd" && "System Design Problem"}
+              </span>
+            )}
+            <div className="h-4 w-px bg-zinc-700/50 mx-1" />
+            <div className="flex flex-wrap gap-1.5">
+              {currentProblem.tags?.map((tag, index) => (
+                <Tag
+                  key={index}
+                  data={tag}
+                  className="text-xs px-2.5 py-1 bg-zinc-800/50 hover:bg-zinc-700/50 transition-colors"
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -97,7 +120,7 @@ const ProblemDescription = ({ currentProblem }) => {
 
       {/* Similar Problems Section with Accordion */}
       {similarProblems.length > 0 && (
-        <div className="border-t border-zinc-700/50 bg-zinc-800/50">
+        <div className="border-t border-zinc-700/50 bg-zinc-800/20">
           <button
             onClick={toggleAccordion}
             className="w-full flex items-center justify-between p-4 text-left hover:bg-zinc-700/30"
@@ -109,12 +132,12 @@ const ProblemDescription = ({ currentProblem }) => {
               <span className="text-sm text-zinc-400 ml-1">({similarProblems.length})</span>
             </h3>
             <IconChevronDown
-              className={`w-5 h-5 text-zinc-400 transition-transform ${isAccordionOpen ? "rotate-180" : ""}`}
+              className={`w-5 h-5 text-zinc-400 transition-transform ${isAccordionOpen ? "" : "rotate-180"}`}
             />
           </button>
 
           <div className={`overflow-hidden ${isAccordionOpen ? "block" : "hidden"}`} aria-hidden={!isAccordionOpen}>
-            <div className="px-4 pb-4 space-y-2">
+            <div className="px-4 pt-5 pb-4 space-y-2">
               {similarProblems.map((problem) => {
                 const problemId = problem.displayId || problem.documentId;
                 const isProblemSolved = solvedProblems.includes(problemId);

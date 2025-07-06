@@ -403,7 +403,7 @@ const ProblemSheet = () => {
         <FilterComponent />
       </div>
 
-      <div className="flex-col w-full flex gap-5">
+      <div className="flex-col w-full flex gap-5 pb-10">
         {filteredProblems?.length > 0 ? (
           isTableView ? (
             <Table data={filteredProblems} key={filteredProblems.length} />
@@ -415,7 +415,7 @@ const ProblemSheet = () => {
         )}
       </div>
 
-      <FeatureCards />
+      {/* <FeatureCards /> */}
       <div className="w-full">{!location.pathname.includes("/practice") && <Footer />}</div>
     </div>
   );
