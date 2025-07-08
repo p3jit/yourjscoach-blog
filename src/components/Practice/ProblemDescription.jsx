@@ -53,9 +53,7 @@ const ProblemDescription = ({ currentProblem }) => {
         <div className="max-w-4xl">
           {/* Problem Title with Badge Row */}
           <div className="flex justify-between gap-3 mb-3">
-            <h1 className="text-xl md:text-3xl font-bold bg-clip-text text-zinc-300">
-              {currentProblem.problemTitle}
-            </h1>
+            <h1 className="text-2xl font-bold bg-clip-text text-zinc-300">{currentProblem.problemTitle}</h1>
 
             <div className="flex items-start gap-3">
               {/* Difficulty Badge */}

@@ -1,5 +1,5 @@
 import Markdown from "markdown-to-jsx";
-import { useContext, useEffect, useState, lazy, Suspense } from "react";
+import React, { useContext, useEffect, useState, lazy, Suspense, Fragment, useRef } from "react";
 import ProgressiveImage from "react-progressive-graceful-image";
 import { useNavigate } from "react-router-dom";
 import { IconClockHour3, IconCalendarDue, IconFlame, IconCircleCheck, IconCircle } from "@tabler/icons";
@@ -145,33 +145,61 @@ const BannerImage = ({ data }) => {
   );
 };
 
-const PostContent = ({ content, data }) => (
-  <Suspense>
-    <Markdown
-      options={{
-        overrides: {
-          Syntax: { component: LazyComponents.Code },
-          Heading: { component: Heading },
-          RoundedText: { component: RoundedText },
-          NormalText: { component: NormalText },
-          ImageTag: {
-            component: LazyComponents.ImageTag,
-            props: { imageList: data.imageList },
-          },
-          VideoTag: {
-            component: LazyComponents.VideoTag,
-            props: { imageList: data.videoList },
-          },
-          UrlTag: {
-            component: UrlTag,
-          },
-        },
-      }}
-    >
-      {content}
-    </Markdown>
-  </Suspense>
-);
+function SyntaxHighlightedCode(props) {
+  if (props?.className?.includes("lang-html")) {
+    return (
+      <>
+        <iframe className="w-full h-[70vh]" srcDoc={props.children} />
+      </>
+    );
+  }
+
+  const ref = useRef();
+
+  React.useEffect(() => {
+    if (ref.current && window.hljs) {
+      window.hljs.highlightElement(ref.current);
+
+      // hljs won't reprocess the element unless this attribute is removed
+      ref.current.removeAttribute("data-highlighted");
+    }
+  }, [props.className, props.children]);
+
+  return <code {...props} ref={ref} />;
+}
+
+const PostContent = ({ content, data }) => {
+  return (
+    <Suspense>
+      <div className="prose prose-hr:border-zinc-700 prose-lg border-zinc-400 prose-zincDark w-full">
+        <Markdown
+          options={{
+            wrapper: Fragment,
+            overrides: {
+              code: { component: SyntaxHighlightedCode },
+              Heading: { component: Heading },
+              RoundedText: { component: RoundedText },
+              NormalText: { component: NormalText },
+              ImageTag: {
+                component: LazyComponents.ImageTag,
+                props: { imageList: data.imageList },
+              },
+              VideoTag: {
+                component: LazyComponents.VideoTag,
+                props: { imageList: data.videoList },
+              },
+              UrlTag: {
+                component: UrlTag,
+              },
+            },
+          }}
+        >
+          {content}
+        </Markdown>
+      </div>
+    </Suspense>
+  );
+};
 
 const TagList = ({ tags }) => (
   <div className="flex flex-col justify-between pt-1">

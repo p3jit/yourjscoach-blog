@@ -5,6 +5,37 @@ module.exports = {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
+      typography: ({ theme }) => ({
+        DEFAULT: {
+          css: {
+            maxWidth: '100%', // add required value here
+          }
+        },
+        zincLight: {
+          css: {
+            "--tw-prose-body": theme("colors.zinc.800"),
+            "--tw-prose-headings": theme("colors.zinc.900"),
+            "--tw-prose-links": theme("colors.zinc.700"),
+            "--tw-prose-bold": theme("colors.zinc.900"),
+            "--tw-prose-code": theme("colors.zinc.800"),
+            "--tw-prose-pre-bg": theme("colors.zinc.100"),
+            "--tw-prose-pre-code": theme("colors.zinc.900"),
+            "--tw-prose-quote-borders": theme("colors.zinc.300"),
+          },
+        },
+        zincDark: {
+          css: {
+            "--tw-prose-body": theme("colors.zinc.300"),
+            "--tw-prose-headings": theme("colors.zinc.100"),
+            "--tw-prose-links": theme("colors.zinc.200"),
+            "--tw-prose-bold": theme("colors.zinc.100"),
+            "--tw-prose-code": theme("colors.zinc.200"),
+            "--tw-prose-pre-bg": theme("colors.zinc.800"),
+            "--tw-prose-pre-code": theme("colors.zinc.100"),
+            "--tw-prose-quote-borders": theme("colors.zinc.700"),
+          },
+        },
+      }),
       // colors: {
       //   // For future use
       //   yjs: {
@@ -50,5 +81,6 @@ module.exports = {
     require("tailwind-scrollbar")({
       nocompatible: true,
     }),
+    require("@tailwindcss/typography"),
   ],
 };

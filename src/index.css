@@ -18,3 +18,88 @@
 *::-webkit-scrollbar-button {
   display: none;
 }
+
+.hljs {
+  background: #202020;
+  color: #cccccc;
+}
+
+.hljs-comment,
+.hljs-doctag,
+.hljs-quote,
+.hljs-variable {
+  color: #6a9954;
+}
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-built_in,
+.hljs-name,
+.hljs-tag {
+  color: #579cd6;
+}
+
+.hljs-string,
+.hljs-title,
+.hljs-section,
+.hljs-attribute,
+.hljs-literal,
+.hljs-template-tag,
+.hljs-template-variable,
+.hljs-type,
+.hljs-addition {
+  color: #ce9178;
+}
+
+.hljs-deletion,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-meta {
+  color: #d4d4d4;
+}
+
+.hljs-attr {
+  color: #9ddcfe;
+}
+
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link {
+  color: #00b0e8;
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: bold;
+}
+
+pre {
+  background: transparent !important;
+  margin: 0 !important;
+  padding: 0.3em !important;
+}
+
+pre code {
+  scrollbar-width: thin;
+  scrollbar-color: #a1a1aa #18181b;
+  border-radius: 0.6rem !important;
+}
+
+pre code::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+pre code::-webkit-scrollbar-track {
+  background: #18181b; /* zinc-900 */
+}
+
+pre code::-webkit-scrollbar-thumb {
+  background-color: #a1a1aa; /* zinc-400 */
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
