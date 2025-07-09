@@ -27,7 +27,7 @@ const SinglePost = () => {
       setIsLoading(true);
       
       const foundPostData = postData.find(
-        (elem) => elem.displayId === pathName
+        (elem) => elem.documentId === pathName
       );
       
       if (foundPostData) {

@@ -102,7 +102,7 @@ function longestSubstring(s) {
         </div>
       </div>
 
-      <style jsx global>{`
+      <style jsx="true" global="true">{`
         @keyframes float {
           0% {
             transform: translateY(0) translateX(0) rotate(0deg);

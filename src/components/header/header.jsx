@@ -56,7 +56,7 @@ export const Header = () => {
   const isPracticePage = (() => location.pathname.includes("/practice/"))();
   const isProblemsPage = (() => location.pathname.includes("/problems"))();
   const isPostPage = (() => location.pathname.includes("/blog/") || location.pathname.includes("/sd/"))();
-  const currentId = currentProblem.documentId || currentProblem.displayId;
+  const currentId = currentProblem.documentId || currentProblem.documentId;
   const isSolved = solvedProblems.includes(currentId);
 
   const markSolved = () => {

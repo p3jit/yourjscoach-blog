@@ -20,7 +20,7 @@ const ProblemDescription = ({ currentProblem }) => {
   const navigate = useNavigate();
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
 
-  const currentId = currentProblem.displayId || currentProblem.documentId;
+  const currentId = currentProblem.documentId || currentProblem.documentId;
   const isSolved = currentId ? solvedProblems.includes(currentId) : false;
 
   // Memoize similar problems calculation
@@ -29,7 +29,7 @@ const ProblemDescription = ({ currentProblem }) => {
 
     return allProblems
       .filter((problem) => {
-        const problemId = problem.displayId || problem.documentId;
+        const problemId = problem.documentId || problem.documentId;
         if (problemId === currentId) return false;
 
         return problem.tags && problem.tags.some((tag) => currentProblem.tags.includes(tag));
@@ -38,7 +38,7 @@ const ProblemDescription = ({ currentProblem }) => {
   }, [currentProblem, allProblems, currentId]);
 
   const handleProblemClick = (problem) => {
-    const problemId = problem.displayId || problem.documentId;
+    const problemId = problem.documentId || problem.documentId;
     navigate(`/practice/${problemId}`);
   };
 
@@ -137,7 +137,7 @@ const ProblemDescription = ({ currentProblem }) => {
           <div className={`overflow-hidden ${isAccordionOpen ? "block" : "hidden"}`} aria-hidden={!isAccordionOpen}>
             <div className="px-4 pt-5 pb-4 space-y-2">
               {similarProblems.map((problem) => {
-                const problemId = problem.displayId || problem.documentId;
+                const problemId = problem.documentId || problem.documentId;
                 const isProblemSolved = solvedProblems.includes(problemId);
 
                 return (

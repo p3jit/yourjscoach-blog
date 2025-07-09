@@ -11,6 +11,8 @@ import RoundedText from "../markdown-components/roundedText/RoundedText";
 import SkeletonLoaderPost from "../skeleton-loader-components/skeletonLoaderPost/SkeletonLoaderPost";
 import UrlTag from "../markdown-components/urlTag/UrlTag";
 import { LocalStorageProvider } from "../../contexts/localStorageContext";
+import TableOfContents from "./TableOfContents";
+import Mermaid from "../markdown-components/mermaid/Mermaid";
 
 // Lazy-loaded components to improve initial performance
 const LazyComponents = {
@@ -44,13 +46,13 @@ const Avatar = ({ userName = "Prithijit Das", userDesignation = "Software Engine
 };
 
 const PostHeader = ({ data, setSolvedProblems, solvedProblems, updateLocalStorage }) => {
-  const currentId = data.displayId || data.documentId;
+  const currentId = data.documentId || data.documentId;
   const isSolved = solvedProblems.includes(currentId);
 
   const handleUpdateSolved = () => {
     let updatedSolvedProblems = [];
     if (isSolved) {
-      updatedSolvedProblems = solvedProblems.filter((_) => _.displayId == currentId || _.documentId == currentId);
+      updatedSolvedProblems = solvedProblems.filter((_) => _.documentId == currentId || _.documentId == currentId);
       setSolvedProblems(updatedSolvedProblems);
     } else {
       updatedSolvedProblems = [...solvedProblems, currentId];
@@ -81,7 +83,7 @@ const PostHeader = ({ data, setSolvedProblems, solvedProblems, updateLocalStorag
             <span className="flex gap-2 justify-center items-center text-center">
               <IconClockHour3 className="w-5 text-zinc-500" />
               <h3 className="text-zinc-400" aria-label={`Time`}>
-                {`5 Min Read`}
+                {`${data.minRead} Min Read`}
               </h3>
             </span>
             <span className="flex gap-2 justify-center items-center text-center">
@@ -146,7 +148,16 @@ const BannerImage = ({ data }) => {
 };
 
 function SyntaxHighlightedCode(props) {
-  if (props?.className?.includes("lang-html")) {
+  if (props?.className?.includes("lang-mermaid")) {
+    return (
+      <>
+        <Mermaid chartDefinition={props.children} />
+      </>
+    );
+  }
+
+  if (props?.className?.includes("lang-iframe")) {
+    debugger;
     return (
       <>
         <iframe className="w-full h-[70vh]" srcDoc={props.children} />
@@ -170,14 +181,23 @@ function SyntaxHighlightedCode(props) {
 
 const PostContent = ({ content, data }) => {
   return (
-    <Suspense>
+    <div className={`flex gap-8 w-full ${data.bannerImage ? "pt-24" : ""}`}>
       <div className="prose prose-hr:border-zinc-700 prose-lg border-zinc-400 prose-zincDark w-full">
         <Markdown
           options={{
             wrapper: Fragment,
             overrides: {
               code: { component: SyntaxHighlightedCode },
-              Heading: { component: Heading },
+              Syntax: { component: LazyComponents.Code },
+              h1: {
+                component: (props) => <Heading level={1} {...props} />,
+              },
+              h2: {
+                component: (props) => <Heading level={2} {...props} />,
+              },
+              h3: {
+                component: (props) => <Heading level={3} {...props} />,
+              },
               RoundedText: { component: RoundedText },
               NormalText: { component: NormalText },
               ImageTag: {
@@ -197,7 +217,7 @@ const PostContent = ({ content, data }) => {
           {content}
         </Markdown>
       </div>
-    </Suspense>
+    </div>
   );
 };
 
@@ -221,39 +241,54 @@ export const Post = ({ data }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUrl = !ENV_VITE_API_URL
-      ? `../${"mdFiles/" + data.mdFile + ".md"}`
-      : `${ENV_VITE_API_URL}/assets/${data.mdFile}`;
+    // const fetchUrl = !ENV_VITE_API_URL
+    //   ? `../${"mdFiles/" + data.mdFile + ".md"}`
+    //   : `${ENV_VITE_API_URL}/assets/${data.mdFile}`;
 
-    fetch(fetchUrl)
-      .then((response) => response.text())
-      .then((md) => {
-        setPostContent(md);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to load post content:", err);
-        navigate("/404");
-      });
+    // fetch(fetchUrl)
+    //   .then((response) => response.text())
+    //   .then((md) => {
+    //     setPostContent(md);
+    //     setIsLoading(false);
+    //   })
+    //   .catch((err) => {
+    //     console.error("Failed to load post content:", err);
+    //     navigate("/404");
+    //   });
+    setPostContent(data.mdFile);
+    setIsLoading(false);
   }, [data.mdFile, navigate]);
 
   if (isLoading) return <SkeletonLoaderPost />;
 
   return (
-    <article className="flex flex-col gap-3 py-[5vh]">
+    <article className="flex flex-col gap-3 py-[1vh] w-full">
       <PostHeader
         data={data}
         setSolvedProblems={setSolvedProblems}
         solvedProblems={solvedProblems}
         updateLocalStorage={updateLocalStorage}
       />
-      <PostContent content={postContent} data={data} />
-      {data.askedIn && (
-        <>
-          <hr className="bg-zinc-800 h-0.5 outline-none border-none mb-4" />
-          <TagList tags={data.askedIn} isDarkMode={false} />
-        </>
-      )}
+
+      <div className="flex flex-col lg:flex-row gap-8 w-full">
+        {/* Main content */}
+        <div className={`w-full ${data.isProblem ? "lg:max-w-3xl" : ""}`}>
+          <PostContent content={postContent} data={data} />
+          {data.askedIn && (
+            <>
+              <hr className="bg-zinc-800 h-0.5 outline-none border-none my-4" />
+              <TagList tags={data.askedIn} isDarkMode={false} />
+            </>
+          )}
+        </div>
+
+        {/* Table of Contents - Only visible on lg screens and up */}
+        {data.isProblem && (
+          <div className="hidden lg:block w-80 flex-shrink-0">
+            <TableOfContents />
+          </div>
+        )}
+      </div>
     </article>
   );
 };

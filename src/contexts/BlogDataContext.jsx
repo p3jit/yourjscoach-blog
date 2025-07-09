@@ -12,6 +12,7 @@ const BlogDataContext = ({ children }) => {
   const [searchData, setSearchData] = useState([]);
   const [fetchedTags, setFetchedTags] = useState([]);
   const [isSearching, setIsSearching] = useState(true);
+  const [systemDesignProbelms, setSystemDesignProbelms] = useState([]);
 
   const navigate = useNavigate();
 
@@ -37,8 +38,13 @@ const BlogDataContext = ({ children }) => {
 
   const fetchPostsAndTags = async () => {
     try {
-      const response = await fetch(`/data/blogs.json`);
-      const { data } = await response.json();
+      const response = await fetch(`http://localhost:1339/api/posts`);
+      let { data } = await response.json();
+
+      debugger;
+      const sdProblems = data.filter((a) => a.isProblem);
+      data = data.filter((a) => !a.isProblem);
+      setSystemDesignProbelms([...sdProblems]);
 
       // Set all posts data
       setPostData(data);
@@ -91,6 +97,7 @@ const BlogDataContext = ({ children }) => {
     fetchedTags,
     isSearching,
     setIsSearching,
+    systemDesignProbelms,
   };
 
   return <BlogDataProvider.Provider value={contextValue}>{children}</BlogDataProvider.Provider>;

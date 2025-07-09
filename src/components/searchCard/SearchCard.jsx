@@ -65,7 +65,7 @@ const SearchCard = ({ data }) => {
   const navigate = useNavigate();
 
   const handleReadMore = () => {
-    navigate(`/blog/${data.displayId}`);
+    navigate(`/blog/${data.documentId}`);
   };
 
   const cardClass = !isDarkMode
@@ -80,7 +80,7 @@ const SearchCard = ({ data }) => {
     <article
       className={`group relative overflow-hidden rounded-xl transition-all duration-300 cursor-pointer ${cardClass}`}
       onClick={handleReadMore}
-      aria-labelledby={`search-title-${data.displayId}`}
+      aria-labelledby={`search-title-${data.documentId}`}
     >
       {/* Top accent bar - subtle design element */}
       <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-zinc-600 to-zinc-700"></div>
@@ -97,7 +97,7 @@ const SearchCard = ({ data }) => {
         ></button>
 
         <h2
-          id={`search-title-${data.displayId}`}
+          id={`search-title-${data.documentId}`}
           className={`font-bold text-lg leading-tight mb-2 transition-colors duration-300 ${titleClass}`}
         >
           {data.title}

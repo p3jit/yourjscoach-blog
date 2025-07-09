@@ -1,6 +1,7 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { isNewProblem } from "../utils/utils";
+import { BlogDataProvider } from "./BlogDataContext";
 
 export const ProblemDataProvider = createContext();
 
@@ -13,6 +14,7 @@ const ProblemDataContext = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentProblemIndex, setCurrentProblemIndex] = useState(0);
+  const {systemDesignProblems} = useContext(BlogDataProvider);
 
   // New state for storing newly added problems
   const [newProblems, setNewProblems] = useState([]);

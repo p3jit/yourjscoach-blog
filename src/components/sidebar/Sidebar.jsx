@@ -100,7 +100,7 @@ const Sidebar = ({ isOpen, onClose }) => {
 
     return (
       <li
-        onClick={() => navigate(`/practice/${problem.documentId || problem.displayId}`)}
+        onClick={() => navigate(`/practice/${problem.documentId || problem.documentId}`)}
         key={problem.id}
         className={`px-4 py-3 hover:bg-zinc-700/40 rounded-md transition-all cursor-pointer mb-1 ${
           isCurrentProblem ? "bg-zinc-700/50 ring-1 ring-zinc-500" : ""

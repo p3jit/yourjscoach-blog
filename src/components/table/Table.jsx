@@ -72,7 +72,7 @@ const TableRow = (props) => {
               </div>
             ) : (
               <div className="h-8 w-8 rounded-full bg-zinc-700/20 flex items-center justify-center">
-                <span className="text-zinc-400 text-sm font-medium">{props.question.displayId || "•"}</span>
+                <span className="text-zinc-400 text-sm font-medium">{"•"}</span>
               </div>
             )}
           </div>

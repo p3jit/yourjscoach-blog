@@ -76,7 +76,7 @@ const CardContent = ({ data, isDarkMode }) => {
 
   return (
     <div className="p-5">
-      <h3 id={`post-title-${data.displayId}`} className={titleClass}>
+      <h3 id={`post-title-${data.documentId}`} className={titleClass}>
         {data.title}
       </h3>
       <div className="flex gap-2 flex-wrap py-3">
@@ -168,7 +168,7 @@ const NewPostCard = ({ data }) => {
     if (e) {
       e.stopPropagation();
     }
-    navigate(`/blog/${data.displayId}`);
+    navigate(`/blog/${data.documentId}`);
   };
 
   const cardClass = !isDarkMode 
@@ -179,7 +179,7 @@ const NewPostCard = ({ data }) => {
     <article 
       className={`group rounded-xl overflow-hidden h-full flex flex-col transition-all duration-300 ease-in-out cursor-pointer ${cardClass}`}
       onClick={handleReadMore}
-      aria-labelledby={`post-title-${data.displayId}`}
+      aria-labelledby={`post-title-${data.documentId}`}
     >
       <CardImage data={data} />
       <div className="flex flex-col flex-grow">

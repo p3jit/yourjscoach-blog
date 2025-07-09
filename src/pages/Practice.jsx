@@ -313,7 +313,7 @@ const Practice = () => {
 
   const markSolved = (shouldSolve) => {
     if (!shouldSolve) return;
-    const currentId = currentProblem.documentId || currentProblem.displayId;
+    const currentId = currentProblem.documentId || currentProblem.documentId;
     const isAlreadySolved = solvedProblems.includes(currentId);
     let updatedSolvedProblems = [];
     if (!isAlreadySolved) {

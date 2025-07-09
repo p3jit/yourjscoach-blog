@@ -30,7 +30,7 @@ const AppLayout = ({ children, isDarkMode, pathname }) => {
       return "gap-5 min-w-[1000px] overflow-hidden justify-center 2xl:items-center";
     }
     if (isPostPage) {
-      return "gap-10 py-[5vh] 2xl:px-[23vw] lg:px-[20vw] px-[7vw] min-w-[56vw]";
+      return "gap-10 py-[5vh] 2xl:px-[20vw] lg:px-[18vw] px-[7vw] min-w-[56vw]";
     }
     return "gap-10 2xl:px-[19vw] lg:px-[10vw] px-[7vw] min-w-[56vw]";
   }

@@ -14,9 +14,9 @@ import { StudyPlanProvider } from "./contexts/StudyPlanContext";
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <LocalStorageContext>
-      <ProblemDataContext>
-        <StudyPlanProvider>
-          <BlogDataContext>
+      <BlogDataContext>
+        <ProblemDataContext>
+          <StudyPlanProvider>
             <DarkModeContext>
               <ModalContext>
                 <SidebarContext>
@@ -24,9 +24,9 @@ ReactDOM.createRoot(document.getElementById("root")).render(
                 </SidebarContext>
               </ModalContext>
             </DarkModeContext>
-          </BlogDataContext>
-        </StudyPlanProvider>
-      </ProblemDataContext>
+          </StudyPlanProvider>
+        </ProblemDataContext>
+      </BlogDataContext>
     </LocalStorageContext>
   </BrowserRouter>
 );
