@@ -7,6 +7,7 @@ export const BlogDataProvider = createContext();
 const BlogDataContext = ({ children }) => {
   // State management
   const [postData, setPostData] = useState([]);
+  const [currentPost, setCurrentPost] = useState({});
   const [allPostData, setAllPostData] = useState([]);
   const [latestPostData, setLatestPostData] = useState([]);
   const [searchFilter, setSearchFilter] = useState([]);
@@ -127,7 +128,9 @@ const BlogDataContext = ({ children }) => {
     systemDesignProblems,
     setSystemDesignProbelms,
     allPostData,
-    setAllPostData
+    setAllPostData,
+    currentPost,
+    setCurrentPost
   };
 
   return <BlogDataProvider.Provider value={contextValue}>{children}</BlogDataProvider.Provider>;

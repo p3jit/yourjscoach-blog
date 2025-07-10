@@ -13,7 +13,8 @@ import UrlTag from "../markdown-components/urlTag/UrlTag";
 import { LocalStorageProvider } from "../../contexts/localStorageContext";
 import TableOfContents from "./TableOfContents";
 import Mermaid from "../markdown-components/mermaid/Mermaid";
-import { returnDifficultyText } from "../../utils/utils";
+import { returnColor, returnDifficultyText } from "../../utils/utils";
+import { BlogDataProvider } from "../../contexts/BlogDataContext";
 
 // Lazy-loaded components to improve initial performance
 const LazyComponents = {
@@ -47,19 +48,20 @@ const Avatar = ({ userName = "Prithijit Das", userDesignation = "Software Engine
 };
 
 const PostHeader = ({ data, setSolvedProblems, solvedProblems, updateLocalStorage }) => {
-  const currentId = data.documentId || data.documentId;
+  const currentId = data.documentId;
   const isSolved = solvedProblems.includes(currentId);
 
   const handleUpdateSolved = () => {
     let updatedSolvedProblems = [];
     if (isSolved) {
-      updatedSolvedProblems = solvedProblems.filter((_) => _.documentId == currentId || _.documentId == currentId);
+      updatedSolvedProblems = solvedProblems.filter((_) => _.documentId == currentId);
       setSolvedProblems(updatedSolvedProblems);
     } else {
+      debugger;
       updatedSolvedProblems = [...solvedProblems, currentId];
       setSolvedProblems(updatedSolvedProblems);
     }
-    updateLocalStorage(JSON.stringify({ solvedProblems: [...updatedSolvedProblems] }));
+    updateLocalStorage({ solvedProblems: [...updatedSolvedProblems] });
   };
 
   return (
@@ -67,7 +69,7 @@ const PostHeader = ({ data, setSolvedProblems, solvedProblems, updateLocalStorag
       <div className="flex flex-col gap-6 bg-zinc-800 p-10 mb-16 rounded-2xl shadow-xl border border-zinc-700">
         <div className="flex justify-between">
           <h5 className="text-zinc-400  font-medium">
-            {data.isProblem ? "System Design & Architecture" : "Blog Post"}
+            {data.category == "sd" ? "System Design & Architecture" : "Blog Post"}
           </h5>
           <span className="flex gap-2 justify-center items-center text-center">
             <IconCalendarDue className="w-4 text-zinc-500" />
@@ -89,10 +91,10 @@ const PostHeader = ({ data, setSolvedProblems, solvedProblems, updateLocalStorag
                 {`${data.minRead} Min Read`}
               </h3>
             </span>
-            {(Number(data.difficulty) && data.category == "sd") && (
+            {data.difficulty && data.category == "sd" && (
               <span className="flex gap-2 justify-center items-center text-center">
                 <IconFlame className="w-5 text-zinc-500" />
-                <h3 className=" text-yellow-400" aria-label={`Difficulty`}>
+                <h3 className={` ${returnColor(Number(data.difficulty))}`} aria-label={`Difficulty`}>
                   {returnDifficultyText(Number(data.difficulty))}
                 </h3>
               </span>
@@ -104,22 +106,6 @@ const PostHeader = ({ data, setSolvedProblems, solvedProblems, updateLocalStorag
           <div className="flex justify-center items-center">
             <TagList tags={data.tags} isDarkMode={false} />
           </div>
-          {data.category == "sd" && <button
-            onClick={handleUpdateSolved}
-            className={`text-sm ${
-              isSolved ? "bg-emerald-700" : "bg-zinc-600"
-            } text-zinc-100  py-2 px-3 rounded-md flex justify-center items-center gap-2`}
-          >
-            {isSolved ? (
-              <>
-                <IconCircleCheck className="w-5" /> Complete
-              </>
-            ) : (
-              <>
-                <IconCircle className="w-5" /> Mark Complete
-              </>
-            )}
-          </button>}
         </div>
       </div>
       <BannerImage data={data} />
@@ -161,7 +147,6 @@ function SyntaxHighlightedCode(props) {
   }
 
   if (props?.className?.includes("lang-iframe")) {
-    debugger;
     return (
       <>
         <iframe className="w-full h-[70vh]" srcDoc={props.children} />
@@ -241,6 +226,7 @@ export const Post = ({ data }) => {
   const [postContent, setPostContent] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const { isDarkMode } = useContext(DarkModeProvider);
+  const { setCurrentPost } = useContext(BlogDataProvider);
   const { setSolvedProblems, solvedProblems, updateLocalStorage } = useContext(LocalStorageProvider);
   const navigate = useNavigate();
 
@@ -252,6 +238,7 @@ export const Post = ({ data }) => {
     fetch(fetchUrl)
       .then((response) => response.json())
       .then((md) => {
+        setCurrentPost(md.data);
         setPostContent(md.data.mdFile);
         setIsLoading(false);
       })

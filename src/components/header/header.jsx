@@ -47,7 +47,7 @@ const Navigation = ({ currentPath, navigate }) => {
 export const Header = () => {
   const { isDarkMode, setIsDarkMode } = useContext(DarkModeProvider);
   const { toggleSidebar } = useContext(SidebarProvider);
-  const { postData, setSearchData, setSearchFilter } = useContext(BlogDataProvider);
+  const { postData, setSearchData, setSearchFilter, currentPost } = useContext(BlogDataProvider);
   const { problems, currentProblemIndex, currentProblem } = useContext(ProblemDataProvider);
   const { solvedProblems, setSolvedProblems, updateLocalStorage } = useContext(LocalStorageProvider);
 
@@ -55,9 +55,10 @@ export const Header = () => {
   const navigate = useNavigate();
   const isPracticePage = (() => location.pathname.includes("/practice/"))();
   const isProblemsPage = (() => location.pathname.includes("/problems"))();
-  const isPostPage = (() => location.pathname.includes("/blog/") || location.pathname.includes("/sd/"))();
-  const currentId = currentProblem.documentId || currentProblem.documentId;
+  const isPostPage = (() => location.pathname.includes("/blog/"))();
+  const currentId = currentProblem.documentId || currentPost.documentId;
   const isSolved = solvedProblems.includes(currentId);
+  const isPostHome = isPostPage && location.pathname == "/blog";
 
   const markSolved = () => {
     let updatedSolvedProblems = [];
@@ -112,7 +113,7 @@ export const Header = () => {
     <header className="sticky top-0 z-50 w-full shadow-md ">
       <nav className={`flex justify-between text-xl items-center ${containerClasses}`} aria-label="Main navigation">
         <div className="flex items-center gap-5">
-          {(isPracticePage) && (
+          {(isPracticePage || (!isPostHome && isPostPage && currentPost.category == "sd")) && (
             <button onClick={toggleSidebar}>
               <IconMenu2 className="text-zinc-200 cursor-pointer" />
             </button>
@@ -128,9 +129,9 @@ export const Header = () => {
             )}
           </button>
         </div> */}
-        {isPracticePage && (
+        {(isPracticePage || (!isPostHome && isPostPage && currentPost.category == "sd")) && (
           <div className="text-sm text-zinc-300 gap-3 flex">
-            {currentProblem.category == "js" && (
+            {currentProblem.category == "js" || currentPost.category == "sd" && (
               <button
                 type="button"
                 onClick={markSolved}

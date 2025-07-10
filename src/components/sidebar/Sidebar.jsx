@@ -1,22 +1,16 @@
 import React, { useContext, useState, useEffect } from "react";
 import { ProblemDataProvider } from "../../contexts/ProblemDataContext";
-import {
-  IconCircleCheck,
-  IconCircle,
-  IconX,
-  IconSearch,
-  IconFilter,
-  IconChartBar,
-} from "@tabler/icons";
+import { IconCircleCheck, IconCircle, IconX, IconSearch, IconFilter, IconChartBar } from "@tabler/icons";
 import { returnColor, returnDifficultyText, isNewProblem } from "../../utils/utils";
-import Brand from "../brand/Brand";
 import NewBadge from "../new-badge/NewBadge";
 import { useLocation, useNavigate } from "react-router-dom";
 import { LocalStorageProvider } from "../../contexts/localStorageContext";
 import { useStudyPlan } from "../../contexts/StudyPlanContext";
+import { BlogDataProvider } from "../../contexts/BlogDataContext";
 
 const Sidebar = ({ isOpen, onClose }) => {
   const { problems, currentProblem } = useContext(ProblemDataProvider);
+  const { currentPost } = useContext(BlogDataProvider);
   const { solvedProblems } = useContext(LocalStorageProvider);
   const location = useLocation();
   const navigate = useNavigate();
@@ -30,13 +24,14 @@ const Sidebar = ({ isOpen, onClose }) => {
   const [expandedSections, setExpandedSections] = useState({
     dsa: true,
     js: false,
-    systemDesign: false,
+    sd: false,
   });
 
   // Filter problems by category
   const dsaProblems = problems?.filter((problem) => problem?.category === "dsa");
   const jsProblems = problems?.filter((problem) => problem?.category === "js");
   const systemDesignProblems = problems?.filter((problem) => problem?.category === "sd");
+  console.log({ dsaProblems, jsProblems, systemDesignProblems });
 
   // Calculate progress for each category
   const calculateProgress = (problemList) => {
@@ -67,9 +62,9 @@ const Sidebar = ({ isOpen, onClose }) => {
   const filteredProblems = getActiveProblems().filter((problem) => {
     const matchesSearch =
       searchQuery === "" ||
-      problem.problemTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      problem.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesDifficulty = difficultyFilter === "all" || problem.difficulty === difficultyFilter;
+      problem?.problemTitle?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      problem?.title?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesDifficulty = difficultyFilter === "all" || problem?.difficulty === difficultyFilter;
     return matchesSearch && matchesDifficulty;
   });
 
@@ -80,11 +75,11 @@ const Sidebar = ({ isOpen, onClose }) => {
         setActiveTab("dsa");
       } else if (currentProblem.category === "js") {
         setActiveTab("js");
-      } else if (currentProblem.category === "System Design") {
-        setActiveTab("systemDesign");
+      } else if (currentProblem.category === "sd") {
+        setActiveTab("sd");
       }
     }
-  }, [location.pathname, currentProblem]);
+  }, [location.pathname, currentProblem, currentPost]);
 
   // Function to get difficulty badge
   const DifficultyBadge = ({ difficulty }) => {
@@ -102,9 +97,17 @@ const Sidebar = ({ isOpen, onClose }) => {
     const isSolved = solvedProblems.includes(problem.documentId);
     const isNew = isNewProblem(problem.createdAt || problem.createdAt);
 
+    const handleItemClick = (id, category) => {
+      if (category == "dsa") {
+        navigate(`/practice/${problem.documentId}`);
+      } else {
+        navigate(`/blog/${problem.documentId}`);
+      }
+    };
+
     return (
       <li
-        onClick={() => navigate(`/practice/${problem.documentId || problem.documentId}`)}
+        onClick={() => handleItemClick(problem.id, problem.category)}
         key={problem.id}
         className={`px-4 py-3 hover:bg-zinc-700/40 rounded-md transition-all cursor-pointer mb-1 ${
           isCurrentProblem ? "bg-zinc-700/50 ring-1 ring-zinc-500" : ""
@@ -220,12 +223,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         <div className="flex border-b border-zinc-700/50">
           <Tab id="dsa" label="DSA" count={dsaProblems?.length || 0} progress={dsaProgress} />
           <Tab id="js" label="JavaScript" count={jsProblems?.length || 0} progress={jsProgress} />
-          <Tab
-            id="systemDesign"
-            label="System Design"
-            count={systemDesignProblems?.length || 0}
-            progress={sdProgress}
-          />
+          <Tab id="sd" label="System Design" count={systemDesignProblems?.length || 0} progress={sdProgress} />
         </div>
 
         {/* Filter options */}

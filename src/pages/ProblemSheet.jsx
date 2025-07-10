@@ -1,6 +1,15 @@
 import Table from "../components/table/Table";
 import React, { useState, useEffect, useContext } from "react";
-import { IconSearch, IconX, IconLayoutGrid, IconTag, IconBuilding, IconChevronDown, IconCheck } from "@tabler/icons";
+import {
+  IconSearch,
+  IconX,
+  IconLayoutGrid,
+  IconTag,
+  IconBuilding,
+  IconChevronDown,
+  IconCheck,
+  IconGauge,
+} from "@tabler/icons";
 import useDebounce from "../hooks/useDebounce";
 import { useLocation, useNavigate } from "react-router-dom";
 import FeatureCards from "../components/features/FeatureCards";
@@ -24,9 +33,11 @@ const ProblemSheet = () => {
   const [selectedTags, setSelectedTags] = useState([]);
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedDifficulties, setSelectedDifficulties] = useState([]);
   const [uniqueTags, setUniqueTags] = useState([]);
   const [uniqueCompanies, setUniqueCompanies] = useState([]);
   const [uniqueCategories, setUniqueCategories] = useState([]);
+  const [uniqueDifficulties, setUniqueDifficulties] = useState([]);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -34,10 +45,10 @@ const ProblemSheet = () => {
   // Filter functions
   const clearSearch = () => {
     setSearchText("");
-    applyFilters("", selectedCategories, selectedTags, selectedCompanies);
+    applyFilters("", selectedCategories, selectedTags, selectedCompanies, selectedDifficulties);
   };
 
-  const applyFilters = (search, categories, tags, companies) => {
+  const applyFilters = (search, categories, tags, companies, difficulties) => {
     let filtered = problems;
 
     if (search.length > 0) {
@@ -62,13 +73,17 @@ const ProblemSheet = () => {
       filtered = filtered.filter((problem) => companies.some((company) => problem.askedIn.includes(company)));
     }
 
+    if (difficulties.length > 0) {
+      filtered = filtered.filter((problem) => difficulties.includes(problem.difficulty));
+    }
+
     setFilteredProblems(filtered);
   };
 
   const handleSearchQuestion = (e) => {
     const searchValue = e.target.value;
     setSearchText(searchValue);
-    applyFilters(searchValue, selectedCategories, selectedTags, selectedCompanies);
+    applyFilters(searchValue, selectedCategories, selectedTags, selectedCompanies, selectedDifficulties);
   };
 
   const debouncedHandleSearchQuestion = useDebounce(handleSearchQuestion, 800);
@@ -87,26 +102,35 @@ const ProblemSheet = () => {
     );
   };
 
+  const handleDifficultySelect = (difficulty) => {
+    setSelectedDifficulties((prev) =>
+      prev.includes(difficulty) ? prev.filter((d) => d !== difficulty) : [...prev, difficulty]
+    );
+  };
+
   // Effects
   useEffect(() => {
-    applyFilters(searchText, selectedCategories, selectedTags, selectedCompanies);
-  }, [selectedCategories, selectedTags, selectedCompanies]);
+    applyFilters(searchText, selectedCategories, selectedTags, selectedCompanies, selectedDifficulties);
+  }, [selectedCategories, selectedTags, selectedCompanies, selectedDifficulties]);
 
   useEffect(() => {
     if (problems.length > 0) {
       const tags = new Set();
       const companies = new Set();
       const categories = new Set();
+      const difficulties = new Set();
 
       problems.forEach((problem) => {
         problem.tags.forEach((tag) => tags.add(tag));
         problem.askedIn.forEach((company) => companies.add(company));
         if (problem.category) categories.add(problem.category);
+        if (problem.difficulty) difficulties.add(problem.difficulty);
       });
 
       setUniqueTags(Array.from(tags).sort());
       setUniqueCompanies(Array.from(companies).sort());
       setUniqueCategories(Array.from(categories).sort());
+      setUniqueDifficulties(Array.from(difficulties).sort());
     }
   }, [problems]);
 
@@ -145,6 +169,14 @@ const ProblemSheet = () => {
         selected: selectedCompanies,
         action: handleCompanySelect,
         icon: <IconBuilding className="w-4 h-4" />,
+      },
+      {
+        id: "difficulty",
+        label: "Difficulty",
+        items: uniqueDifficulties,
+        selected: selectedDifficulties,
+        action: handleDifficultySelect,
+        icon: <IconGauge className="w-4 h-4" />,
       },
     ];
 
@@ -200,13 +232,24 @@ const ProblemSheet = () => {
                         }`}
                       >
                         <span className="truncate">
-                          {item == "dsa"
-                            ? "Data Structures and Algorithms"
-                            : item == "js"
-                            ? "UI Problem"
-                            : item == "sd"
-                            ? "System Design Problem"
-                            : item}
+                          {(() => {
+                            switch (item) {
+                              case "dsa":
+                                return "Data Structures and Algorithms";
+                              case "js":
+                                return "UI Problem";
+                              case "sd":
+                                return "System Design Problem";
+                              case Number(1):
+                                return "Easy";
+                              case Number(2):
+                                return "Medium";
+                              case Number(3):
+                                return "Hard";
+                              default:
+                                return item;
+                            }
+                          })()}
                         </span>
                         {section.selected.includes(item) && (
                           <IconCheck className="w-4 h-4 flex-shrink-0 text-zinc-300" />
@@ -219,14 +262,18 @@ const ProblemSheet = () => {
             </div>
           ))}
 
-          {(selectedCategories.length > 0 || selectedTags.length > 0 || selectedCompanies.length > 0) && (
+          {(selectedCategories.length > 0 ||
+            selectedTags.length > 0 ||
+            selectedCompanies.length > 0 ||
+            selectedDifficulties.length > 0) && (
             <button
               onClick={() => {
                 setSelectedCategories([]);
                 setSelectedTags([]);
                 setSelectedCompanies([]);
+                setSelectedDifficulties([]);
               }}
-              className="ml-auto text-sm text-zinc-400 hover:text-zinc-200 flex items-center gap-1"
+              className="ml-auto text-sm text-zinc-400 hover:text-white flex items-center gap-1"
             >
               Clear all
               <IconX size={16} />
@@ -235,7 +282,10 @@ const ProblemSheet = () => {
         </div>
 
         {/* Selected Filters */}
-        {(selectedCategories.length > 0 || selectedTags.length > 0 || selectedCompanies.length > 0) && (
+        {(selectedCategories.length > 0 ||
+          selectedTags.length > 0 ||
+          selectedCompanies.length > 0 ||
+          selectedDifficulties.length > 0) && (
           <div className="flex flex-wrap gap-2 pt-2">
             {filterSections.flatMap((section) =>
               section.selected.map((item) => (
@@ -244,13 +294,24 @@ const ProblemSheet = () => {
                   className="bg-zinc-700/50 px-3 py-1.5 rounded-full text-sm text-zinc-200 flex items-center gap-1.5"
                 >
                   <span className="text-sm text-zinc-400">{section.label}:</span>{" "}
-                  {item == "dsa"
-                    ? "Data Structures and Algorithms"
-                    : item == "js"
-                    ? "UI Problem"
-                    : item == "sd"
-                    ? "System Design Problem"
-                    : item}
+                  {(() => {
+                    switch (item) {
+                      case "dsa":
+                        return "Data Structures and Algorithms";
+                      case "js":
+                        return "UI Problem";
+                      case "sd":
+                        return "System Design Problem";
+                      case Number(1):
+                        return "Easy";
+                      case Number(2):
+                        return "Medium";
+                      case Number(3):
+                        return "Hard";
+                      default:
+                        return item;
+                    }
+                  })()}
                   <button onClick={() => section.action(item)} className="text-zinc-400 hover:text-zinc-200">
                     <IconX size={14} />
                   </button>
@@ -318,6 +379,14 @@ const ProblemSheet = () => {
     </div>
   );
 
+  const handleItemClick = (id, category) => {
+    if (category == "sd") {
+      navigate(`/blog/${id}`);
+    } else {
+      navigate(`/practice/${id}`);
+    }
+  };
+
   // Main render
   return (
     <div className="flex flex-col items-center gap-10">
@@ -338,7 +407,7 @@ const ProblemSheet = () => {
             {newProblems.map((problem, index) => (
               <div
                 key={index}
-                onClick={() => navigate(`/practice/${problem.documentId}`)}
+                onClick={() => handleItemClick(problem.documentId, problem.category)}
                 className="group relative bg-zinc-800/40 rounded-xl p-5 hover:bg-zinc-800/60 transition-all duration-300 cursor-pointer border border-zinc-700/30 hover:border-zinc-600/50"
               >
                 {/* Category and New Badge */}

@@ -29,7 +29,6 @@ const SinglePost = () => {
       const foundPostData = allPostData.find(
         (elem) => elem.documentId === pathName
       );
-      debugger;
       if (foundPostData) {
         setCurrPost(foundPostData);
       } else {
