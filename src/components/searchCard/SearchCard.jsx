@@ -130,7 +130,7 @@ const SearchCard = ({ data }) => {
           <div className="flex items-center gap-3">
             <div className={`flex items-center gap-1 text-xs ${metaClass}`}>
               <IconCalendar size={14} stroke={1.5} />
-              <span>{formatDate(new Date(data.timeStamp))}</span>
+              <span>{formatDate(new Date(data.createdAt))}</span>
             </div>
             <div className={`flex items-center gap-1 text-xs ${metaClass}`}>
               <IconClock size={14} stroke={1.5} />

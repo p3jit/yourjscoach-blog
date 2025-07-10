@@ -92,7 +92,7 @@ const ResultsPanel = ({
       return "text-green-400";
     };
 
-    // Format timestamp
+    // Format createdAt
     const getTimestamp = () => {
       const now = new Date();
       return `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}:${now
@@ -123,7 +123,7 @@ const ResultsPanel = ({
                         {consoleLogMap[singleLog]}
                       </div>
 
-                      {/* Timestamp */}
+                      {/* createdAt */}
                       <span className="text-xs text-zinc-600 ml-3 mt-1 hidden group-hover:block">{getTimestamp()}</span>
                     </div>
                   </div>

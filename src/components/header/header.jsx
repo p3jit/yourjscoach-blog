@@ -90,7 +90,7 @@ export const Header = () => {
   const handleHomeRedirect = () => {
     if (isProblemsPage) return;
     navigate("/");
-    setSearchData(postData.sort((a, b) => b.timeStamp - a.timeStamp));
+    setSearchData(postData.sort((a, b) => b.createdAt - a.createdAt));
     setSearchFilter([]);
   };
 

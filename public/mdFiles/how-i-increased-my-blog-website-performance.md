@@ -18,25 +18,25 @@ FCP measures the time from when the page starts loading to when any visible cont
 LCP reports the render time of the largest visible content element. Good LCP is 2.5 seconds or less for 75% of users.
 
 There are other metrics as well, but this gives a good start.  
-![Image Placeholder](#)  
+![Image Placeholder](http://localhost:1339/uploads/performance_0_3bda95036f.png)  
 https://web.dev/metrics/
 
 ## Google Rail Model
 
 RAIL stands for Response, Animation, Idle, and Load — four aspects of a web app's life cycle. Users have different performance expectations in each context.
 
-![Image Placeholder](#)  
+![Image Placeholder](http://localhost:1339/uploads/performance_1_61a6b9f0ae.png)  
 https://web.dev/rail/
 
 ## Before Optimization
 
 Now that we know the basic metrics, let’s look at the performance state before any optimizations (using Lighthouse audit).
 
-![Image Placeholder](#)
+![Image Placeholder](http://localhost:1339/uploads/performance_2_85c221a868.png)
 
 Now let’s take a look at the scores **after** performing optimizations.
 
-![Image Placeholder](#)
+![Image Placeholder](http://localhost:1339/uploads/performance_3_8cf0c25139.png)
 
 WOW! That’s a lot of improvement. Let’s break down what caused the jump.
 
@@ -50,7 +50,7 @@ If you're using frameworks like React or Vite:
 
 These tools typically handle minification automatically in production builds.
 
-![Image Placeholder](#)
+![Image Placeholder](http://localhost:1339/uploads/performance_4_47bcc60c87.png)
 
 Running the app without building shows suggestions like JS minification and enabling text compression.
 
@@ -63,7 +63,7 @@ npm run preview  # run in preview mode
 
 I use `Vite` for my app. After testing with Lighthouse again, you'll see improvements — code is split and bundled.
 
-![Image Placeholder](#)
+![Image Placeholder](http://localhost:1339/uploads/performance_5_e4c372d2c8.png)
 
 You may also see some warnings — we’ll address those later.
 
@@ -71,7 +71,7 @@ You may also see some warnings — we’ll address those later.
 
 Serving large uncompressed images hurts performance. I ensured all images in my blog were compressed using a compression tool.
 
-![Image Placeholder](#)
+![Image Placeholder](http://localhost:1339/uploads/performance_6_e6ce5345df.png)
 
 The image above shows how different algorithms affect image size.
 
@@ -113,7 +113,7 @@ function App() {
 export default App;
 ```
 
-![Image Placeholder](#)
+![Image Placeholder](http://localhost:1339/uploads/performance_7_5fb77e7e96.png)
 
 Now let’s add `React.lazy` and `Suspense`:
 
@@ -160,7 +160,7 @@ function App() {
 export default App;
 ```
 
-![Image Placeholder](#)
+![Image Placeholder](http://localhost:1339/uploads/performance_8_ff6d13acdf.png)
 
 This separates routes and components, loading them only when necessary.
 
@@ -172,7 +172,7 @@ Even after lazy loading, scores weren’t great. I was using Firebase, and even 
 
 I used `Vite Bundle Visualizer` to identify Firebase as the issue — it wasn't tree-shakeable.
 
-![Image Placeholder](#)
+![Image Placeholder](http://localhost:1339/uploads/performance_9_0f0a89fd86.png)
 
 On desktop it was okay, but on mobile Lighthouse, removing Firebase helped.
 
@@ -185,9 +185,9 @@ With these small steps, I improved my Lighthouse scores significantly.
 
 ### Recap:
 
-- ✅ Serve compressed images  
-- ✅ Minify CSS and JS  
-- ✅ Use lazy loading for routes and components  
-- ✅ Avoid non-tree-shakeable libraries
+- Serve compressed images  
+- Minify CSS and JS  
+- Use lazy loading for routes and components  
+- Avoid non-tree-shakeable libraries
 
 Hope this helped you learn something new. Thanks for reading!

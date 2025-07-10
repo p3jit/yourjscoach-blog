@@ -8,7 +8,6 @@ import {
   IconSortAscending,
   IconSortDescending,
   IconCircleCheck,
-  IconCircleX,
 } from "@tabler/icons";
 import NewBadge from "../new-badge/NewBadge";
 import Tag from "../tag/Tag";
@@ -55,7 +54,7 @@ const TableHeader = (props) => {
 
 const TableRow = (props) => {
   const { solvedProblems } = useContext(LocalStorageProvider);
-  const isNew = isNewProblem(props.question.timestamp || props.question.createdAt);
+  const isNew = isNewProblem(props.question.createdAt || props.question.createdAt);
   const isSolved = solvedProblems.includes(props.question.documentId);
 
   return (
@@ -78,7 +77,9 @@ const TableRow = (props) => {
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-zinc-100 font-medium group-hover:text-white">{props.question.problemTitle}</span>
+              <span className="text-zinc-100 font-medium group-hover:text-white">
+                {props.question.problemTitle || props.question.title}
+              </span>
               {isNew && <NewBadge />}
             </div>
           </div>
@@ -242,8 +243,12 @@ const Table = (props) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  const handleRowClick = (id) => {
-    navigate(`/practice/${id}`);
+  const handleRowClick = (id, category) => {
+    if (category == "sd") {
+      navigate(`/blog/${id}`);
+    } else {
+      navigate(`/practice/${id}`);
+    }
   };
 
   const handleSort = (key) => {
@@ -290,7 +295,7 @@ const Table = (props) => {
                       <TableRow
                         key={`question-${index}`}
                         question={question}
-                        onRowClick={() => handleRowClick(question.documentId)}
+                        onRowClick={() => handleRowClick(question.documentId, question.category)}
                       />
                     ))
                   ) : (

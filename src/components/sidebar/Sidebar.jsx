@@ -1,13 +1,12 @@
 import React, { useContext, useState, useEffect } from "react";
 import { ProblemDataProvider } from "../../contexts/ProblemDataContext";
 import {
-  IconCircleCheck, 
-  IconCircle, 
+  IconCircleCheck,
+  IconCircle,
   IconX,
   IconSearch,
   IconFilter,
-  IconAdjustments,
-  IconChartBar
+  IconChartBar,
 } from "@tabler/icons";
 import { returnColor, returnDifficultyText, isNewProblem } from "../../utils/utils";
 import Brand from "../brand/Brand";
@@ -22,7 +21,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { activeStudyPlan } = useStudyPlan();
-  
+
   // State for sidebar functionality
   const [activeTab, setActiveTab] = useState("dsa");
   const [searchQuery, setSearchQuery] = useState("");
@@ -37,12 +36,12 @@ const Sidebar = ({ isOpen, onClose }) => {
   // Filter problems by category
   const dsaProblems = problems?.filter((problem) => problem?.category === "dsa");
   const jsProblems = problems?.filter((problem) => problem?.category === "js");
-  const systemDesignProblems = problems?.filter((problem) => problem?.category === "System Design");
+  const systemDesignProblems = problems?.filter((problem) => problem?.category === "sd");
 
   // Calculate progress for each category
   const calculateProgress = (problemList) => {
     if (!problemList || problemList.length === 0) return 0;
-    const solved = problemList.filter(problem => solvedProblems.includes(problem.documentId)).length;
+    const solved = problemList.filter((problem) => solvedProblems.includes(problem.documentId)).length;
     return Math.round((solved / problemList.length) * 100);
   };
 
@@ -53,19 +52,24 @@ const Sidebar = ({ isOpen, onClose }) => {
   // Get active problems based on selected tab
   const getActiveProblems = () => {
     switch (activeTab) {
-      case "dsa": return dsaProblems || [];
-      case "js": return jsProblems || [];
-      case "systemDesign": return systemDesignProblems || [];
-      default: return [];
+      case "dsa":
+        return dsaProblems || [];
+      case "js":
+        return jsProblems || [];
+      case "sd":
+        return systemDesignProblems || [];
+      default:
+        return [];
     }
   };
 
   // Filter problems based on search and difficulty
-  const filteredProblems = getActiveProblems().filter(problem => {
-    const matchesSearch = searchQuery === "" || 
-      problem.problemTitle.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesDifficulty = difficultyFilter === "all" || 
-      problem.difficulty === difficultyFilter;
+  const filteredProblems = getActiveProblems().filter((problem) => {
+    const matchesSearch =
+      searchQuery === "" ||
+      problem.problemTitle.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      problem.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesDifficulty = difficultyFilter === "all" || problem.difficulty === difficultyFilter;
     return matchesSearch && matchesDifficulty;
   });
 
@@ -96,7 +100,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const ProblemItem = ({ problem }) => {
     const isCurrentProblem = currentProblem && currentProblem.documentId === problem.documentId;
     const isSolved = solvedProblems.includes(problem.documentId);
-    const isNew = isNewProblem(problem.timestamp || problem.createdAt);
+    const isNew = isNewProblem(problem.createdAt || problem.createdAt);
 
     return (
       <li
@@ -118,16 +122,12 @@ const Sidebar = ({ isOpen, onClose }) => {
             <div>
               <div className="flex items-center gap-2">
                 <span
-                  className={`text-sm line-clamp-1 ${
-                    isCurrentProblem ? "text-zinc-100 font-medium" : "text-zinc-300"
-                  }`}
+                  className={`text-sm line-clamp-1 ${isCurrentProblem ? "text-zinc-100 font-medium" : "text-zinc-300"}`}
                 >
-                  {problem.problemTitle}
+                  {problem.problemTitle || problem.title}
                 </span>
                 {isCurrentProblem && (
-                  <span className="bg-zinc-600 text-zinc-200 text-xs px-2 py-0.5 rounded-full">
-                    Current
-                  </span>
+                  <span className="bg-zinc-600 text-zinc-200 text-xs px-2 py-0.5 rounded-full">Current</span>
                 )}
                 {isNew && <NewBadge />}
               </div>
@@ -138,9 +138,7 @@ const Sidebar = ({ isOpen, onClose }) => {
                       {tag}
                     </span>
                   ))}
-                  {problem.tags.length > 2 && (
-                    <span className="text-xs text-zinc-500">+{problem.tags.length - 2}</span>
-                  )}
+                  {problem.tags.length > 2 && <span className="text-xs text-zinc-500">+{problem.tags.length - 2}</span>}
                 </div>
               )}
             </div>
@@ -155,11 +153,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const Tab = ({ id, label, count, progress }) => (
     <button
       onClick={() => setActiveTab(id)}
-      className={`flex-1 py-2 px-1 relative ${
-        activeTab === id 
-          ? "text-white" 
-          : "text-zinc-400 hover:text-zinc-200"
-      }`}
+      className={`flex-1 py-2 px-1 relative ${activeTab === id ? "text-white" : "text-zinc-400 hover:text-zinc-200"}`}
     >
       <div className="flex flex-col items-center">
         <span className="font-medium text-sm">{label}</span>
@@ -168,9 +162,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           <span className="text-xs text-zinc-400">{progress}%</span>
         </div>
       </div>
-      {activeTab === id && (
-        <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-zinc-300 rounded-full"></div>
-      )}
+      {activeTab === id && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-zinc-300 rounded-full"></div>}
     </button>
   );
 
@@ -226,23 +218,13 @@ const Sidebar = ({ isOpen, onClose }) => {
 
         {/* Category tabs */}
         <div className="flex border-b border-zinc-700/50">
-          <Tab 
-            id="dsa" 
-            label="DSA" 
-            count={dsaProblems?.length || 0} 
-            progress={dsaProgress} 
-          />
-          <Tab 
-            id="js" 
-            label="JavaScript" 
-            count={jsProblems?.length || 0} 
-            progress={jsProgress} 
-          />
-          <Tab 
-            id="systemDesign" 
-            label="System Design" 
-            count={systemDesignProblems?.length || 0} 
-            progress={sdProgress} 
+          <Tab id="dsa" label="DSA" count={dsaProblems?.length || 0} progress={dsaProgress} />
+          <Tab id="js" label="JavaScript" count={jsProblems?.length || 0} progress={jsProgress} />
+          <Tab
+            id="systemDesign"
+            label="System Design"
+            count={systemDesignProblems?.length || 0}
+            progress={sdProgress}
           />
         </div>
 
@@ -263,7 +245,7 @@ const Sidebar = ({ isOpen, onClose }) => {
               <option value="medium">Medium</option>
               <option value="hard">Hard</option>
             </select>
-            <button 
+            <button
               className="bg-zinc-800 text-zinc-300 text-xs px-2 py-1 rounded border border-zinc-700 flex items-center gap-1"
               onClick={() => {
                 setSearchQuery("");
@@ -288,7 +270,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             <div className="flex flex-col items-center justify-center h-full text-center">
               <IconSearch size={40} className="text-zinc-600 mb-3" />
               <p className="text-zinc-400 text-sm">No problems match your filters</p>
-              <button 
+              <button
                 onClick={() => {
                   setSearchQuery("");
                   setDifficultyFilter("all");
@@ -313,8 +295,8 @@ const Sidebar = ({ isOpen, onClose }) => {
             </span>
           </div>
           <div className="w-full bg-zinc-700/30 rounded-full h-1.5">
-            <div 
-              className="bg-gradient-to-r from-zinc-500 to-gray-500 h-1.5 rounded-full" 
+            <div
+              className="bg-gradient-to-r from-zinc-500 to-gray-500 h-1.5 rounded-full"
               style={{ width: `${problems?.length ? (solvedProblems.length / problems.length) * 100 : 0}%` }}
             ></div>
           </div>

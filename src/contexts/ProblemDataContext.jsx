@@ -35,6 +35,9 @@ const ProblemDataContext = ({ children }) => {
       }
 
       let data = await response.json();
+      if (systemDesignProblems?.length > 0) {
+        data.data = [...data.data, ...systemDesignProblems];
+      }
       const sortedProblems = data.data.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
       setProblems([...sortedProblems] || []);
       setAllProblems([...sortedProblems] || []);
@@ -42,7 +45,7 @@ const ProblemDataContext = ({ children }) => {
 
       // Identify and store newly added problems
       const newProblems = sortedProblems.filter((problem) =>
-        isNewProblem(problem.timestamp || problem.createdAt) ? problem : null
+        isNewProblem(problem.createdAt || problem.createdAt) ? problem : null
       );
       setNewProblems(newProblems.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 3));
     } catch (err) {
@@ -80,7 +83,7 @@ const ProblemDataContext = ({ children }) => {
   useEffect(() => {
     const currentPlanId = new URLSearchParams(location.search).get("plan");
     if (!currentPlanId) fetchAllProblems();
-  }, []);
+  }, [systemDesignProblems]);
 
   // Context value with all data and functions
   const contextValue = {

@@ -14,7 +14,7 @@ const PostContent = ({ post, isLoading }) => {
 };
 
 const SinglePost = () => {
-  const { postData } = useContext(BlogDataProvider);
+  const { postData, allPostData } = useContext(BlogDataProvider);
   const [currPost, setCurrPost] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
@@ -23,13 +23,13 @@ const SinglePost = () => {
   useEffect(() => {
     const pathName = location.pathname.split("/")[2];
     
-    if (postData?.length) {
+    if (allPostData?.length) {
       setIsLoading(true);
       
-      const foundPostData = postData.find(
+      const foundPostData = allPostData.find(
         (elem) => elem.documentId === pathName
       );
-      
+      debugger;
       if (foundPostData) {
         setCurrPost(foundPostData);
       } else {

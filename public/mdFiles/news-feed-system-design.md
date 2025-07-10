@@ -283,7 +283,7 @@ type Comment = {
   author: User; // User who wrote the comment
   content: string; // Text of the comment
   media?: Media[]; // Optional media files (images/videos)
-  createdAt: string; // ISO timestamp
+  createdAt: string; // ISO createdAt
 };
 
 type Post = {
@@ -291,7 +291,7 @@ type Post = {
   author: User; // Post creator
   content: string; // Main text content
   media?: Media[]; // Optional media (images/videos)
-  createdAt: string; // ISO timestamp
+  createdAt: string; // ISO createdAt
   likes: number; // Total number of likes
   comments: Comment[]; // List of comments
 };
@@ -1121,7 +1121,7 @@ Use proper HTML elements to convey structure and meaning.
 | Feed container | `<section role="feed">`       |
 | Post card      | `<article>`                   |
 | User name      | `<h2>` or `<strong>`          |
-| Timestamp      | `<time datetime="...">`       |
+| createdAt      | `<time datetime="...">`       |
 | Buttons        | `<button>` instead of `<div>` |
 | Images         | `<img alt="..." />`           |
 

@@ -104,7 +104,7 @@ const EditorSection = ({
             type: 'IFRAME_JS_CODE',
             level,
             message,
-            timestamp: new Date().toISOString()
+            createdAt: new Date().toISOString()
           }, '*');
         } catch (e) {
           window.originalConsole.error('Error sending console message:', e);

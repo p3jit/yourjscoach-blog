@@ -44,6 +44,7 @@ const ProblemSheet = () => {
       filtered = filtered.filter(
         (problem) =>
           problem.problemTitle.toLowerCase().includes(search.toLowerCase()) ||
+          problem.title.toLowerCase().includes(search.toLowerCase()) ||
           problem.askedIn.some((comp) => comp.toLowerCase().includes(search.toLowerCase())) ||
           problem.tags.some((t) => t.toLowerCase().includes(search.toLowerCase()))
       );
@@ -351,7 +352,7 @@ const ProblemSheet = () => {
                 {/* Problem Content */}
                 <div className="space-y-3 pb-5">
                   <h3 className="text-lg font-semibold text-white group-hover:text-zinc-200 transition-colors">
-                    {problem.problemTitle}
+                    {problem.problemTitle || problem.title}
                   </h3>
                   <p className="text-zinc-400 text-md line-clamp-4">{problem.description}</p>
                 </div>

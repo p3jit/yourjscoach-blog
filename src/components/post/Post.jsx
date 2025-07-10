@@ -13,6 +13,7 @@ import UrlTag from "../markdown-components/urlTag/UrlTag";
 import { LocalStorageProvider } from "../../contexts/localStorageContext";
 import TableOfContents from "./TableOfContents";
 import Mermaid from "../markdown-components/mermaid/Mermaid";
+import { returnDifficultyText } from "../../utils/utils";
 
 // Lazy-loaded components to improve initial performance
 const LazyComponents = {
@@ -65,14 +66,16 @@ const PostHeader = ({ data, setSolvedProblems, solvedProblems, updateLocalStorag
     <div>
       <div className="flex flex-col gap-6 bg-zinc-800 p-10 mb-16 rounded-2xl shadow-xl border border-zinc-700">
         <div className="flex justify-between">
-          <h5 className="text-zinc-400  font-medium">System Design & Architecture</h5>
+          <h5 className="text-zinc-400  font-medium">
+            {data.isProblem ? "System Design & Architecture" : "Blog Post"}
+          </h5>
           <span className="flex gap-2 justify-center items-center text-center">
             <IconCalendarDue className="w-4 text-zinc-500" />
             <h3
               className=" text-zinc-400 font-medium text-sm"
-              aria-label={`Published on ${formatDate(new Date(data.timeStamp))}`}
+              aria-label={`Published on ${formatDate(new Date(data.createdAt))}`}
             >
-              {formatDate(new Date(data.timeStamp))}
+              {formatDate(new Date(data.createdAt))}
             </h3>
           </span>
         </div>
@@ -86,12 +89,14 @@ const PostHeader = ({ data, setSolvedProblems, solvedProblems, updateLocalStorag
                 {`${data.minRead} Min Read`}
               </h3>
             </span>
-            <span className="flex gap-2 justify-center items-center text-center">
-              <IconFlame className="w-5 text-zinc-500" />
-              <h3 className=" text-yellow-400" aria-label={`Difficulty`}>
-                {"Medium"}
-              </h3>
-            </span>
+            {(Number(data.difficulty) && data.category == "sd") && (
+              <span className="flex gap-2 justify-center items-center text-center">
+                <IconFlame className="w-5 text-zinc-500" />
+                <h3 className=" text-yellow-400" aria-label={`Difficulty`}>
+                  {returnDifficultyText(Number(data.difficulty))}
+                </h3>
+              </span>
+            )}
           </div>
         </div>
         <hr className="h-px pt-0.5 bg-zinc-700 border-0 mt-2"></hr>
@@ -99,7 +104,7 @@ const PostHeader = ({ data, setSolvedProblems, solvedProblems, updateLocalStorag
           <div className="flex justify-center items-center">
             <TagList tags={data.tags} isDarkMode={false} />
           </div>
-          <button
+          {data.category == "sd" && <button
             onClick={handleUpdateSolved}
             className={`text-sm ${
               isSolved ? "bg-emerald-700" : "bg-zinc-600"
@@ -114,7 +119,7 @@ const PostHeader = ({ data, setSolvedProblems, solvedProblems, updateLocalStorag
                 <IconCircle className="w-5" /> Mark Complete
               </>
             )}
-          </button>
+          </button>}
         </div>
       </div>
       <BannerImage data={data} />
@@ -123,9 +128,8 @@ const PostHeader = ({ data, setSolvedProblems, solvedProblems, updateLocalStorag
 };
 
 const BannerImage = ({ data }) => {
-  if (!data.bannerImage) return null;
-
-  const imagePath = `/images/${data.identifier}/${data.identifier}_banner.png`;
+  if (!data.bannerImage || !data.bannerImage.length > 0) return null;
+  const imagePath = data.bannerImage;
 
   return (
     <div className="mt-5">
@@ -241,20 +245,20 @@ export const Post = ({ data }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // const fetchUrl = !ENV_VITE_API_URL
-    //   ? `../${"mdFiles/" + data.mdFile + ".md"}`
-    //   : `${ENV_VITE_API_URL}/assets/${data.mdFile}`;
+    const fetchUrl = !ENV_VITE_API_URL
+      ? `http://localhost:1339/api/posts/${data.documentId}`
+      : `${ENV_VITE_API_URL}/api/posts/${data.documentId}`;
 
-    // fetch(fetchUrl)
-    //   .then((response) => response.text())
-    //   .then((md) => {
-    //     setPostContent(md);
-    //     setIsLoading(false);
-    //   })
-    //   .catch((err) => {
-    //     console.error("Failed to load post content:", err);
-    //     navigate("/404");
-    //   });
+    fetch(fetchUrl)
+      .then((response) => response.json())
+      .then((md) => {
+        setPostContent(md.data.mdFile);
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error("Failed to load post content:", err);
+        navigate("/404");
+      });
     setPostContent(data.mdFile);
     setIsLoading(false);
   }, [data.mdFile, navigate]);

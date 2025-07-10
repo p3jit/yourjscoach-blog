@@ -94,7 +94,7 @@ const CardContent = ({ data, isDarkMode }) => {
 /**
  * CardMeta component for rendering post metadata
  * @param {Object} props - Component props
- * @param {Object} props.data - Post data with timestamp and read time
+ * @param {Object} props.data - Post data with createdAt and read time
  * @param {boolean} props.isDarkMode - Current theme mode
  * @returns {JSX.Element} The CardMeta component
  */
@@ -107,7 +107,7 @@ const CardMeta = ({ data, isDarkMode }) => {
     <div className="flex items-center gap-4">
       <div className={metaClass}>
         <IconCalendar size={16} />
-        <span>{formatDate(new Date(data.timeStamp))}</span>
+        <span>{formatDate(new Date(data.createdAt))}</span>
       </div>
       {data.minRead && (
         <div className={metaClass}>
@@ -122,7 +122,7 @@ const CardMeta = ({ data, isDarkMode }) => {
 /**
  * CardFooter component for rendering the post date and read more button
  * @param {Object} props - Component props
- * @param {Object} props.data - Post data with timestamp
+ * @param {Object} props.data - Post data with createdAt
  * @param {boolean} props.isDarkMode - Current theme mode
  * @param {Function} props.onReadMore - Handler for read more button click
  * @returns {JSX.Element} The CardFooter component

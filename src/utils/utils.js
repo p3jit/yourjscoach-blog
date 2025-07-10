@@ -90,10 +90,10 @@ export const fuzzySearchWithFuse = (obj, options, searchText) => {
   return searchResult;
 };
 
-export const isNewProblem = (timestamp) => {
-  if (!timestamp) return false;
+export const isNewProblem = (createdAt) => {
+  if (!createdAt) return false;
   
-  const problemDate = new Date(timestamp);
+  const problemDate = new Date(createdAt);
   const currentDate = new Date();
   
   // Calculate the difference in milliseconds

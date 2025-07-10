@@ -7,19 +7,20 @@ export const BlogDataProvider = createContext();
 const BlogDataContext = ({ children }) => {
   // State management
   const [postData, setPostData] = useState([]);
+  const [allPostData, setAllPostData] = useState([]);
   const [latestPostData, setLatestPostData] = useState([]);
   const [searchFilter, setSearchFilter] = useState([]);
   const [searchData, setSearchData] = useState([]);
   const [fetchedTags, setFetchedTags] = useState([]);
   const [isSearching, setIsSearching] = useState(true);
-  const [systemDesignProbelms, setSystemDesignProbelms] = useState([]);
+  const [systemDesignProblems, setSystemDesignProbelms] = useState([]);
 
   const navigate = useNavigate();
 
   const searchPostsByQuery = (query) => {
     const result = postData.filter((post) => post.title.toLowerCase().includes(query) || post.tags.includes(query));
 
-    result.sort((a, b) => b.timeStamp - a.timeStamp);
+    result.sort((a, b) => b.createdAt - a.createdAt);
 
     setSearchData(result);
     setIsSearching(false);
@@ -30,7 +31,7 @@ const BlogDataContext = ({ children }) => {
 
   const filterPostsByTags = () => {
     if (!searchFilter.length) {
-      return postData.slice().sort((a, b) => b.timeStamp - a.timeStamp);
+      return postData.slice().sort((a, b) => b.createdAt - a.createdAt);
     }
 
     return postData.filter((post) => post.tags.some((tag) => searchFilter.includes(tag)));
@@ -38,19 +39,45 @@ const BlogDataContext = ({ children }) => {
 
   const fetchPostsAndTags = async () => {
     try {
-      const response = await fetch(`http://localhost:1339/api/posts`);
-      let { data } = await response.json();
+      const query = `
+      query Posts {
+        posts {
+          askedIn
+          createdAt
+          description
+          difficulty
+          documentId
+          minRead
+          tags
+          title
+          bannerImage
+          identifier
+          category
+        }
+      }
+    `;
 
-      debugger;
-      const sdProblems = data.filter((a) => a.isProblem);
-      data = data.filter((a) => !a.isProblem);
+      const response = await fetch("http://localhost:1339/graphql", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({ query }),
+      });
+
+      let { data } = await response.json();
+      data = data.posts;
+      setAllPostData(data);
+      const sdProblems = data.filter((a) => a.category === "sd");
+      data = data.filter((a) => a.category === "post");
       setSystemDesignProbelms([...sdProblems]);
 
       // Set all posts data
       setPostData(data);
 
-      // Sort posts by timestamp, newest first
-      const sortedPosts = [...data].sort((a, b) => new Date(b.timeStamp) - new Date(a.timeStamp));
+      // Sort posts by createdAt, newest first
+      const sortedPosts = [...data].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
       // Set latest posts (up to 2)
       setLatestPostData(sortedPosts.slice(0, Math.min(2, sortedPosts.length)));
@@ -97,7 +124,10 @@ const BlogDataContext = ({ children }) => {
     fetchedTags,
     isSearching,
     setIsSearching,
-    systemDesignProbelms,
+    systemDesignProblems,
+    setSystemDesignProbelms,
+    allPostData,
+    setAllPostData
   };
 
   return <BlogDataProvider.Provider value={contextValue}>{children}</BlogDataProvider.Provider>;
