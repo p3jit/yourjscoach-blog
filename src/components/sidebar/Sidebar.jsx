@@ -70,12 +70,12 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   // Update expanded sections based on current problem
   useEffect(() => {
-    if (currentProblem && Object.keys(currentProblem).length > 0) {
+    if (currentProblem && Object.keys(currentProblem).length > 0 || currentPost && Object.keys(currentPost).length > 0) {
       if (currentProblem.category === "dsa") {
         setActiveTab("dsa");
       } else if (currentProblem.category === "js") {
         setActiveTab("js");
-      } else if (currentProblem.category === "sd") {
+      } else if (currentPost.category === "sd") {
         setActiveTab("sd");
       }
     }
@@ -93,21 +93,23 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   // Problem list item component
   const ProblemItem = ({ problem }) => {
-    const isCurrentProblem = currentProblem && currentProblem.documentId === problem.documentId;
+    const isCurrentProblem =
+      (currentProblem && currentProblem.documentId === problem.documentId) ||
+      (currentPost && currentPost.documentId === problem.documentId);
     const isSolved = solvedProblems.includes(problem.documentId);
     const isNew = isNewProblem(problem.createdAt || problem.createdAt);
 
     const handleItemClick = (id, category) => {
-      if (category == "dsa") {
-        navigate(`/practice/${problem.documentId}`);
+      if (category == "sd") {
+        navigate(`/blog/${id}`);
       } else {
-        navigate(`/blog/${problem.documentId}`);
+        navigate(`/practice/${id}`);
       }
     };
 
     return (
       <li
-        onClick={() => handleItemClick(problem.id, problem.category)}
+        onClick={() => handleItemClick(problem.documentId, problem.category)}
         key={problem.id}
         className={`px-4 py-3 hover:bg-zinc-700/40 rounded-md transition-all cursor-pointer mb-1 ${
           isCurrentProblem ? "bg-zinc-700/50 ring-1 ring-zinc-500" : ""

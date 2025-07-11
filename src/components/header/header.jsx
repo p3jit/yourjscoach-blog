@@ -80,7 +80,7 @@ export const Header = () => {
       return "py-3 px-4 gap-5 min-w-[950px] bg-zinc-900";
     }
     if (isPostPage) {
-      return "gap-10 py-[1.5vh] 2xl:px-[20vw] lg:px-[10vw] px-[7vw] min-w-[56vw] bg-zinc-900";
+      return "gap-10 py-[1.5vh] 2xl:px-[21vw] lg:px-[11vw] px-[8vw] min-w-[56vw] bg-zinc-900";
     }
     if (isProblemsPage) {
       return "absolute w-full bottom-14";
@@ -102,10 +102,18 @@ export const Header = () => {
   const handleProblemNavigation = (type) => {
     if (type === "prev") {
       if (problems[currentProblemIndex - 1]) {
-        navigate(`/practice/${problems[currentProblemIndex - 1].documentId}`);
+        if (problems[currentProblemIndex - 1].category == "sd") {
+          navigate(`/blog/${problems[currentProblemIndex - 1].documentId}`);
+        } else {
+          navigate(`/practice/${problems[currentProblemIndex - 1].documentId}`);
+        }
       }
     } else {
-      navigate(`/practice/${problems[currentProblemIndex + 1].documentId}`);
+      if (problems[currentProblemIndex + 1].category == "sd") {
+        navigate(`/blog/${problems[currentProblemIndex + 1].documentId}`);
+      } else {
+        navigate(`/practice/${problems[currentProblemIndex + 1].documentId}`);
+      }
     }
   };
 
@@ -131,24 +139,26 @@ export const Header = () => {
         </div> */}
         {(isPracticePage || (!isPostHome && isPostPage && currentPost.category == "sd")) && (
           <div className="text-sm text-zinc-300 gap-3 flex">
-            {currentProblem.category == "js" || currentPost.category == "sd" && (
-              <button
-                type="button"
-                onClick={markSolved}
-                className={
-                  "px-3 py-2 rounded-md font-medium transition-all duration-50 flex gap-2 justify-center items-center " +
-                  `${
-                    isSolved
-                      ? "hover:bg-emerald-700 active:bg-emerald-800 bg-emerald-800"
-                      : "hover:bg-zinc-700 active:bg-zinc-800 bg-zinc-800"
-                  } text-zinc-100  ` +
-                  "shadow-sm hover:shadow-lg active:shadow-md "
-                }
-              >
-                {isSolved ? <IconCircleCheck className="w-5 h-5" /> : <IconCircle className="w-5 h-5" />}
-                Mark Complete
-              </button>
-            )}
+            {!currentProblem.category == "dsa" ||
+              currentProblem.category == "js" ||
+              (currentPost.category == "sd" && (
+                <button
+                  type="button"
+                  onClick={markSolved}
+                  className={
+                    "px-3 py-2 rounded-md font-medium transition-all duration-50 flex gap-2 justify-center items-center " +
+                    `${
+                      isSolved
+                        ? "hover:bg-emerald-700 active:bg-emerald-800 bg-emerald-800"
+                        : "hover:bg-zinc-700 active:bg-zinc-800 bg-zinc-800"
+                    } text-zinc-100  ` +
+                    "shadow-sm hover:shadow-lg active:shadow-md "
+                  }
+                >
+                  {isSolved ? <IconCircleCheck className="w-5 h-5" /> : <IconCircle className="w-5 h-5" />}
+                  Mark Complete
+                </button>
+              ))}
             <button
               type="button"
               onClick={() => handleProblemNavigation("prev")}
@@ -175,7 +185,7 @@ export const Header = () => {
         )}
         {!(isPracticePage || isPostPage) && <Navigation currentPath={location.pathname} navigate={navigate} />}
       </nav>
-      {(isPracticePage) && <hr className="bg-zinc-700 h-0.5 outline-none border-none" />}
+      {isPracticePage && <hr className="bg-zinc-700 h-0.5 outline-none border-none" />}
     </header>
   );
 };

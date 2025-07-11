@@ -47,7 +47,7 @@ const useProblemData = (location, navigate, resetExecutionState) => {
     resetExecutionState();
   }, [location.pathname, navigate]);
 
-  return { currentProblem, setCurrentProblem };
+  return { currentProblem, setCurrentProblem, problems };
 };
 
 // Custom hook for managing execution state
@@ -299,7 +299,7 @@ const Practice = () => {
     resetExecutionState,
   } = useExecutionState();
 
-  const { currentProblem } = useProblemData(location, navigate, resetExecutionState);
+  const { currentProblem, setCurrentProblem } = useProblemData(location, navigate, resetExecutionState);
 
   const { middleBarTabIndex, middleBarTabs, setMiddleBarTabs, handleMiddleBarTabClick } =
     useMiddleBarTabs(currentProblem);
@@ -354,13 +354,11 @@ const Practice = () => {
           markSolved(shouldSolve);
         }
 
-        // debugger;
         setConsoleLogMap(consoleLogList ? consoleLogList : {});
         setDidExecute(true);
         setIsRunning(false);
       }
       if (event.data && !event.data.vscodeScheduleAsyncWork && event.data.type === "IFRAME_JS_CODE") {
-        debugger;
         setConsoleLogMap((prev) => {
           if (prev && prev.length > 0) {
             return [...prev, event.data.message];
@@ -388,6 +386,13 @@ const Practice = () => {
     setSuccess,
     setTestResults,
   ]);
+
+    // We unselect currentPost on unMount
+    useEffect(() => {
+      return () => {
+        setCurrentProblem({});
+      };
+    }, []);
 
   const debouncedSetCurrentProblem = useDebounce(
     (value) => {

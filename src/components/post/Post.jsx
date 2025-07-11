@@ -57,7 +57,6 @@ const PostHeader = ({ data, setSolvedProblems, solvedProblems, updateLocalStorag
       updatedSolvedProblems = solvedProblems.filter((_) => _.documentId == currentId);
       setSolvedProblems(updatedSolvedProblems);
     } else {
-      debugger;
       updatedSolvedProblems = [...solvedProblems, currentId];
       setSolvedProblems(updatedSolvedProblems);
     }
@@ -231,6 +230,7 @@ export const Post = ({ data }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchUrl = !ENV_VITE_API_URL
       ? `http://localhost:1339/api/posts/${data.documentId}`
       : `${ENV_VITE_API_URL}/api/posts/${data.documentId}`;

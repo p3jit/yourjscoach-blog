@@ -21,13 +21,13 @@ export const StudyPlanProvider = ({ children }) => {
     query StudyPlans {
         studyPlans {
             problems {
-                askedIn
-                category
-                createdAt
-                difficulty
-                documentId
-                tags
-                problemTitle
+              askedIn
+              category
+              createdAt
+              difficulty
+              documentId
+              tags
+              problemTitle
             }
             documentId
             difficulty
@@ -97,14 +97,27 @@ export const StudyPlanProvider = ({ children }) => {
                 createdAt
                 askedIn
                 problems {
-                    documentId
-                    askedIn
-                    category
-                    createdAt
-                    description
-                    difficulty
-                    tags
-                    problemTitle
+                  documentId
+                  askedIn
+                  category
+                  createdAt
+                  description
+                  difficulty
+                  tags
+                  problemTitle
+                }
+                posts {
+                  askedIn
+                  createdAt
+                  description
+                  difficulty
+                  documentId
+                  minRead
+                  tags
+                  title
+                  bannerImage
+                  identifier
+                  category
                 }
             }
         }`;
@@ -132,7 +145,7 @@ export const StudyPlanProvider = ({ children }) => {
 
       const plan = data?.studyPlan || null;
       setActiveStudyPlan(plan);
-      setProblems(plan.problems)
+      setProblems([...plan.problems, ...plan.posts]);
     } catch (err) {
       console.error("Error fetching study plan:", err);
       setError(err.message);

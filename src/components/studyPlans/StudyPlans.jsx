@@ -5,10 +5,10 @@ import { ProblemDataProvider } from "../../contexts/ProblemDataContext";
 
 const PlanCard = ({ plan, isActive, onClick }) => {
   const [isCardVisible, setIsCardVisible] = useState(false);
-  const {setActiveStudyPlan} = useStudyPlan();
+  const { setActiveStudyPlan } = useStudyPlan();
   const cardRef = useRef(null);
   const navigate = useNavigate();
-  const {setProblems} = useContext(ProblemDataProvider);
+  const { setProblems } = useContext(ProblemDataProvider);
 
   useEffect(() => {
     if (!isActive) return;
@@ -22,10 +22,11 @@ const PlanCard = ({ plan, isActive, onClick }) => {
 
   const handleClick = () => {
     const params = new URLSearchParams();
-    params.append('plan', plan.documentId);
-    navigate(`/practice/${plan.problems[0].documentId}?${params.toString()}`);
+    const clickId = plan.problems[0].documentId || plan.posts[0].documentId;
+    params.append("plan", plan.documentId);
+    navigate(`/practice/${clickId}?${params.toString()}`);
     setActiveStudyPlan(plan);
-    setProblems(plan.problems);
+    setProblems([...plan.problems, ...plan.posts]);
   };
 
   return (
@@ -91,7 +92,7 @@ const PlanCard = ({ plan, isActive, onClick }) => {
 
         <div className="mt-auto">
           <button
-          onClick={handleClick}
+            onClick={handleClick}
             className={`w-full py-2 px-4 rounded-lg font-medium transition-colors ${
               plan.isPopular
                 ? "bg-zinc-100 text-zinc-900 hover:bg-zinc-200"
