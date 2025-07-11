@@ -231,7 +231,7 @@ const CodeEditorMiddleBar = ({
           <ResetButton onClick={handleReset} />
         </div>
       </div>
-      <div className="h-[calc(100%-5vh)] bg-zinc-900">
+      <div className="h-[calc(100%-7.1vh)] bg-zinc-900">
         {middleBarTabs[middleBarTabIndex] && (
           <Editor
             defaultLanguage={middleBarTabs[middleBarTabIndex].language}
@@ -239,7 +239,6 @@ const CodeEditorMiddleBar = ({
             value={middleBarTabs[middleBarTabIndex].editorValue}
             theme="vs-dark"
             options={{
-              scrollBeyondLastLine: false,
               fontSize: 14,
               wordWrap: "on",
               minimap: {
@@ -387,12 +386,12 @@ const Practice = () => {
     setTestResults,
   ]);
 
-    // We unselect currentPost on unMount
-    useEffect(() => {
-      return () => {
-        setCurrentProblem({});
-      };
-    }, []);
+  // We unselect currentPost on unMount
+  useEffect(() => {
+    return () => {
+      setCurrentProblem({});
+    };
+  }, []);
 
   const debouncedSetCurrentProblem = useDebounce(
     (value) => {
