@@ -2,7 +2,7 @@ import React from 'react';
 
 const ExampleBlock = ({ input, output, name, explanation }) => {
   return (
-    <div className="space-y-2">
+    <div className="">
       <h3 className="text-lg font-medium text-zinc-100 flex items-center">
         <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 mr-2"></span>
         {name}

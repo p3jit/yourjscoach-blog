@@ -189,7 +189,7 @@ const EditorSection = ({
                   : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-700/30"
               }`}
             >
-              <IconDeviceDesktop className="w-4"/>
+              <IconDeviceDesktop className="w-4" />
               Output
             </button>
           ) : (
@@ -257,7 +257,7 @@ const EditorSection = ({
             <Editor
               defaultLanguage="javascript"
               value={editorValue?.tests}
-              onChange={(value) => handleEditorValueChange(value, "tests")}
+              onChange={(value) => JSON.parse(handleEditorValueChange(value, "tests"))}
               theme="vs-dark"
               options={{
                 minimap: { enabled: false },

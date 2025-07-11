@@ -139,26 +139,24 @@ export const Header = () => {
         </div> */}
         {(isPracticePage || (!isPostHome && isPostPage && currentPost.category == "sd")) && (
           <div className="text-sm text-zinc-300 gap-3 flex">
-            {!currentProblem.category == "dsa" ||
-              currentProblem.category == "js" ||
-              (currentPost.category == "sd" && (
-                <button
-                  type="button"
-                  onClick={markSolved}
-                  className={
-                    "px-3 py-2 rounded-md font-medium transition-all duration-50 flex gap-2 justify-center items-center " +
-                    `${
-                      isSolved
-                        ? "hover:bg-emerald-700 active:bg-emerald-800 bg-emerald-800"
-                        : "hover:bg-zinc-700 active:bg-zinc-800 bg-zinc-800"
-                    } text-zinc-100  ` +
-                    "shadow-sm hover:shadow-lg active:shadow-md "
-                  }
-                >
-                  {isSolved ? <IconCircleCheck className="w-5 h-5" /> : <IconCircle className="w-5 h-5" />}
-                  Mark Complete
-                </button>
-              ))}
+            {(currentProblem.category == "js" || currentPost.category == "sd") && (
+              <button
+                type="button"
+                onClick={markSolved}
+                className={
+                  "px-3 py-2 rounded-md font-medium transition-all duration-50 flex gap-2 justify-center items-center " +
+                  `${
+                    isSolved
+                      ? "hover:bg-emerald-700 active:bg-emerald-800 bg-emerald-800"
+                      : "hover:bg-zinc-700 active:bg-zinc-800 bg-zinc-800"
+                  } text-zinc-100  ` +
+                  "shadow-sm hover:shadow-lg active:shadow-md "
+                }
+              >
+                {isSolved ? <IconCircleCheck className="w-5 h-5" /> : <IconCircle className="w-5 h-5" />}
+                Mark Complete
+              </button>
+            )}
             <button
               type="button"
               onClick={() => handleProblemNavigation("prev")}

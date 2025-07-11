@@ -477,16 +477,38 @@ const Practice = () => {
     return null;
   }
 
+  const successMessageStyle = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    backgroundColor: "#059669", // green-600
+    color: "white",
+    padding: "0.75rem 1.5rem",
+    borderRadius: "0.5rem",
+    boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)",
+    zIndex: 50,
+    pointerEvents: "none",
+    opacity: showConfetti ? 1 : 0,
+    transition: "opacity 0.3s ease-in-out",
+  };
+
   return (
     <>
       {showConfetti && (
-        <ReactConfetti
-          width={windowSize.width}
-          height={windowSize.height}
-          recycle={false}
-          numberOfPieces={500}
-          gravity={1.2}
-        />
+        <div className="fixed inset-0 z-50 pointer-events-none">
+          <ReactConfetti
+            width={windowSize.width}
+            height={windowSize.height}
+            recycle={false}
+            numberOfPieces={700}
+            gravity={1.3}
+          />
+          <div style={successMessageStyle}>
+            <div className="text-xl font-bold text-center">Problem Solved! 🎉</div>
+            <div className="text-sm text-center">Great job! Keep it up!</div>
+          </div>
+        </div>
       )}
       <PanelGroup key={currentProblem.documentId} direction="horizontal" className="flex h-full">
         <Panel minSize={30}>
