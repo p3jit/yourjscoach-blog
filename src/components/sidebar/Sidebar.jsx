@@ -8,6 +8,25 @@ import { LocalStorageProvider } from "../../contexts/localStorageContext";
 import { useStudyPlan } from "../../contexts/StudyPlanContext";
 import { BlogDataProvider } from "../../contexts/BlogDataContext";
 
+// Tab component for navigation
+const Tab = React.memo(({ id, label, count, progress, isActive, onClick }) => {
+  return (
+    <button
+      onClick={() => onClick(id)}
+      className={`flex-1 py-2 px-1 relative ${isActive ? "text-white" : "text-zinc-400 hover:text-zinc-200"}`}
+    >
+      <div className="flex flex-col items-center">
+        <span className="font-medium text-sm">{label}</span>
+        <div className="flex items-center gap-2 mt-1">
+          <span className="text-xs bg-zinc-700/70 px-1.5 py-0.5 rounded">{count}</span>
+          <span className="text-xs text-zinc-400">{progress}%</span>
+        </div>
+      </div>
+      {isActive && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-zinc-300 rounded-full"></div>}
+    </button>
+  );
+});
+
 const Sidebar = ({ isOpen, onClose }) => {
   const { problems, currentProblem } = useContext(ProblemDataProvider);
   const { currentPost } = useContext(BlogDataProvider);
@@ -21,17 +40,11 @@ const Sidebar = ({ isOpen, onClose }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [difficultyFilter, setDifficultyFilter] = useState("all");
-  const [expandedSections, setExpandedSections] = useState({
-    dsa: true,
-    js: false,
-    sd: false,
-  });
 
   // Filter problems by category
   const dsaProblems = problems?.filter((problem) => problem?.category === "dsa");
   const jsProblems = problems?.filter((problem) => problem?.category === "js");
   const systemDesignProblems = problems?.filter((problem) => problem?.category === "sd");
-  console.log({ dsaProblems, jsProblems, systemDesignProblems });
 
   // Calculate progress for each category
   const calculateProgress = (problemList) => {
@@ -68,18 +81,24 @@ const Sidebar = ({ isOpen, onClose }) => {
     return matchesSearch && matchesDifficulty;
   });
 
-  // Update expanded sections based on current problem
+  // Update the useEffect to only set the tab when the component mounts or when the problem changes
   useEffect(() => {
-    if (currentProblem && Object.keys(currentProblem).length > 0 || currentPost && Object.keys(currentPost).length > 0) {
-      if (currentProblem.category === "dsa") {
-        setActiveTab("dsa");
-      } else if (currentProblem.category === "js") {
-        setActiveTab("js");
-      } else if (currentPost.category === "sd") {
-        setActiveTab("sd");
+    const setTabFromCurrentItem = () => {
+      if (currentProblem?.documentId) {
+        setActiveTab(currentProblem.category);
+      } else if (currentPost?.documentId) {
+        setActiveTab("sd"); // System Design
       }
+    };
+
+    // Only set the tab if we have a current problem/post and it's different from the active tab
+    if (
+      (currentProblem?.documentId && currentProblem.category !== activeTab) ||
+      (currentPost?.documentId && activeTab !== "sd")
+    ) {
+      setTabFromCurrentItem();
     }
-  }, [location.pathname, currentProblem, currentPost]);
+  }, [currentProblem?.documentId, currentPost?.documentId]); // Only depend on the IDs
 
   // Function to get difficulty badge
   const DifficultyBadge = ({ difficulty }) => {
@@ -102,8 +121,10 @@ const Sidebar = ({ isOpen, onClose }) => {
     const handleItemClick = (id, category) => {
       if (category == "sd") {
         navigate(`/blog/${id}`);
+        setActiveTab("sd");
       } else {
         navigate(`/practice/${id}`);
+        setActiveTab(category);
       }
     };
 
@@ -153,23 +174,6 @@ const Sidebar = ({ isOpen, onClose }) => {
       </li>
     );
   };
-
-  // Tab component for navigation
-  const Tab = ({ id, label, count, progress }) => (
-    <button
-      onClick={() => setActiveTab(id)}
-      className={`flex-1 py-2 px-1 relative ${activeTab === id ? "text-white" : "text-zinc-400 hover:text-zinc-200"}`}
-    >
-      <div className="flex flex-col items-center">
-        <span className="font-medium text-sm">{label}</span>
-        <div className="flex items-center gap-2 mt-1">
-          <span className="text-xs bg-zinc-700/70 px-1.5 py-0.5 rounded">{count}</span>
-          <span className="text-xs text-zinc-400">{progress}%</span>
-        </div>
-      </div>
-      {activeTab === id && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-zinc-300 rounded-full"></div>}
-    </button>
-  );
 
   return (
     <div className={`flex w-full absolute z-50 h-full ${!isOpen ? "pointer-events-none" : ""}`}>
@@ -223,9 +227,30 @@ const Sidebar = ({ isOpen, onClose }) => {
 
         {/* Category tabs */}
         <div className="flex border-b border-zinc-700/50">
-          <Tab id="dsa" label="DSA" count={dsaProblems?.length || 0} progress={dsaProgress} />
-          <Tab id="js" label="JavaScript" count={jsProblems?.length || 0} progress={jsProgress} />
-          <Tab id="sd" label="System Design" count={systemDesignProblems?.length || 0} progress={sdProgress} />
+          <Tab
+            id="dsa"
+            label="DSA"
+            count={dsaProblems?.length || 0}
+            progress={dsaProgress}
+            isActive={activeTab === "dsa"}
+            onClick={setActiveTab}
+          />
+          <Tab
+            id="js"
+            label="JavaScript"
+            count={jsProblems?.length || 0}
+            progress={jsProgress}
+            isActive={activeTab === "js"}
+            onClick={setActiveTab}
+          />
+          <Tab
+            id="sd"
+            label="System Design"
+            count={systemDesignProblems?.length || 0}
+            progress={sdProgress}
+            isActive={activeTab === "sd"}
+            onClick={setActiveTab}
+          />
         </div>
 
         {/* Filter options */}
