@@ -120,7 +120,7 @@ const Whiteboard = () => {
     canvas.style.width = `${canvas.offsetWidth}px`;
     canvas.style.height = `${canvas.offsetHeight}px`;
 
-    const context = canvas.getContext("2d");
+    const context = canvas.getContext("2d", { willReadFrequently: true });
     context.scale(2, 2);
     context.lineCap = "round";
     context.lineJoin = "round";
