@@ -9,6 +9,9 @@ const Whiteboard = () => {
   const [history, setHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+  const [isDrawingShape, setIsDrawingShape] = useState(false);
+  const [savedImageData, setSavedImageData] = useState(null);
   const contextRef = useRef(null);
 
   // Color palette with a variety of colors
@@ -69,21 +72,123 @@ const Whiteboard = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Update context when color, brush size, or tool changes
+  // Update tool change effect to handle shape tools
   useEffect(() => {
     if (contextRef.current) {
       if (tool === "eraser") {
         contextRef.current.globalCompositeOperation = 'destination-out';
-        contextRef.current.strokeStyle = 'rgba(0, 0, 0, 1)'; // Any color with alpha works here
+        contextRef.current.strokeStyle = 'rgba(0, 0, 0, 1)';
       } else {
         contextRef.current.globalCompositeOperation = 'source-over';
-        contextRef.current.strokeStyle = color;
+        if (tool !== 'rectangle' && tool !== 'circle' && tool !== 'line' && tool !== 'arrow') {
+          contextRef.current.strokeStyle = color;
+        }
       }
-      contextRef.current.lineWidth = brushSize;
-      contextRef.current.lineCap = 'round';
-      contextRef.current.lineJoin = 'round';
+      if (tool !== 'rectangle' && tool !== 'circle' && tool !== 'line' && tool !== 'arrow') {
+        contextRef.current.lineWidth = brushSize;
+        contextRef.current.lineCap = 'round';
+        contextRef.current.lineJoin = 'round';
+      }
     }
   }, [color, brushSize, tool]);
+
+  // Save canvas state before drawing a shape
+  const saveCanvasState = () => {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
+    setSavedImageData(context.getImageData(0, 0, canvas.width, canvas.height));
+  };
+
+  // Restore canvas state (used when drawing shapes)
+  const restoreCanvasState = () => {
+    if (savedImageData) {
+      const canvas = canvasRef.current;
+      const context = canvas.getContext('2d');
+      context.putImageData(savedImageData, 0, 0);
+    }
+  };
+
+  // Draw shape based on current tool
+  const drawShape = (endX, endY) => {
+    if (!savedImageData) return;
+    
+    restoreCanvasState();
+    const context = contextRef.current;
+    const startX = startPos.x;
+    const startY = startPos.y;
+    
+    context.beginPath();
+    context.strokeStyle = color;
+    context.lineWidth = brushSize;
+    
+    switch (tool) {
+      case 'rectangle':
+        context.strokeRect(startX, startY, endX - startX, endY - startY);
+        break;
+      case 'circle':
+        const radius = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
+        context.arc(startX, startY, radius, 0, 2 * Math.PI);
+        context.stroke();
+        break;
+      case 'line':
+        context.beginPath();
+        context.moveTo(startX, startY);
+        context.lineTo(endX, endY);
+        context.stroke();
+        break;
+      case 'arrow':
+        // Draw the line
+        context.beginPath();
+        context.lineWidth = brushSize;
+        context.strokeStyle = color;
+        
+        // Shorten the line a bit to make room for the arrow head
+        const angle = Math.atan2(endY - startY, endX - startX);
+        const headLength = Math.max(brushSize * 2.5, 15);
+        const backOffset = headLength * 0.7; // How much to shorten the line
+        
+        // Adjust end point to make room for arrow head
+        const adjustedEndX = endX - Math.cos(angle) * backOffset;
+        const adjustedEndY = endY - Math.sin(angle) * backOffset;
+        
+        // Draw the main line
+        context.moveTo(startX, startY);
+        context.lineTo(adjustedEndX, adjustedEndY);
+        context.stroke();
+        
+        // Draw arrow head (sleek triangle design)
+        context.save();
+        context.translate(endX, endY);
+        context.rotate(angle);
+        
+        const headWidth = headLength * 0.6;
+        const backWidth = headLength * 0.3;
+        
+        context.beginPath();
+        context.fillStyle = color;
+        context.moveTo(0, 0); // Tip of the arrow
+        context.lineTo(-headLength, -headWidth); // Bottom point
+        context.quadraticCurveTo(
+          -headLength * 0.8, 0,  // Control point for curve
+          -headLength, headWidth // Top point with curve
+        );
+        context.closePath();
+        context.fill();
+        
+        // Add a subtle highlight for depth
+        context.beginPath();
+        context.strokeStyle = `rgba(255, 255, 255, 0.3)`;
+        context.lineWidth = brushSize * 0.3;
+        context.moveTo(-headLength * 0.3, 0);
+        context.lineTo(-headLength * 0.8, -headWidth * 0.6);
+        context.stroke();
+        
+        context.restore();
+        break;
+      default:
+        break;
+    }
+  };
 
   // Save current canvas state to history
   const saveToHistory = () => {
@@ -145,25 +250,45 @@ const Whiteboard = () => {
     link.click();
   };
 
-  // Drawing functions
+  // Update startDrawing to handle shapes
   const startDrawing = ({ nativeEvent }) => {
     const { offsetX, offsetY } = nativeEvent;
-    contextRef.current.beginPath();
-    contextRef.current.moveTo(offsetX, offsetY);
-    setIsDrawing(true);
+    if (['rectangle', 'circle', 'line', 'arrow'].includes(tool)) {
+      setStartPos({ x: offsetX, y: offsetY });
+      setIsDrawingShape(true);
+      saveCanvasState();
+    } else {
+      contextRef.current.beginPath();
+      contextRef.current.moveTo(offsetX, offsetY);
+      setIsDrawing(true);
+    }
   };
 
-  const finishDrawing = () => {
-    contextRef.current.closePath();
-    setIsDrawing(false);
-    saveToHistory();
-  };
-
+  // Update draw function to handle shapes
   const draw = ({ nativeEvent }) => {
-    if (!isDrawing) return;
+    if (!isDrawing && !isDrawingShape) return;
+    
     const { offsetX, offsetY } = nativeEvent;
-    contextRef.current.lineTo(offsetX, offsetY);
-    contextRef.current.stroke();
+    
+    if (isDrawingShape) {
+      drawShape(offsetX, offsetY);
+    } else {
+      contextRef.current.lineTo(offsetX, offsetY);
+      contextRef.current.stroke();
+    }
+  };
+
+  // Update finishDrawing to handle shapes
+  const finishDrawing = () => {
+    if (isDrawingShape) {
+      setIsDrawingShape(false);
+      setSavedImageData(null);
+      saveToHistory();
+    } else {
+      contextRef.current.closePath();
+      setIsDrawing(false);
+      saveToHistory();
+    }
   };
 
   // Touch support
@@ -235,6 +360,74 @@ const Whiteboard = () => {
               </svg>
             </button>
             <button
+              onClick={() => setTool("rectangle")}
+              className={`p-2 rounded-md ${
+                tool === "rectangle" ? "bg-zinc-600" : "bg-zinc-700 hover:bg-zinc-600"
+              }`}
+              title="Rectangle"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <rect x="3" y="3" width="18" height="18" rx="2" strokeWidth="2" />
+              </svg>
+            </button>
+            <button
+              onClick={() => setTool("circle")}
+              className={`p-2 rounded-md ${
+                tool === "circle" ? "bg-zinc-600" : "bg-zinc-700 hover:bg-zinc-600"
+              }`}
+              title="Circle"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <circle cx="12" cy="12" r="10" strokeWidth="2" />
+              </svg>
+            </button>
+            <button
+              onClick={() => setTool("line")}
+              className={`p-2 rounded-md ${
+                tool === "line" ? "bg-zinc-600" : "bg-zinc-700 hover:bg-zinc-600"
+              }`}
+              title="Line"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeWidth="2" d="M4 20L20 4" />
+              </svg>
+            </button>
+            <button
+              onClick={() => setTool("arrow")}
+              className={`p-2 rounded-md ${
+                tool === "arrow" ? "bg-zinc-600" : "bg-zinc-700 hover:bg-zinc-600"
+              }`}
+              title="Arrow"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </button>
+            <button
               onClick={() => {
                 setTool("eraser");
                 setShowColorPicker(false);
@@ -289,7 +482,7 @@ const Whiteboard = () => {
               title="Select color"
             />
             {showColorPicker && (
-              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 p-2 bg-zinc-800 rounded-lg shadow-lg z-10 w-48 grid grid-cols-6 gap-2">
+              <div className="absolute bottom-full left-28 transform -translate-x-1/2 mb-2 p-2 bg-zinc-800 rounded-lg shadow-lg z-10 w-48 grid grid-cols-6 gap-2">
                 {colorPalette.map((c) => (
                   <button
                     key={c}
