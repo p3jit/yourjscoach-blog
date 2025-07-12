@@ -40,6 +40,13 @@ const Navigation = ({ currentPath, navigate }) => {
       >
         Problems
       </button>
+      <button
+        onClick={() => navigate("/whiteboard")}
+        className={getNavLinkClass("/whiteboard")}
+        aria-current={isActive("/whiteboard") ? "page" : undefined}
+      >
+        Whiteboard
+      </button>
     </div>
   );
 };

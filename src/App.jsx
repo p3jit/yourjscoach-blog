@@ -17,17 +17,21 @@ const LazyPages = {
   Editor: lazy(() => import("./pages/Editor.jsx")),
   Practice: lazy(() => import("./pages/Practice.jsx")),
   ProblemSheet: lazy(() => import("./pages/ProblemSheet")),
+  Whiteboard: lazy(() => import("./pages/Whiteboard.jsx")),
 };
 
 const AppLayout = ({ children, isDarkMode, pathname }) => {
   const isPracticePage = (() => pathname.includes("/practice/"))();
-
+  const isWhiteboardPage = (() => pathname.includes("/whiteboard"))();
   const isPostPage = (() => pathname.includes("/blog") || pathname.includes("/sd"))();
   const containerClasses = returnContainerClasses();
 
   function returnContainerClasses() {
     if (isPracticePage) {
       return "gap-5 min-w-[1000px] overflow-hidden justify-center 2xl:items-center";
+    }
+    if (isWhiteboardPage) {
+      return "";
     }
     if (isPostPage) {
       return "gap-10 py-[5vh] 2xl:px-[20vw] lg:px-[18vw] px-[7vw] min-w-[56vw]";
@@ -88,6 +92,14 @@ const AppRoutes = () => (
       element={
         <PageTitle title="Code Editor">
           <LazyPages.Editor />
+        </PageTitle>
+      } 
+    />
+    <Route 
+      path="/whiteboard" 
+      element={
+        <PageTitle title="Whiteboard">
+          <LazyPages.Whiteboard />
         </PageTitle>
       } 
     />
