@@ -17,22 +17,100 @@ const Whiteboard = () => {
   // Color palette with a variety of colors
   const colorPalette = [
     // Blacks & Grays
-    "#000000", "#333333", "#666666", "#999999", "#CCCCCC", "#FFFFFF",
+    "#000000",
+    "#333333",
+    "#666666",
+    "#999999",
+    "#CCCCCC",
+    "#FFFFFF",
     // Reds
-    "#FF0000", "#FF3333", "#FF6666", "#FF9999", "#FFCCCC", "#FF6B6B",
+    "#FF0000",
+    "#FF3333",
+    "#FF6666",
+    "#FF9999",
+    "#FFCCCC",
+    "#FF6B6B",
     // Oranges
-    "#FFA500", "#FFB74D", "#FFCC80", "#FFE0B2", "#FFF3E0", "#FF9F43",
+    "#FFA500",
+    "#FFB74D",
+    "#FFCC80",
+    "#FFE0B2",
+    "#FFF3E0",
+    "#FF9F43",
     // Yellows
-    "#FFFF00", "#FFF176", "#FFEE58", "#FFEB3B", "#FDD835", "#FFD32A",
+    "#FFFF00",
+    "#FFF176",
+    "#FFEE58",
+    "#FFEB3B",
+    "#FDD835",
+    "#FFD32A",
     // Greens
-    "#00FF00", "#81C784", "#66BB6A", "#4CAF50", "#2E7D32", "#1B5E20",
+    "#00FF00",
+    "#81C784",
+    "#66BB6A",
+    "#4CAF50",
+    "#2E7D32",
+    "#1B5E20",
     // Blues
-    "#0000FF", "#42A5F5", "#1E88E5", "#1976D2", "#1565C0", "#0D47A1",
+    "#0000FF",
+    "#42A5F5",
+    "#1E88E5",
+    "#1976D2",
+    "#1565C0",
+    "#0D47A1",
     // Purples
-    "#9C27B0", "#AB47BC", "#BA68C8", "#CE93D8", "#E1BEE7", "#F3E5F5",
+    "#9C27B0",
+    "#AB47BC",
+    "#BA68C8",
+    "#CE93D8",
+    "#E1BEE7",
+    "#F3E5F5",
     // Pinks
-    "#FF00FF", "#F06292", "#EC407A", "#E91E63", "#D81B60", "#C2185B"
+    "#FF00FF",
+    "#F06292",
+    "#EC407A",
+    "#E91E63",
+    "#D81B60",
+    "#C2185B",
   ];
+
+  // Draw grid background
+  const drawGrid = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const context = canvas.getContext("2d");
+    const gridSize = 20; // Size of grid cells
+    const dotSize = 1; // Size of dots
+
+    // Set dark background (zinc-900)
+    context.fillStyle = "#18181b";
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Primary grid dots (zinc-700)
+    context.fillStyle = "#3f3f46";
+
+    // Draw dots in a grid pattern
+    for (let x = 0; x < canvas.width; x += gridSize) {
+      for (let y = 0; y < canvas.height; y += gridSize) {
+        context.beginPath();
+        context.arc(x, y, dotSize, 0, Math.PI * 2);
+        context.fill();
+      }
+    }
+
+    // Secondary grid dots (zinc-600, slightly larger and more visible)
+    context.fillStyle = "#52525b";
+    const largeGridSize = gridSize * 5; // 5x5 grid of the small dots
+
+    for (let x = 0; x < canvas.width; x += largeGridSize) {
+      for (let y = 0; y < canvas.height; y += largeGridSize) {
+        context.beginPath();
+        context.arc(x, y, dotSize * 1.5, 0, Math.PI * 2);
+        context.fill();
+      }
+    }
+  };
 
   // Initialize canvas
   useEffect(() => {
@@ -50,7 +128,8 @@ const Whiteboard = () => {
     context.lineWidth = brushSize;
     contextRef.current = context;
 
-    // Save initial blank canvas to history
+    // Draw initial grid
+    drawGrid();
     saveToHistory();
 
     // Handle window resize
@@ -65,7 +144,14 @@ const Whiteboard = () => {
       context.lineJoin = "round";
       context.strokeStyle = color;
       context.lineWidth = brushSize;
-      context.putImageData(imageData, 0, 0);
+
+      // Redraw grid and restore content
+      drawGrid();
+      const img = new Image();
+      img.onload = () => {
+        context.drawImage(img, 0, 0, canvas.width / 2, canvas.height / 2);
+      };
+      img.src = imageData;
     };
 
     window.addEventListener("resize", handleResize);
@@ -76,18 +162,18 @@ const Whiteboard = () => {
   useEffect(() => {
     if (contextRef.current) {
       if (tool === "eraser") {
-        contextRef.current.globalCompositeOperation = 'destination-out';
-        contextRef.current.strokeStyle = 'rgba(0, 0, 0, 1)';
+        contextRef.current.globalCompositeOperation = "destination-out";
+        contextRef.current.strokeStyle = "rgba(0, 0, 0, 1)";
       } else {
-        contextRef.current.globalCompositeOperation = 'source-over';
-        if (tool !== 'rectangle' && tool !== 'circle' && tool !== 'line' && tool !== 'arrow') {
+        contextRef.current.globalCompositeOperation = "source-over";
+        if (tool !== "rectangle" && tool !== "circle" && tool !== "line" && tool !== "arrow") {
           contextRef.current.strokeStyle = color;
         }
       }
-      if (tool !== 'rectangle' && tool !== 'circle' && tool !== 'line' && tool !== 'arrow') {
+      if (tool !== "rectangle" && tool !== "circle" && tool !== "line" && tool !== "arrow") {
         contextRef.current.lineWidth = brushSize;
-        contextRef.current.lineCap = 'round';
-        contextRef.current.lineJoin = 'round';
+        contextRef.current.lineCap = "round";
+        contextRef.current.lineJoin = "round";
       }
     }
   }, [color, brushSize, tool]);
@@ -95,7 +181,7 @@ const Whiteboard = () => {
   // Save canvas state before drawing a shape
   const saveCanvasState = () => {
     const canvas = canvasRef.current;
-    const context = canvas.getContext('2d');
+    const context = canvas.getContext("2d");
     setSavedImageData(context.getImageData(0, 0, canvas.width, canvas.height));
   };
 
@@ -103,7 +189,7 @@ const Whiteboard = () => {
   const restoreCanvasState = () => {
     if (savedImageData) {
       const canvas = canvasRef.current;
-      const context = canvas.getContext('2d');
+      const context = canvas.getContext("2d");
       context.putImageData(savedImageData, 0, 0);
     }
   };
@@ -111,78 +197,76 @@ const Whiteboard = () => {
   // Draw shape based on current tool
   const drawShape = (endX, endY) => {
     if (!savedImageData) return;
-    
+
     restoreCanvasState();
     const context = contextRef.current;
     const startX = startPos.x;
     const startY = startPos.y;
-    
+
     context.beginPath();
     context.strokeStyle = color;
     context.lineWidth = brushSize;
-    
+
     switch (tool) {
-      case 'rectangle':
+      case "rectangle":
         context.strokeRect(startX, startY, endX - startX, endY - startY);
         break;
-      case 'circle':
+      case "circle":
+        // Calculate radius based on distance from start to current point
         const radius = Math.sqrt(Math.pow(endX - startX, 2) + Math.pow(endY - startY, 2));
-        context.arc(startX, startY, radius, 0, 2 * Math.PI);
+        // Calculate center point to make circle expand from bottom right
+        const centerX = startX + (endX - startX) / 2;
+        const centerY = startY + (endY - startY) / 2;
+        context.beginPath();
+        context.arc(centerX, centerY, radius / 2, 0, 2 * Math.PI);
         context.stroke();
         break;
-      case 'line':
+      case "line":
         context.beginPath();
         context.moveTo(startX, startY);
         context.lineTo(endX, endY);
         context.stroke();
         break;
-      case 'arrow':
+      case "arrow":
         // Draw the line
         context.beginPath();
         context.lineWidth = brushSize;
         context.strokeStyle = color;
-        
+
         // Shorten the line a bit to make room for the arrow head
         const angle = Math.atan2(endY - startY, endX - startX);
         const headLength = Math.max(brushSize * 2.5, 15);
         const backOffset = headLength * 0.7; // How much to shorten the line
-        
+
         // Adjust end point to make room for arrow head
         const adjustedEndX = endX - Math.cos(angle) * backOffset;
         const adjustedEndY = endY - Math.sin(angle) * backOffset;
-        
+
         // Draw the main line
         context.moveTo(startX, startY);
         context.lineTo(adjustedEndX, adjustedEndY);
         context.stroke();
-        
+
         // Draw arrow head (sleek triangle design)
         context.save();
         context.translate(endX, endY);
         context.rotate(angle);
-        
+
         const headWidth = headLength * 0.6;
         const backWidth = headLength * 0.3;
-        
+
         context.beginPath();
         context.fillStyle = color;
         context.moveTo(0, 0); // Tip of the arrow
         context.lineTo(-headLength, -headWidth); // Bottom point
         context.quadraticCurveTo(
-          -headLength * 0.8, 0,  // Control point for curve
-          -headLength, headWidth // Top point with curve
+          -headLength * 0.8,
+          0, // Control point for curve
+          -headLength,
+          headWidth // Top point with curve
         );
         context.closePath();
         context.fill();
-        
-        // Add a subtle highlight for depth
-        context.beginPath();
-        context.strokeStyle = `rgba(255, 255, 255, 0.3)`;
-        context.lineWidth = brushSize * 0.3;
-        context.moveTo(-headLength * 0.3, 0);
-        context.lineTo(-headLength * 0.8, -headWidth * 0.6);
-        context.stroke();
-        
         context.restore();
         break;
       default:
@@ -253,7 +337,7 @@ const Whiteboard = () => {
   // Update startDrawing to handle shapes
   const startDrawing = ({ nativeEvent }) => {
     const { offsetX, offsetY } = nativeEvent;
-    if (['rectangle', 'circle', 'line', 'arrow'].includes(tool)) {
+    if (["rectangle", "circle", "line", "arrow"].includes(tool)) {
       setStartPos({ x: offsetX, y: offsetY });
       setIsDrawingShape(true);
       saveCanvasState();
@@ -267,9 +351,9 @@ const Whiteboard = () => {
   // Update draw function to handle shapes
   const draw = ({ nativeEvent }) => {
     if (!isDrawing && !isDrawingShape) return;
-    
+
     const { offsetX, offsetY } = nativeEvent;
-    
+
     if (isDrawingShape) {
       drawShape(offsetX, offsetY);
     } else {
@@ -339,9 +423,7 @@ const Whiteboard = () => {
           <div className="flex flex-col items-center space-y-2">
             <button
               onClick={() => setTool("brush")}
-              className={`p-2 rounded-md ${
-                tool === "brush" ? "bg-zinc-600" : "bg-zinc-700 hover:bg-zinc-600"
-              }`}
+              className={`p-2 rounded-md ${tool === "brush" ? "bg-zinc-600" : "bg-zinc-700 hover:bg-zinc-600"}`}
               title="Brush"
             >
               <svg
@@ -361,9 +443,7 @@ const Whiteboard = () => {
             </button>
             <button
               onClick={() => setTool("rectangle")}
-              className={`p-2 rounded-md ${
-                tool === "rectangle" ? "bg-zinc-600" : "bg-zinc-700 hover:bg-zinc-600"
-              }`}
+              className={`p-2 rounded-md ${tool === "rectangle" ? "bg-zinc-600" : "bg-zinc-700 hover:bg-zinc-600"}`}
               title="Rectangle"
             >
               <svg
@@ -378,9 +458,7 @@ const Whiteboard = () => {
             </button>
             <button
               onClick={() => setTool("circle")}
-              className={`p-2 rounded-md ${
-                tool === "circle" ? "bg-zinc-600" : "bg-zinc-700 hover:bg-zinc-600"
-              }`}
+              className={`p-2 rounded-md ${tool === "circle" ? "bg-zinc-600" : "bg-zinc-700 hover:bg-zinc-600"}`}
               title="Circle"
             >
               <svg
@@ -395,9 +473,7 @@ const Whiteboard = () => {
             </button>
             <button
               onClick={() => setTool("line")}
-              className={`p-2 rounded-md ${
-                tool === "line" ? "bg-zinc-600" : "bg-zinc-700 hover:bg-zinc-600"
-              }`}
+              className={`p-2 rounded-md ${tool === "line" ? "bg-zinc-600" : "bg-zinc-700 hover:bg-zinc-600"}`}
               title="Line"
             >
               <svg
@@ -412,9 +488,7 @@ const Whiteboard = () => {
             </button>
             <button
               onClick={() => setTool("arrow")}
-              className={`p-2 rounded-md ${
-                tool === "arrow" ? "bg-zinc-600" : "bg-zinc-700 hover:bg-zinc-600"
-              }`}
+              className={`p-2 rounded-md ${tool === "arrow" ? "bg-zinc-600" : "bg-zinc-700 hover:bg-zinc-600"}`}
               title="Arrow"
             >
               <svg
@@ -432,9 +506,7 @@ const Whiteboard = () => {
                 setTool("eraser");
                 setShowColorPicker(false);
               }}
-              className={`p-2 rounded-md ${
-                tool === "eraser" ? "bg-zinc-600" : "bg-zinc-700 hover:bg-zinc-600"
-              }`}
+              className={`p-2 rounded-md ${tool === "eraser" ? "bg-zinc-600" : "bg-zinc-700 hover:bg-zinc-600"}`}
               title="Eraser"
             >
               <svg
@@ -465,10 +537,7 @@ const Whiteboard = () => {
                 }`}
                 title={`Size ${size}`}
               >
-                <div
-                  className="rounded-full bg-zinc-300"
-                  style={{ width: size, height: size }}
-                ></div>
+                <div className="rounded-full bg-zinc-300" style={{ width: size, height: size }}></div>
               </button>
             ))}
           </div>
@@ -491,7 +560,7 @@ const Whiteboard = () => {
                       setShowColorPicker(false);
                       setTool("brush");
                     }}
-                    className={`w-6 h-6 rounded-full ${color === c ? 'ring-2 ring-white' : ''}`}
+                    className={`w-6 h-6 rounded-full ${color === c ? "ring-2 ring-white" : ""}`}
                     style={{ backgroundColor: c }}
                     title={`Color: ${c}`}
                   />
@@ -517,9 +586,7 @@ const Whiteboard = () => {
               onClick={handleUndo}
               disabled={historyIndex <= 0}
               className={`p-2 rounded-md ${
-                historyIndex <= 0
-                  ? "bg-zinc-800 text-zinc-600 cursor-not-allowed"
-                  : "bg-zinc-700 hover:bg-zinc-600"
+                historyIndex <= 0 ? "bg-zinc-800 text-zinc-600 cursor-not-allowed" : "bg-zinc-700 hover:bg-zinc-600"
               }`}
               title="Undo"
             >
@@ -530,12 +597,7 @@ const Whiteboard = () => {
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
               </svg>
             </button>
             <button
@@ -555,19 +617,10 @@ const Whiteboard = () => {
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M14 5l7 7m0 0l-7 7m7-7H3"
-                />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
             </button>
-            <button
-              onClick={handleClear}
-              className="p-2 rounded-md bg-zinc-700 hover:bg-zinc-600"
-              title="Clear"
-            >
+            <button onClick={handleClear} className="p-2 rounded-md bg-zinc-700 hover:bg-zinc-600" title="Clear">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-6 w-6"
